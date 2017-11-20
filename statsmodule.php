@@ -114,7 +114,7 @@ class StatsModule extends ModuleStats
 
         $this->displayName = $this->l('Stats Module');
         $this->description = $this->l('Addds several statistics to the shop');
-        $this->tb_versions_compliancy = '1.0.4+';
+//        $this->tb_versions_compliancy = '1.0.4+';
     }
 
     /**
@@ -130,6 +130,10 @@ class StatsModule extends ModuleStats
 
         // Remove the previous stats module
         foreach ($this->modules as $moduleCode) {
+            if (in_array($moduleCode, ['statsdata', 'statscheckup'])) {
+                continue;
+            }
+
             $moduleInstance = Module::getInstanceByName($moduleCode);
             try {
                 $moduleInstance->uninstall();
