@@ -1,94 +1,90 @@
 <?php
-/*
-* 2007-2015 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2015 PrestaShop SA
-*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
+/**
+ * 2007-2016 PrestaShop
+ *
+ * thirty bees is an extension to the PrestaShop e-commerce software developed by PrestaShop SA
+ * Copyright (C) 2017 thirty bees
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@thirtybees.com so we can send you a copy immediately.
+ *
+ * @author    thirty bees <modules@thirtybees.com>
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2017 thirty bees
+ * @copyright 2007-2016 PrestaShop SA
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * PrestaShop is an internationally registered trademark & property of PrestaShop SA
+ */
 
 if (!defined('_TB_VERSION_'))
-	exit;
+    exit;
 
 class StatsOrigin extends StatsModule
 {
-	private $type = 'Graph';
-	private $_html;
+    private $type = 'Graph';
+    private $_html;
 
-	public function __construct()
-	{
-		$this->name = 'statsorigin';
-		$this->tab = 'analytics_stats';
-		$this->version = '2.0.0';
-		$this->author = 'thirty bees';
-		$this->need_instance = 0;
+    public function __construct()
+    {
+        $this->name = 'statsorigin';
+        $this->tab = 'analytics_stats';
+        $this->version = '2.0.0';
+        $this->author = 'thirty bees';
+        $this->need_instance = 0;
 
-		parent::__construct();
+        parent::__construct();
 
-		$this->displayName = $this->l('Visitors origin');
-		$this->description = $this->l('Adds a graph displaying the websites your visitors came from to the Stats dashboard.');
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
-	}
+        $this->displayName = $this->l('Visitors origin');
+        $this->description = $this->l('Adds a graph displaying the websites your visitors came from to the Stats dashboard.');
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+    }
 
-	public function install()
-	{
-		return (parent::install() && $this->registerHook('AdminStatsModules'));
-	}
+    public function install()
+    {
+        return (parent::install() && $this->registerHook('AdminStatsModules'));
+    }
 
-	private function getOrigins($dateBetween)
-	{
-		$directLink = $this->l('Direct link');
-		$sql = 'SELECT http_referer
+    private function getOrigins($dateBetween)
+    {
+        $directLink = $this->l('Direct link');
+        $sql = 'SELECT http_referer
 				FROM '._DB_PREFIX_.'connections
 				WHERE 1
 					'.Shop::addSqlRestriction().'
 					AND date_add BETWEEN '.$dateBetween;
-		$result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
-		$websites = array($directLink => 0);
-		while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result))
-		{
-			if (!isset($row['http_referer']) || empty($row['http_referer']))
-				++$websites[$directLink];
-			else
-			{
-				$website = preg_replace('/^www./', '', parse_url($row['http_referer'], PHP_URL_HOST));
-				if (!isset($websites[$website]))
-					$websites[$website] = 1;
-				else
-					++$websites[$website];
-			}
-		}
-		arsort($websites);
-		return $websites;
-	}
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
+        $websites = array($directLink => 0);
+        while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
+            if (!isset($row['http_referer']) || empty($row['http_referer']))
+                ++$websites[$directLink];
+            else {
+                $website = preg_replace('/^www./', '', parse_url($row['http_referer'], PHP_URL_HOST));
+                if (!isset($websites[$website]))
+                    $websites[$website] = 1;
+                else
+                    ++$websites[$website];
+            }
+        }
+        arsort($websites);
+        return $websites;
+    }
 
-	public function hookAdminStatsModules()
-	{
-		$websites = $this->getOrigins(ModuleGraph::getDateBetween());
-		if (Tools::getValue('export'))
-			if (Tools::getValue('exportType') == 'top')
-				$this->csvExport(array('type' => 'pie'));
-		$this->_html = '<div class="panel-heading">'.$this->l('Origin').'</div>';
-		if (count($websites))
-		{
-			$this->_html .= '
+    public function hookAdminStatsModules()
+    {
+        $websites = $this->getOrigins(ModuleGraph::getDateBetween());
+        if (Tools::getValue('export'))
+            if (Tools::getValue('exportType') == 'top')
+                $this->csvExport(array('type' => 'pie'));
+        $this->_html = '<div class="panel-heading">'.$this->l('Origin').'</div>';
+        if (count($websites)) {
+            $this->_html .= '
 			<div class="alert alert-info">
 				'.$this->l('In the tab, we break down the 10 most popular referral websites that bring customers to your online store.').'
 			</div>
@@ -125,45 +121,41 @@ class StatsOrigin extends StatsModule
 					</tr>
 				</thead>
 				<tbody>';
-			foreach ($websites as $website => $total)
-				$this->_html .= '
+            foreach ($websites as $website => $total)
+                $this->_html .= '
 					<tr>
 						<td>'.(!strstr($website, ' ') ? '<a href="'.Tools::getProtocol().$website.'">' : '').$website.(!strstr($website, ' ') ? '</a>' : '').'</td><td>'.$total.'</td>
 					</tr>';
-			$this->_html .= '
+            $this->_html .= '
 				</tbody>
 			</table>';
-		}
-		else
-			$this->_html .= '<p>'.$this->l('Direct links only').'</p>';
-		return $this->_html;
-	}
+        } else
+            $this->_html .= '<p>'.$this->l('Direct links only').'</p>';
+        return $this->_html;
+    }
 
-	protected function getData($layers)
-	{
-		$this->_titles['main'] = $this->l('Top ten referral websites');
-		$websites = $this->getOrigins($this->getDate());
-		$total = 0;
-		$total2 = 0;
-		$i = 0;
-		foreach ($websites as $website => $totalRow)
-		{
-			if (!$totalRow)
-				continue;
-			$total += $totalRow;
-			if ($i++ < 9)
-			{
-				$this->_legend[] = $website;
-				$this->_values[] = $totalRow;
-				$total2 += $totalRow;
-			}
-		}
-		if ($total != $total2)
-		{
-			$this->_legend[] = $this->l('Others');
-			$this->_values[] = $total - $total2;
-		}
-	}
+    protected function getData($layers)
+    {
+        $this->_titles['main'] = $this->l('Top ten referral websites');
+        $websites = $this->getOrigins($this->getDate());
+        $total = 0;
+        $total2 = 0;
+        $i = 0;
+        foreach ($websites as $website => $totalRow) {
+            if (!$totalRow)
+                continue;
+            $total += $totalRow;
+            if ($i++ < 9) {
+                $this->_legend[] = $website;
+                $this->_values[] = $totalRow;
+                $total2 += $totalRow;
+            }
+        }
+        if ($total != $total2) {
+            $this->_legend[] = $this->l('Others');
+            $this->_values[] = $total - $total2;
+        }
+    }
 }
 
 

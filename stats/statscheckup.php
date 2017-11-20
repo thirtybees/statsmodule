@@ -2,8 +2,8 @@
 /**
  * 2007-2016 PrestaShop
  *
- * Thirty Bees is an extension to the PrestaShop e-commerce software developed by PrestaShop SA
- * Copyright (C) 2017 Thirty Bees
+ * thirty bees is an extension to the PrestaShop e-commerce software developed by PrestaShop SA
+ * Copyright (C) 2017 thirty bees
  *
  * NOTICE OF LICENSE
  *
@@ -15,13 +15,13 @@
  * obtain it through the world-wide-web, please send an email
  * to license@thirtybees.com so we can send you a copy immediately.
  *
- * @author    Thirty Bees <modules@thirtybees.com>
+ * @author    thirty bees <modules@thirtybees.com>
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2017 Thirty Bees
+ * @copyright 2017 thirty bees
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * PrestaShop is an internationally registered trademark & property of PrestaShop SA
-*/
+ */
 
 if (!defined('_TB_VERSION_')) {
     exit;
@@ -128,9 +128,9 @@ class StatsCheckUp extends StatsModule
         $languages = $db->executeS($sql);
 
         $arrayColors = [
-            0 => '<img src="../modules/'.$this->name.'/img/red.png" alt="'.$this->l('Bad').'" />',
-            1 => '<img src="../modules/'.$this->name.'/img/orange.png" alt="'.$this->l('Average').'" />',
-            2 => '<img src="../modules/'.$this->name.'/img/green.png" alt="'.$this->l('Good').'" />',
+            0 => '<img src="../modules/'.$this->name.'/views/img/red.png" alt="'.$this->l('Bad').'" />',
+            1 => '<img src="../modules/'.$this->name.'/views/img/orange.png" alt="'.$this->l('Average').'" />',
+            2 => '<img src="../modules/'.$this->name.'/views/img/green.png" alt="'.$this->l('Good').'" />',
         ];
         $tokenProducts = Tools::getAdminToken('AdminProducts'.(int) Tab::getIdFromClassName('AdminProducts').(int) Context::getContext()->employee->id);
         $divisor = 4;
