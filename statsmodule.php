@@ -32,7 +32,6 @@ if (!defined('_TB_VERSION_')) {
  */
 class StatsModule extends ModuleStats
 {
-    private $html;
     private $query;
     private $columns;
     private $default_sort_column;
@@ -80,49 +79,63 @@ class StatsModule extends ModuleStats
         $this->empty_message = $this->l('Empty recordset returned');
         $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
 
-        $this->columns = array(
-            array(
+        $this->columns = [
+            [
                 'id'        => 'name',
                 'header'    => $this->l('Name'),
                 'dataIndex' => 'name',
                 'align'     => 'left',
-            ),
-            array(
+            ],
+            [
                 'id'        => 'totalQuantitySold',
                 'header'    => $this->l('Total Quantity Sold'),
                 'dataIndex' => 'totalQuantitySold',
                 'align'     => 'center',
-            ),
-            array(
+            ],
+            [
                 'id'        => 'totalPriceSold',
                 'header'    => $this->l('Total Price'),
                 'dataIndex' => 'totalPriceSold',
                 'align'     => 'right',
-            ),
-            array(
+            ],
+            [
                 'id'        => 'totalWholeSalePriceSold',
                 'header'    => $this->l('Total Margin'),
                 'dataIndex' => 'totalWholeSalePriceSold',
                 'align'     => 'center',
-            ),
-            array(
+            ],
+            [
                 'id'        => 'totalPageViewed',
                 'header'    => $this->l('Total Viewed'),
                 'dataIndex' => 'totalPageViewed',
                 'align'     => 'center',
-            ),
-        );
+            ],
+        ];
 
         $this->displayName = $this->l('Stats Module');
         $this->description = $this->l('Addds several statistics to the shop');
-        $this->ps_versions_compliancy = array('min' => '1.0', 'max' => _PS_VERSION_);
+        $this->tb_versions_compliancy = '1.0.4+';
     }
 
-
+    /**
+     * Install this module
+     *
+     * @return bool
+     */
     public function install()
     {
         if (!parent::install() || !$this->registerHook('search') || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules')) {
             return false;
+        }
+
+        // Remove the previous stats module
+        foreach ($this->modules as $moduleCode) {
+            $moduleInstance = Module::getInstanceByName($moduleCode);
+            try {
+                $moduleInstance->uninstall();
+            } catch (Exception $e) {
+                // Let it fail, time to go on
+            }
         }
 
         // Search Engine Keywords
@@ -210,7 +223,7 @@ class StatsModule extends ModuleStats
         }
 
         // If a shop is selected, get all children categories for the shop
-        $categories = array();
+        $categories = [];
         if (Shop::getContext() != Shop::CONTEXT_ALL) {
             $sql = 'SELECT c.nleft, c.nright
 					FROM '._DB_PREFIX_.'category c
@@ -348,12 +361,14 @@ class StatsModule extends ModuleStats
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `'.bqSQL($this->_sort).'`';
-            if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
+            if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
                 $this->query .= ' '.$this->_direction;
+            }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit))
+        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
             $this->query .= ' LIMIT '.(int) $this->_start.', '.(int) $this->_limit;
+        }
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {
@@ -390,16 +405,24 @@ class StatsModule extends ModuleStats
         Db::getInstance()->execute($sql);
     }
 
+    /**
+     * @param array $params Module params
+     *
+     * @return string
+     */
     public function hookTop($params)
     {
         foreach ($this->modules as $moduleName) {
-            require_once(dirname(__FILE__).'/stats/'.$moduleName.'.php');
-            $module = new $moduleName();
-            $refl = new ReflectionClass($moduleName);
+            if (include_once dirname(__FILE__).'/stats/'.$moduleName.'.php') {
+                $module = new $moduleName();
+                $refl = new ReflectionClass($moduleName);
 
-            if ($refl->getMethod('hookTop')->class != 'StatsModule') {
-                return $module->hookTop($params);
+                if ($refl->getMethod('hookTop')->class != 'StatsModule') {
+                    return $module->hookTop($params);
+                }
             }
         }
+
+        return '';
     }
 }
