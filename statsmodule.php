@@ -126,23 +126,25 @@ class StatsModule extends ModuleStats
     {
 
         foreach ($this->modules as $moduleCode) {
-            // if (in_array($moduleCode, ['statsdata', 'statscheckup'])) {
-            //     continue;
-            // }
 
             $moduleInstance = Module::getInstanceByName($moduleCode);
-            try {
-                $moduleInstance->uninstall();
-            } catch (Exception $e) {
-                // Let it fail, time to go on
+
+
+            if(is_dir(_PS_MODULE_DIR_.$moduleCode))
+            {
+                try {
+                    if($moduleInstance->uninstall() || !Module::isInstalled($moduleCode))
+                        $this->recursiveDeleteOnDisk(_PS_MODULE_DIR_.$moduleCode);
+                } catch (Exception $e) {
+                    // Let it fail, time to go on
+                }    
             }
+            
         }
                 
         if (!parent::install() || !$this->registerHook('search') || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules')) {
             return false;
         }
-
-        // Remove the previous stats module
 
 
         // statscheckup
@@ -167,7 +169,7 @@ class StatsModule extends ModuleStats
         Configuration::updateValue('SEK_FILTER_KW', '');
 
         $sek = Db::getInstance()->execute('
-		CREATE TABLE `'._DB_PREFIX_.'sekeyword` (
+		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'sekeyword` (
 			id_sekeyword INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
 			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -177,7 +179,7 @@ class StatsModule extends ModuleStats
 		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');
 
         $pagenotfound = Db::getInstance()->execute(
-            'CREATE TABLE `'._DB_PREFIX_.'pagenotfound` (
+            'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'pagenotfound` (
 			id_pagenotfound INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
 			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -190,7 +192,7 @@ class StatsModule extends ModuleStats
         );
 
         $statssearch = Db::getInstance()->execute('
-		CREATE TABLE `'._DB_PREFIX_.'statssearch` (
+		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'statssearch` (
 			id_statssearch INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
 		  	id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -203,10 +205,28 @@ class StatsModule extends ModuleStats
         return $sek && $pagenotfound && $statssearch;
     }
 
-    public function uninstall()
+
+    private function recursiveDeleteOnDisk($dir)
     {
-        return (parent::uninstall() && Db::getInstance()->execute('DROP TABLE `'._DB_PREFIX_.'pagenotfound`') && Db::getInstance()->execute('DROP TABLE `'._DB_PREFIX_.'sekeyword`') && Db::getInstance()->execute('DROP TABLE `'._DB_PREFIX_.'statssearch`'));
+        if (strpos(realpath($dir), realpath(_PS_MODULE_DIR_)) === false) {
+            return;
+        }
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != '.' && $object != '..') {
+                    if (filetype($dir.'/'.$object) == 'dir') {
+                        $this->recursiveDeleteOnDisk($dir.'/'.$object);
+                    } else {
+                        unlink($dir.'/'.$object);
+                    }
+                }
+            }
+            reset($objects);
+            rmdir($dir);
+        }
     }
+
 
     public function getStatsModulesList()
     {
