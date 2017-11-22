@@ -124,21 +124,41 @@ class StatsModule extends ModuleStats
      */
     public function install()
     {
-        if (!parent::install() || !$this->registerHook('search') || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules')) {
-            return false;
-        }
 
-        // Remove the previous stats module
         foreach ($this->modules as $moduleCode) {
-            if (in_array($moduleCode, ['statsdata', 'statscheckup'])) {
-                continue;
-            }
+            // if (in_array($moduleCode, ['statsdata', 'statscheckup'])) {
+            //     continue;
+            // }
 
             $moduleInstance = Module::getInstanceByName($moduleCode);
             try {
                 $moduleInstance->uninstall();
             } catch (Exception $e) {
                 // Let it fail, time to go on
+            }
+        }
+                
+        if (!parent::install() || !$this->registerHook('search') || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules')) {
+            return false;
+        }
+
+        // Remove the previous stats module
+
+
+        // statscheckup
+        $confs = [
+            'CHECKUP_DESCRIPTIONS_LT' => 100,
+            'CHECKUP_DESCRIPTIONS_GT' => 400,
+            'CHECKUP_IMAGES_LT'       => 1,
+            'CHECKUP_IMAGES_GT'       => 2,
+            'CHECKUP_SALES_LT'        => 1,
+            'CHECKUP_SALES_GT'        => 2,
+            'CHECKUP_STOCK_LT'        => 1,
+            'CHECKUP_STOCK_GT'        => 3,
+        ];
+        foreach ($confs as $confname => $confdefault) {
+            if (!Configuration::get($confname)) {
+                Configuration::updateValue($confname, (int) $confdefault);
             }
         }
 
