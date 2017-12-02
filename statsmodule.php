@@ -124,25 +124,25 @@ class StatsModule extends ModuleStats
      */
     public function install()
     {
-
         foreach ($this->modules as $moduleCode) {
-
             $moduleInstance = Module::getInstanceByName($moduleCode);
 
-
-            if(is_dir(_PS_MODULE_DIR_.$moduleCode))
-            {
+            if (is_dir(_PS_MODULE_DIR_.$moduleCode)) {
                 try {
-                    if($moduleInstance->uninstall() || !Module::isInstalled($moduleCode))
+                    if (is_object($moduleInstance) && $moduleInstance->uninstall() || !is_object($moduleInstance) || !Module::isInstalled($moduleCode)) {
                         $this->recursiveDeleteOnDisk(_PS_MODULE_DIR_.$moduleCode);
+                    }
                 } catch (Exception $e) {
                     // Let it fail, time to go on
-                }    
+                }
             }
-            
         }
-                
-        if (!parent::install() || !$this->registerHook('search') || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules')) {
+
+        if (!parent::install()
+            || !$this->registerHook('search')
+            || !$this->registerHook('top')
+            || !$this->registerHook('AdminStatsModules')
+        ) {
             return false;
         }
 
