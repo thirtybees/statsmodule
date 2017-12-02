@@ -141,13 +141,13 @@ class StatsModule extends ModuleStats
             }
         }
 
-        if (!parent::install()
-            || !$this->registerHook('search')
-            || !$this->registerHook('top')
-            || !$this->registerHook('AdminStatsModules')
-        ) {
+        if (!parent::install()) {
             return false;
         }
+
+        $this->registerHook('search');
+        $this->registerHook('top');
+        $this->registerHook('AdminStatsModules');
 
 
         // statscheckup
