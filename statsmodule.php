@@ -121,19 +121,22 @@ class StatsModule extends ModuleStats
      * Install this module
      *
      * @return bool
+     * @throws PrestaShopException
      */
     public function install()
     {
-        foreach ($this->modules as $moduleCode) {
-            $moduleInstance = Module::getInstanceByName($moduleCode);
+        if (!defined('TB_INSTALLATION_IN_PROGRESS') || !TB_INSTALLATION_IN_PROGRESS) {
+            foreach ($this->modules as $moduleCode) {
+                $moduleInstance = Module::getInstanceByName($moduleCode);
 
-            if (is_dir(_PS_MODULE_DIR_.$moduleCode)) {
-                try {
-                    if (is_object($moduleInstance) && $moduleInstance->uninstall() || !is_object($moduleInstance) || !Module::isInstalled($moduleCode)) {
-                        $this->recursiveDeleteOnDisk(_PS_MODULE_DIR_.$moduleCode);
+                if (is_dir(_PS_MODULE_DIR_.$moduleCode)) {
+                    try {
+                        if (is_object($moduleInstance) && $moduleInstance->uninstall() || !is_object($moduleInstance) || !Module::isInstalled($moduleCode)) {
+                            $this->recursiveDeleteOnDisk(_PS_MODULE_DIR_.$moduleCode);
+                        }
+                    } catch (Exception $e) {
+                        // Let it fail, time to go on
                     }
-                } catch (Exception $e) {
-                    // Let it fail, time to go on
                 }
             }
         }
