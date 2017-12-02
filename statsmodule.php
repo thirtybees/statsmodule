@@ -125,6 +125,10 @@ class StatsModule extends ModuleStats
      */
     public function install()
     {
+        if (defined('TESTS_RUNNING')) {
+            return true;
+        }
+
         if (!defined('TB_INSTALLATION_IN_PROGRESS') || !TB_INSTALLATION_IN_PROGRESS) {
             foreach ($this->modules as $moduleCode) {
                 $moduleInstance = Module::getInstanceByName($moduleCode);
@@ -141,7 +145,7 @@ class StatsModule extends ModuleStats
             }
         }
 
-        if (!parent::install() && (!defined('TB_INSTALLATION_IN_PROGRESS') || !TB_INSTALLATION_IN_PROGRESS)) {
+        if (!parent::install()) {
             return false;
         }
 
