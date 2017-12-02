@@ -171,7 +171,7 @@ class StatsModule extends ModuleStats
         Configuration::updateValue('SEK_MIN_OCCURENCES', 1);
         Configuration::updateValue('SEK_FILTER_KW', '');
 
-        $sek = Db::getInstance()->execute('
+        Db::getInstance()->execute('
 		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'sekeyword` (
 			id_sekeyword INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -179,9 +179,9 @@ class StatsModule extends ModuleStats
 			keyword VARCHAR(256) NOT NULL,
 			date_add DATETIME NOT NULL,
 			PRIMARY KEY(id_sekeyword)
-		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
 
-        $pagenotfound = Db::getInstance()->execute(
+        Db::getInstance()->execute(
             'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'pagenotfound` (
 			id_pagenotfound INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -191,10 +191,10 @@ class StatsModule extends ModuleStats
 			date_add DATETIME NOT NULL,
 			PRIMARY KEY(id_pagenotfound),
 			INDEX (`date_add`)
-		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;'
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
         );
 
-        $statssearch = Db::getInstance()->execute('
+        Db::getInstance()->execute('
 		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'statssearch` (
 			id_statssearch INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -203,9 +203,9 @@ class StatsModule extends ModuleStats
 			results INT(6) NOT NULL DEFAULT 0,
 			date_add DATETIME NOT NULL,
 			PRIMARY KEY(id_statssearch)
-		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
 
-        return $sek && $pagenotfound && $statssearch;
+        return true;
     }
 
 
