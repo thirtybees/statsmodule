@@ -141,7 +141,7 @@ class StatsModule extends ModuleStats
             }
         }
 
-        if (!parent::install()) {
+        if (!parent::install() && (!defined('TB_INSTALLATION_IN_PROGRESS') || !TB_INSTALLATION_IN_PROGRESS)) {
             return false;
         }
 
