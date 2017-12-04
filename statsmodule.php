@@ -114,7 +114,7 @@ class StatsModule extends ModuleStats
 
         $this->displayName = $this->l('Stats Module');
         $this->description = $this->l('Adds several statistics to the shop');
-        $this->tb_versions_compliancy = '> 1.0.4';
+        $this->tb_versions_compliancy = '> 1.0.3';
     }
 
     /**
@@ -125,10 +125,6 @@ class StatsModule extends ModuleStats
      */
     public function install()
     {
-        if (defined('TESTS_RUNNING')) {
-            return true;
-        }
-
         if (!defined('TB_INSTALLATION_IN_PROGRESS') || !TB_INSTALLATION_IN_PROGRESS) {
             foreach ($this->modules as $moduleCode) {
                 $moduleInstance = Module::getInstanceByName($moduleCode);
