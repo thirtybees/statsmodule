@@ -257,7 +257,7 @@ class StatsModule extends ModuleStats
         return call_user_func_array([$this, 'engine'.$type], [$params]);
     }
 
-    protected function getData($layers = null)
+    protected function getData($layers)
     {
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $dateBetween = $this->getDate();
