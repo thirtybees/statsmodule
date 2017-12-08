@@ -656,6 +656,8 @@ class StatsModule extends ModuleStats
         $this->registerHook('top');
         $this->registerHook('AdminStatsModules');
 
+        $this->unregisterStatsModuleHooks();
+
 
         // statscheckup
         $confs = [
@@ -978,5 +980,39 @@ class StatsModule extends ModuleStats
         }
 
         return '';
+    }
+
+    /**
+     * Unregister module from hook
+     *
+     * @return bool result
+     *
+     * @since   1.0.0
+     * @version 1.0.0 Initial version
+     */
+    public function unregisterStatsModuleHooks()
+    {
+        // Get hook id if a name is given as argument
+        $hookName = 'displayAdminStatsModules';
+        $hookId = Hook::getIdByName($hookName);
+
+        foreach ($this->modules as $moduleName) {
+            Hook::exec('actionModuleUnRegisterHookBefore', ['object' => $this, 'hook_name' => $hookName]);
+            // Unregister module on hook by id
+            try {
+                $result = Db::getInstance()->delete(
+                    'hook_modul0e',
+                    '`id_module` = '.(int) Module::getModuleIdByName($moduleName).' AND `id_hook` = '.(int) $hookId
+                );
+            } catch (PrestaShopDatabaseException $e) {
+            }
+
+            // Clean modules position
+            $this->cleanPositions($hookId);
+
+            Hook::exec('actionModuleUnRegisterHookAfter', ['object' => $this, 'hook_name' => $hookName]);
+        }
+
+        return $result;
     }
 }
