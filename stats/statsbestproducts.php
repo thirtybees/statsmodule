@@ -51,7 +51,7 @@ class StatsBestProducts extends StatsModule
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
         $this->empty_message = Translate::getModuleTranslation('statsmodule', 'An empty record-set was returned.', 'statsmodule');
-        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s'), '{0} - {1}', '{2}', 'statsmodule');
+        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
 
         $this->columns = array(
             array(

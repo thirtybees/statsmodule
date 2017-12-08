@@ -120,8 +120,8 @@ class PagesNotFound extends StatsModule
 				<p>&nbsp;</p>
 				<h4>'.Translate::getModuleTranslation('statsmodule', 'How to catch these errors?', 'statsmodule').'</h4>
 				<p>'
-            .sprintf(Translate::getModuleTranslation('statsmodule', 'If your webhost supports .htaccess files, you can create one in the root directory of PrestaShop and insert the following line inside: "%s".'), 'ErrorDocument 404 '.__PS_BASE_URI__.'404.php', 'statsmodule').'<br />'.
-            sprintf(Translate::getModuleTranslation('statsmodule', 'A user requesting a page which doesn\'t exist will be redirected to the following page: %s. This module logs access to this page.'), __PS_BASE_URI__.'404.php', 'statsmodule').'
+            .sprintf(Translate::getModuleTranslation('statsmodule', 'If your webhost supports .htaccess files, you can create one in the root directory of PrestaShop and insert the following line inside: "%s".', 'statsmodule'), 'ErrorDocument 404 '.__PS_BASE_URI__.'404.php').'<br />'.
+            sprintf(Translate::getModuleTranslation('statsmodule', 'A user requesting a page which doesn\'t exist will be redirected to the following page: %s. This module logs access to this page.', 'statsmodule'), __PS_BASE_URI__.'404.php').'
 				</p>
 			</div>';
         if (!file_exists($this->_normalizeDirectory(_PS_ROOT_DIR_).'.htaccess'))
