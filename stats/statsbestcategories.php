@@ -51,45 +51,44 @@ class StatsBestCategories extends StatsModule
 
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = $this->l('Empty recordset returned');
-        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
+        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty recordset returned', 'statsmodule');
+        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s'), '{0} - {1}', '{2}', 'statsmodule');
 
         $this->columns = array(
             array(
                 'id'        => 'name',
-                'header'    => $this->l('Name'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
                 'align'     => 'left',
             ),
             array(
                 'id'        => 'totalQuantitySold',
-                'header'    => $this->l('Total Quantity Sold'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Total Quantity Sold', 'statsmodule'),
                 'dataIndex' => 'totalQuantitySold',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'totalPriceSold',
-                'header'    => $this->l('Total Price'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Total Price', 'statsmodule'),
                 'dataIndex' => 'totalPriceSold',
                 'align'     => 'right',
             ),
             array(
                 'id'        => 'totalWholeSalePriceSold',
-                'header'    => $this->l('Total Margin'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Total Margin', 'statsmodule'),
                 'dataIndex' => 'totalWholeSalePriceSold',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'totalPageViewed',
-                'header'    => $this->l('Total Viewed'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Total Viewed', 'statsmodule'),
                 'dataIndex' => 'totalPageViewed',
                 'align'     => 'center',
             ),
         );
 
-        $this->displayName = $this->l('Best categories');
-        $this->description = $this->l('Adds a list of the best categories to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best categories', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best categories to the Stats dashboard.', 'statsmodule');
     }
 
     public function install()
@@ -125,14 +124,14 @@ class StatsBestCategories extends StatsModule
             <div class="row form-horizontal">
                 <div class="col-md-3">
                     <a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-                        <i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+                        <i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
                     </a>
                 </div>
                 <div class="col-md-9">
                     <div class="checkbox">
                         <label for="onlyChildren">
                             <input type="checkbox" name="onlyChildren" id="onlyChildren" value="1" '.($onlyChildren == 1 ? 'checked="checked"' : '').'>
-                            '.$this->l('Display final level categories only (that have no child categories)').'
+                            '.Translate::getModuleTranslation('statsmodule', 'Display final level categories only (that have no child categories)', 'statsmodule').'
                         </label>
                     </div>
 

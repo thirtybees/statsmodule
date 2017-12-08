@@ -49,9 +49,8 @@ class StatsForecast extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('Stats Dashboard');
-        $this->description = $this->l('This is the main module for the Stats dashboard. It displays a summary of all your current statistics.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Stats Dashboard', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'This is the main module for the Stats dashboard. It displays a summary of all your current statistics.', 'statsmodule');
     }
 
     public function install()
@@ -130,19 +129,19 @@ class StatsForecast extends Module
 
         $this->html .= '<div>
 			<div class="panel-heading"><i class="icon-dashboard"></i> '.$this->displayName.'</div>
-			<div class="alert alert-info">'.$this->l('The listed amounts do not include tax.').'</div>
+			<div class="alert alert-info">'.Translate::getModuleTranslation('statsmodule', 'The listed amounts do not include tax.', 'statsmodule').'</div>
 			<form id="granularity" action="'.Tools::safeOutput($ru).'#granularity" method="post" class="form-horizontal">
 				<div class="row row-margin-bottom">
 					<label class="control-label col-lg-3">
-						'.$this->l('Time frame').'
+						'.Translate::getModuleTranslation('statsmodule', 'Time frame', 'statsmodule').'
 					</label>
 					<div class="col-lg-2">
 						<input type="hidden" name="submitGranularity" value="1" />
 						<select name="stats_granularity" onchange="this.form.submit();">
-							<option value="10">'.$this->l('Daily').'</option>
-							<option value="42" '.($this->context->cookie->stats_granularity == '42' ? 'selected="selected"' : '').'>'.$this->l('Weekly').'</option>
-							<option value="7" '.($this->context->cookie->stats_granularity == '7' ? 'selected="selected"' : '').'>'.$this->l('Monthly').'</option>
-							<option value="4" '.($this->context->cookie->stats_granularity == '4' ? 'selected="selected"' : '').'>'.$this->l('Yearly').'</option>
+							<option value="10">'.Translate::getModuleTranslation('statsmodule', 'Daily', 'statsmodule').'</option>
+							<option value="42" '.($this->context->cookie->stats_granularity == '42' ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Weekly', 'statsmodule').'</option>
+							<option value="7" '.($this->context->cookie->stats_granularity == '7' ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Monthly', 'statsmodule').'</option>
+							<option value="4" '.($this->context->cookie->stats_granularity == '4' ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Yearly', 'statsmodule').'</option>
 						</select>
 					</div>
 				</div>
@@ -152,13 +151,13 @@ class StatsForecast extends Module
 				<thead>
 					<tr>
 						<th></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Visits').'</span></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Registrations').'</span></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Placed orders').'</span></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Bought items').'</span></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Percentage of registrations').'</span></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Percentage of orders').'</span></th>
-						<th class="text-center"><span class="title_box active">'.$this->l('Revenue').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Visits', 'statsmodule').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Registrations', 'statsmodule').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Placed orders', 'statsmodule').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Bought items', 'statsmodule').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of registrations', 'statsmodule').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of orders', 'statsmodule').'</span></th>
+						<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Revenue', 'statsmodule').'</span></th>
 					</tr>
 				</thead>';
 
@@ -206,16 +205,16 @@ class StatsForecast extends Module
         $this->html .= '
 				<tr>
 					<th></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Visits').'</span></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Registrations').'</span></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Placed orders').'</span></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Bought items').'</span></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Percentage of registrations').'</span></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Percentage of orders').'</span></th>
-					<th class="text-center"><span class="title_box active">'.$this->l('Revenue').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Visits', 'statsmodule').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Registrations', 'statsmodule').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Placed orders', 'statsmodule').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Bought items', 'statsmodule').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of registrations', 'statsmodule').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of orders', 'statsmodule').'</span></th>
+					<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Revenue', 'statsmodule').'</span></th>
 				</tr>
 				<tr>
-					<td>'.$this->l('Total').'</td>
+					<td>'.Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule').'</td>
 					<td class="text-center">'.(int) $this->t1.'</td>
 					<td class="text-center">'.(int) $this->t2.'</td>
 					<td class="text-center">'.(int) $this->t3.'</td>
@@ -225,7 +224,7 @@ class StatsForecast extends Module
 					<td class="text-right">'.Tools::displayPrice($this->t8, $currency).'</td>
 				</tr>
 				<tr>
-					<td>'.$this->l('Average').'</td>
+					<td>'.Translate::getModuleTranslation('statsmodule', 'Average', 'statsmodule').'</td>
 					<td class="text-center">'.(int) ($this->t1 / $interval_avg).'</td>
 					<td class="text-center">'.(int) ($this->t2 / $interval_avg).'</td>
 					<td class="text-center">'.(int) ($this->t3 / $interval_avg).'</td>
@@ -235,7 +234,7 @@ class StatsForecast extends Module
 					<td class="text-right">'.Tools::displayPrice($this->t8 / $interval_avg, $currency).'</td>
 				</tr>
 				<tr>
-					<td>'.$this->l('Forecast').'</td>
+					<td>'.Translate::getModuleTranslation('statsmodule', 'Forecast', 'statsmodule').'</td>
 					<td class="text-center">'.(int) ($this->t1 * $prop30).'</td>
 					<td class="text-center">'.(int) ($this->t2 * $prop30).'</td>
 					<td class="text-center">'.(int) ($this->t3 * $prop30).'</td>
@@ -287,14 +286,14 @@ class StatsForecast extends Module
 
         $this->html .= '
 		<div class="row row-margin-bottom">
-			<h4><i class="icon-filter"></i> '.$this->l('Conversion').'</h4>
+			<h4><i class="icon-filter"></i> '.Translate::getModuleTranslation('statsmodule', 'Conversion', 'statsmodule').'</h4>
 		</div>
 		<div class="row row-margin-bottom">
 			<table class="table">
 				<tbody>
 					<tr>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Visitors').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Visitors', 'statsmodule').'</p>
 							<p>'.$visitors.'</p>
 						</td>
 						<td class="text-center">
@@ -302,7 +301,7 @@ class StatsForecast extends Module
 							<p>'.round(100 * $customers / max(1, $visitors), 2).' %</p>
 						</td>
 						<td class="text-center">
-							<p>'.$this->l('Accounts').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Accounts', 'statsmodule').'</p>
 							<p>'.$customers.'</p>
 						</td>
 						<td class="text-center">
@@ -310,7 +309,7 @@ class StatsForecast extends Module
 							<p>'.round(100 * $fullcarts / max(1, $customers), 2).' %</p>
 						</td>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Full carts').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Full carts', 'statsmodule').'</p>
 							<p>'.$fullcarts.'</p>
 						</td>
 						<td rowspan="2" class="text-center">
@@ -318,11 +317,11 @@ class StatsForecast extends Module
 							<p>'.round(100 * $orders / max(1, $fullcarts), 2).' %</p>
 						</td>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Orders').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Orders', 'statsmodule').'</p>
 							<p>'.$orders.'</p>
 						</td>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Registered visitors').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Registered visitors', 'statsmodule').'</p>
 						</td>
 						<td rowspan="2" class="text-center">
 							<i class="icon-chevron-right"></i>
@@ -334,10 +333,10 @@ class StatsForecast extends Module
 							<i class="icon-chevron-right"></i>
 						</td>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Orders').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Orders', 'statsmodule').'</p>
 						</td>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Visitors').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Visitors', 'statsmodule').'</p>
 						</td>
 						<td rowspan="2" class="text-center">
 							<i class="icon-chevron-right"></i>
@@ -349,7 +348,7 @@ class StatsForecast extends Module
 							<i class="icon-chevron-right"></i>
 						</td>
 						<td rowspan="2" class="text-center">
-							<p>'.$this->l('Orders').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Orders', 'statsmodule').'</p>
 						</td>
 					</tr>
 					<tr>
@@ -358,7 +357,7 @@ class StatsForecast extends Module
 							<p>'.round(100 * $carts / max(1, $visitors)).' %</p>
 						</td>
 						<td class="text-center">
-							<p>'.$this->l('Carts').'</p>
+							<p>'.Translate::getModuleTranslation('statsmodule', 'Carts', 'statsmodule').'</p>
 							<p>'.$carts.'</p>
 						</td>
 						<td class="text-center">
@@ -370,9 +369,9 @@ class StatsForecast extends Module
 			</table>
 		</div>
 		<div class="alert alert-info">
-			<p>'.$this->l('A simple statistical calculation lets you know the monetary value of your visitors:').'</p>
-			<p>'.$this->l('On average, each visitor places an order for this amount:').' <b>'.Tools::displayPrice($ca['ventil']['total'] / max(1, $visitors), $currency).'.</b></p>
-			<p>'.$this->l('On average, each registered visitor places an order for this amount:').' <b>'.Tools::displayPrice($ca['ventil']['total'] / max(1, $customers), $currency).'</b>.</p>
+			<p>'.Translate::getModuleTranslation('statsmodule', 'A simple statistical calculation lets you know the monetary value of your visitors:', 'statsmodule').'</p>
+			<p>'.Translate::getModuleTranslation('statsmodule', 'On average, each visitor places an order for this amount:', 'statsmodule').' <b>'.Tools::displayPrice($ca['ventil']['total'] / max(1, $visitors), $currency).'.</b></p>
+			<p>'.Translate::getModuleTranslation('statsmodule', 'On average, each registered visitor places an order for this amount:', 'statsmodule').' <b>'.Tools::displayPrice($ca['ventil']['total'] / max(1, $customers), $currency).'</b>.</p>
 		</div>';
 
         $from = strtotime($employee->stats_date_from.' 00:00:00');
@@ -381,19 +380,19 @@ class StatsForecast extends Module
 
         $this->html .= '
 			<div class="row row-margin-bottom">
-				<h4><i class="icon-money"></i> '.$this->l('Payment distribution').'</h4>
+				<h4><i class="icon-money"></i> '.Translate::getModuleTranslation('statsmodule', 'Payment distribution', 'statsmodule').'</h4>
 				<div class="alert alert-info">'
-            .$this->l('The amounts include taxes, so you can get an estimation of the commission due to the payment method.').'
+            .Translate::getModuleTranslation('statsmodule', 'The amounts include taxes, so you can get an estimation of the commission due to the payment method.', 'statsmodule').'
 				</div>
 				<form id="cat" action="'.Tools::safeOutput($ru).'#payment" method="post" class="form-horizontal">
 					<div class="row row-margin-bottom">
 						<label class="control-label col-lg-3">
-							'.$this->l('Zone:').'
+							'.Translate::getModuleTranslation('statsmodule', 'Zone:', 'statsmodule').'
 						</label>
 						<div class="col-lg-3">
 							<input type="hidden" name="submitIdZone" value="1" />
 							<select name="stats_id_zone" onchange="this.form.submit();">
-								<option value="0">'.$this->l('-- No filter --').'</option>';
+								<option value="0">'.Translate::getModuleTranslation('statsmodule', '-- No filter --', 'statsmodule').'</option>';
         foreach (Zone::getZones() as $zone)
             $this->html .= '<option value="'.(int) $zone['id_zone'].'" '.($this->context->cookie->stats_id_zone == $zone['id_zone'] ? 'selected="selected"' : '').'>'.$zone['name'].'</option>';
         $this->html .= '
@@ -404,10 +403,10 @@ class StatsForecast extends Module
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="text-center"><span class="title_box active">'.$this->l('Module').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Orders').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Sales').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Average cart value').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Module', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Orders', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Average cart value', 'statsmodule').'</span></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -424,16 +423,16 @@ class StatsForecast extends Module
 				</table>
 			</div>
 			<div class="row row-margin-bottom">
-				<h4><i class="icon-sitemap"></i> '.$this->l('Category distribution').'</h4>
+				<h4><i class="icon-sitemap"></i> '.Translate::getModuleTranslation('statsmodule', 'Category distribution', 'statsmodule').'</h4>
 				<form id="cat_1" action="'.Tools::safeOutput($ru).'#cat" method="post" class="form-horizontal">
 					<div class="row row-margin-bottom">
 						<label class="control-label col-lg-3">
-							'.$this->l('Zone').'
+							'.Translate::getModuleTranslation('statsmodule', 'Zone', 'statsmodule').'
 						</label>
 						<div class="col-lg-3">
 							<input type="hidden" name="submitIdZone" value="1" />
 							<select name="stats_id_zone" onchange="this.form.submit();">
-								<option value="0">'.$this->l('-- No filter --').'</option>';
+								<option value="0">'.Translate::getModuleTranslation('statsmodule', '-- No filter --', 'statsmodule').'</option>';
         foreach (Zone::getZones() as $zone)
             $this->html .= '<option value="'.(int) $zone['id_zone'].'" '.($this->context->cookie->stats_id_zone == $zone['id_zone'] ? 'selected="selected"' : '').'>'.$zone['name'].'</option>';
         $this->html .= '
@@ -444,19 +443,19 @@ class StatsForecast extends Module
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="text-center"><span class="title_box active">'.$this->l('Category').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Products sold').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Sales').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage of products sold').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage of sales').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Average price').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Category', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Products sold', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of products sold', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of sales', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Average price', 'statsmodule').'</span></th>
 						</tr>
 					</thead>
 					<tbody>';
         foreach ($ca['cat'] as $catrow)
             $this->html .= '
 						<tr>
-							<td class="text-center">'.(empty($catrow['name']) ? $this->l('Unknown') : $catrow['name']).'</td>
+							<td class="text-center">'.(empty($catrow['name']) ? Translate::getModuleTranslation('statsmodule', 'Unknown', 'statsmodule') : $catrow['name']).'</td>
 							<td class="text-center">'.$catrow['orderQty'].'</td>
 							<td class="text-right">'.Tools::displayPrice($catrow['orderSum'], $currency).'</td>
 							<td class="text-center">'.number_format((100 * $catrow['orderQty'] / $this->t4), 1, '.', ' ').'%</td>
@@ -468,14 +467,14 @@ class StatsForecast extends Module
 				</table>
 			</div>
 			<div class="row row-margin-bottom">
-				<h4><i class="icon-flag"></i> '.$this->l('Language distribution').'</h4>
+				<h4><i class="icon-flag"></i> '.Translate::getModuleTranslation('statsmodule', 'Language distribution', 'statsmodule').'</h4>
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="text-center"><span class="title_box active">'.$this->l('Language').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Sales').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage').'</span></th>
-							<th class="text-center" colspan="2"><span class="title_box active">'.$this->l('Growth').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Language', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage', 'statsmodule').'</span></th>
+							<th class="text-center" colspan="2"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Growth', 'statsmodule').'</span></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -495,22 +494,22 @@ class StatsForecast extends Module
 				</table>
 			</div>
 			<div class="row row-margin-bottom">
-				<h4><i class="icon-map-marker"></i> '.$this->l('Zone distribution').'</h4>
+				<h4><i class="icon-map-marker"></i> '.Translate::getModuleTranslation('statsmodule', 'Zone distribution', 'statsmodule').'</h4>
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="text-center"><span class="title_box active">'.$this->l('Zone').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Orders').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Sales').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage of orders').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage of sales').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Zone', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Orders', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of orders', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of sales', 'statsmodule').'</span></th>
 						</tr>
 					</thead>
 					<tbody>';
         foreach ($ca['zones'] as $zone)
             $this->html .= '
 					<tr>
-						<td class="text-center">'.(isset($zone['name']) ? $zone['name'] : $this->l('Undefined')).'</td>
+						<td class="text-center">'.(isset($zone['name']) ? $zone['name'] : Translate::getModuleTranslation('statsmodule', 'Undefined', 'statsmodule')).'</td>
 						<td class="text-center">'.(int) ($zone['nb']).'</td>
 						<td class="text-right">'.Tools::displayPrice($zone['total'], $currency).'</td>
 						<td class="text-center">'.($ca['ventil']['nb'] ? number_format((100 * $zone['nb'] / $ca['ventil']['nb']), 1, '.', ' ') : '0').'%</td>
@@ -521,16 +520,16 @@ class StatsForecast extends Module
 				</table>
 			</div>
 			<div class="row row-margin-bottom">
-				<h4><i class="icon-money"></i> '.$this->l('Currency distribution').'</h4>
+				<h4><i class="icon-money"></i> '.Translate::getModuleTranslation('statsmodule', 'Currency distribution', 'statsmodule').'</h4>
 				<form id="cat_2" action="'.Tools::safeOutput($ru).'#currencies" method="post" class="form-horizontal">
 					<div class="row row-margin-bottom">
 						<label class="control-label col-lg-3">
-							'.$this->l('Zone:').'
+							'.Translate::getModuleTranslation('statsmodule', 'Zone:', 'statsmodule').'
 						</label>
 						<div class="col-lg-3">
 							<input type="hidden" name="submitIdZone" value="1" />
 							<select name="stats_id_zone" onchange="this.form.submit();">
-								<option value="0">'.$this->l('-- No filter --').'</option>';
+								<option value="0">'.Translate::getModuleTranslation('statsmodule', '-- No filter --', 'statsmodule').'</option>';
         foreach (Zone::getZones() as $zone)
             $this->html .= '<option value="'.(int) $zone['id_zone'].'" '.($this->context->cookie->stats_id_zone == $zone['id_zone'] ? 'selected="selected"' : '').'>'.$zone['name'].'</option>';
         $this->html .= '
@@ -541,11 +540,11 @@ class StatsForecast extends Module
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="text-center"><span class="title_box active">'.$this->l('Currency').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Orders').'</span></th>
-							<th class="text-right"><span class="title_box active">'.$this->l('Sales (converted)').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage of orders').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Percentage of sales').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Currency', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Orders', 'statsmodule').'</span></th>
+							<th class="text-right"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Sales (converted)', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of orders', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Percentage of sales', 'statsmodule').'</span></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -563,13 +562,13 @@ class StatsForecast extends Module
 				</table>
 			</div>
 			<div class="row row-margin-bottom">
-				<h4><i class="icon-ticket"></i> '.$this->l('Attribute distribution').'</h4>
+				<h4><i class="icon-ticket"></i> '.Translate::getModuleTranslation('statsmodule', 'Attribute distribution', 'statsmodule').'</h4>
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="text-center"><span class="title_box active">'.$this->l('Group').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Attribute').'</span></th>
-							<th class="text-center"><span class="title_box active">'.$this->l('Quantity of products sold').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Group', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Attribute', 'statsmodule').'</span></th>
+							<th class="text-center"><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Quantity of products sold', 'statsmodule').'</span></th>
 						</tr>
 					</thead>
 					<tbody>';

@@ -46,9 +46,8 @@ class StatsSales extends StatsModule
 
         parent::__construct();
 
-        $this->displayName = $this->l('Sales and orders');
-        $this->description = $this->l('Adds graphics presenting the evolution of sales and orders to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Sales and orders', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds graphics presenting the evolution of sales and orders to the Stats dashboard.', 'statsmodule');
     }
 
     public function install()
@@ -82,32 +81,32 @@ class StatsSales extends StatsModule
 			<div class="panel-heading">
 				'.$this->displayName.'
 			</div>
-			<h4>'.$this->l('Guide').'</h4>
+			<h4>'.Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule').'</h4>
 			<div class="alert alert-warning">
-				<h4>'.$this->l('About order statuses').'</h4>
+				<h4>'.Translate::getModuleTranslation('statsmodule', 'About order statuses', 'statsmodule').'</h4>
 				<p>
-					'.$this->l('In your Back Office, you can modify the following order statuses: Awaiting Check Payment, Payment Accepted, Preparation in Progress, Shipping, Delivered, Canceled, Refund, Payment Error, Out of Stock, and Awaiting Bank Wire Payment.').'<br />
-					'.$this->l('These order statuses cannot be removed from the Back Office; however you have the option to add more.').'
+					'.Translate::getModuleTranslation('statsmodule', 'In your Back Office, you can modify the following order statuses: Awaiting Check Payment, Payment Accepted, Preparation in Progress, Shipping, Delivered, Canceled, Refund, Payment Error, Out of Stock, and Awaiting Bank Wire Payment.', 'statsmodule').'<br />
+					'.Translate::getModuleTranslation('statsmodule', 'These order statuses cannot be removed from the Back Office; however you have the option to add more.', 'statsmodule').'
 				</p>
 			</div>
 			<div class="alert alert-info">
 				<p>'
-            .$this->l('The following graphs represent the evolution of your shop\'s orders and sales turnover for a selected period.').'<br/>'
-            .$this->l('You should often consult this screen, as it allows you to quickly monitor your shop\'s sustainability. It also allows you to monitor multiple time periods.').'<br/>'
-            .$this->l('Only valid orders are graphically represented.')
+            .Translate::getModuleTranslation('statsmodule', 'The following graphs represent the evolution of your shop\'s orders and sales turnover for a selected period.', 'statsmodule').'<br/>'
+            .Translate::getModuleTranslation('statsmodule', 'You should often consult this screen, as it allows you to quickly monitor your shop\'s sustainability. It also allows you to monitor multiple time periods.', 'statsmodule').'<br/>'
+            .Translate::getModuleTranslation('statsmodule', 'Only valid orders are graphically represented.', 'statsmodule')
             .'</p>
 			</div>
 			<form action="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'" method="post" class="form-horizontal alert">
 				<div class="row">
 					<div class="col-lg-4 col-lg-offset-7">
 						<select name="id_country">
-							<option value="0"'.((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '').'>'.$this->l('All countries').'</option>';
+							<option value="0"'.((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'All countries', 'statsmodule').'</option>';
         foreach (Country::getCountries($this->context->language->id) as $country)
             $this->html .= '<option value="'.$country['id_country'].'"'.(($country['id_country'] == Tools::getValue('id_country')) ? ' selected="selected"' : '').'>'.$country['name'].'</option>';
         $this->html .= '</select>
 					</div>
 					<div class="col-lg-1">
-						<input type="submit" name="submitCountry" value="'.$this->l('Filter').'" class="btn btn-default pull-right" />
+						<input type="submit" name="submitCountry" value="'.Translate::getModuleTranslation('statsmodule', 'Filter', 'statsmodule').'" class="btn btn-default pull-right" />
 					</div>
 				</div>
 			</form>
@@ -122,12 +121,12 @@ class StatsSales extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.$this->l('Orders placed:').' <span class="totalStats">'.(int) $totals['orderCount'].'</span></li>
-							<li>'.$this->l('Products bought:').' <span class="totalStats">'.(int) $totals['products'].'</span></li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Orders placed:', 'statsmodule').' <span class="totalStats">'.(int) $totals['orderCount'].'</span></li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Products bought:', 'statsmodule').' <span class="totalStats">'.(int) $totals['products'].'</span></li>
 						</ul>
 						<hr/>
 						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-							<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 						</a>
 					</div>
 				</div>
@@ -142,17 +141,17 @@ class StatsSales extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.$this->l('Sales:').' '.Tools::displayPrice($totals['orderSum'], $currency).'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Sales:', 'statsmodule').' '.Tools::displayPrice($totals['orderSum'], $currency).'</li>
 						</ul>
 						<hr/>
 						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=2').'">
-							<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 						</a>
 					</div>
 				</div>
 			</div>
 			<div class="alert alert-info">
-				'.$this->l('You can view the distribution of order statuses below.').'
+				'.Translate::getModuleTranslation('statsmodule', 'You can view the distribution of order statuses below.', 'statsmodule').'
 			</div>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
@@ -160,11 +159,11 @@ class StatsSales extends StatsModule
 						'.($totals['orderCount'] ? $this->engine($this->type, array(
                 'type'   => 'pie',
                 'option' => '3-'.(int) Tools::getValue('id_country'),
-            )) : $this->l('No orders for this period.')).'
+            )) : Translate::getModuleTranslation('statsmodule', 'No orders for this period.', 'statsmodule')).'
 					</div>
 					<div class="col-lg-4">
 						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=3').'">
-							<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 						</a>
 					</div>
 				</div>
@@ -202,16 +201,16 @@ class StatsSales extends StatsModule
         list($this->option, $this->id_country) = explode('-', $options);
         switch ($this->option) {
             case 1:
-                $this->_titles['main'][0] = $this->l('Orders placed');
-                $this->_titles['main'][1] = $this->l('Products bought');
-                $this->_titles['main'][2] = $this->l('Products:');
+                $this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Orders placed', 'statsmodule');
+                $this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'Products bought', 'statsmodule');
+                $this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Products:', 'statsmodule');
                 break;
             case 2:
                 $currency = new Currency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
-                $this->_titles['main'] = sprintf($this->l('Sales currency: %s'), $currency->iso_code);
+                $this->_titles['main'] = sprintf(Translate::getModuleTranslation('statsmodule', 'Sales currency: %s', 'statsmodule'), $currency->iso_code);
                 break;
             case 3:
-                $this->_titles['main'] = $this->l('Percentage of orders per status.');
+                $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Percentage of orders per status.', 'statsmodule');
                 break;
         }
     }

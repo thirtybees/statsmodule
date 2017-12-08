@@ -45,9 +45,8 @@ class StatsProduct extends StatsModule
 
 		parent::__construct();
 
-		$this->displayName = $this->l('Product details');
-		$this->description = $this->l('Adds detailed statistics for each product to the Stats dashboard.');
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Product details', 'statsmodule');
+		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds detailed statistics for each product to the Stats dashboard.', 'statsmodule');
 	}
 
 	public function install()
@@ -170,13 +169,13 @@ class StatsProduct extends StatsModule
 			<div class="panel-heading">
 				'.$this->displayName.'
 			</div>
-			<h4>'.$this->l('Guide').'</h4>
+			<h4>'.Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule').'</h4>
 			<div class="alert alert-warning">
-				<h4>'.$this->l('Number of purchases compared to number of views').'</h4>
-					'.$this->l('After choosing a category and selecting a product, informational graphs will appear.').'
+				<h4>'.Translate::getModuleTranslation('statsmodule', 'Number of purchases compared to number of views', 'statsmodule').'</h4>
+					'.Translate::getModuleTranslation('statsmodule', 'After choosing a category and selecting a product, informational graphs will appear.', 'statsmodule').'
 					<ul>
-						<li class="bullet">'.$this->l('If you notice that a product is often purchased but viewed infrequently, you should display it more prominently in your Front Office.').'</li>
-						<li class="bullet">'.$this->l('On the other hand, if a product has many views but is not often purchased, we advise you to check or modify this product\'s information, description and photography again, see if you can find something better.').'
+						<li class="bullet">'.Translate::getModuleTranslation('statsmodule', 'If you notice that a product is often purchased but viewed infrequently, you should display it more prominently in your Front Office.', 'statsmodule').'</li>
+						<li class="bullet">'.Translate::getModuleTranslation('statsmodule', 'On the other hand, if a product has many views but is not often purchased, we advise you to check or modify this product\'s information, description and photography again, see if you can find something better.', 'statsmodule').'
 						</li>
 					</ul>
 			</div>';
@@ -200,7 +199,7 @@ class StatsProduct extends StatsModule
 			$total_bought = $this->getTotalBought($product->id);
 			$total_sales = $this->getTotalSales($product->id);
 			$total_viewed = $this->getTotalViewed($product->id);
-			$this->html .= '<h4>'.$product->name.' - '.$this->l('Details').'</h4>
+			$this->html .= '<h4>'.$product->name.' - '.Translate::getModuleTranslation('statsmodule', 'Details', 'statsmodule').'</h4>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
@@ -212,46 +211,46 @@ class StatsProduct extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.$this->l('Total bought').' '.$total_bought.'</li>
-							<li>'.$this->l('Sales (tax excluded)').' '.Tools::displayprice($total_sales, $currency).'</li>
-							<li>'.$this->l('Total viewed').' '.$total_viewed.'</li>
-							<li>'.$this->l('Conversion rate').' '.number_format($total_viewed ? $total_bought / $total_viewed : 0, 2).'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Total bought', 'statsmodule').' '.$total_bought.'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Sales (tax excluded)', 'statsmodule').' '.Tools::displayprice($total_sales, $currency).'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Total viewed', 'statsmodule').' '.$total_viewed.'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Conversion rate', 'statsmodule').' '.number_format($total_viewed ? $total_bought / $total_viewed : 0, 2).'</li>
 						</ul>
 						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1&exportType=1">
-							<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 						</a>
 					</div>
 				</div>
 			</div>';
 			if ($has_attribute = $product->hasAttributes() && $total_bought)
 				$this->html .= '
-				<h3 class="space">'.$this->l('Attribute sales distribution').'</h3>
+				<h3 class="space">'.Translate::getModuleTranslation('statsmodule', 'Attribute sales distribution', 'statsmodule').'</h3>
 				<center>'.$this->engine($this->type, array('type' => 'pie', 'option' => '3-'.$id_product)).'</center><br />
-				<a href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1&exportType=2"><img src="../img/admin/asterisk.gif" alt=""/>'.$this->l('CSV Export').'</a>';
+				<a href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1&exportType=2"><img src="../img/admin/asterisk.gif" alt=""/>'.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'</a>';
 			if ($total_bought)
 			{
 				$sales = $this->getSales($id_product);
 				$this->html .= '
-				<h4>'.$this->l('Sales').'</h4>
+				<h4>'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</h4>
 				<div style="overflow-y:scroll;height:'.min(400, (count($sales) + 1) * 32).'px">
 					<table class="table">
 						<thead>
 							<tr>
 								<th>
-									<span class="title_box  active">'.$this->l('Date').'</span>
+									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Date', 'statsmodule').'</span>
 								</th>
 								<th>
-									<span class="title_box  active">'.$this->l('Order').'</span>
+									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Order', 'statsmodule').'</span>
 								</th>
 								<th>
-									<span class="title_box  active">'.$this->l('Customer').'</span>
+									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Customer', 'statsmodule').'</span>
 								</th>
-								'.($has_attribute ? '<th><span class="title_box  active">'.$this->l('Attribute').'</span></th>' : '').'
+								'.($has_attribute ? '<th><span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Attribute', 'statsmodule').'</span></th>' : '').'
 								<th>
-									<span class="title_box  active">'.$this->l('Quantity').'</span>
+									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Quantity', 'statsmodule').'</span>
 								</th>
 								<th>
-									<span class="title_box  active">'.$this->l('Price').'</span>
+									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Price', 'statsmodule').'</span>
 								</th>
 							</tr>
 						</thead>
@@ -277,19 +276,19 @@ class StatsProduct extends StatsModule
 				if (count($cross_selling))
 				{
 					$this->html .= '
-					<h4>'.$this->l('Cross selling').'</h4>
+					<h4>'.Translate::getModuleTranslation('statsmodule', 'Cross selling', 'statsmodule').'</h4>
 					<div style="overflow-y:scroll;height:200px">
 						<table class="table">
 							<thead>
 								<tr>
 									<th>
-										<span class="title_box active">'.$this->l('Product name').'</span>
+										<span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Product name', 'statsmodule').'</span>
 									</th>
 									<th>
-										<span class="title_box active">'.$this->l('Quantity sold').'</span>
+										<span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule').'</span>
 									</th>
 									<th>
-										<span class="title_box active">'.$this->l('Average price').'</span>
+										<span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Average price', 'statsmodule').'</span>
 									</th>
 								</tr>
 							</thead>
@@ -316,13 +315,13 @@ class StatsProduct extends StatsModule
 			<form action="#" method="post" id="categoriesForm" class="form-horizontal">
 				<div class="row row-margin-bottom">
 					<label class="control-label col-lg-3">
-						<span title="" data-toggle="tooltip" class="label-tooltip" data-original-title="'.$this->l('Click on a product to access its statistics!').'">
-							'.$this->l('Choose a category').'
+						<span title="" data-toggle="tooltip" class="label-tooltip" data-original-title="'.Translate::getModuleTranslation('statsmodule', 'Click on a product to access its statistics!', 'statsmodule').'">
+							'.Translate::getModuleTranslation('statsmodule', 'Choose a category', 'statsmodule').'
 						</span>
 					</label>
 					<div class="col-lg-3">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
-							<option value="0">'.$this->l('All').'</option>';
+							<option value="0">'.Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule').'</option>';
 			foreach ($categories as $category)
 				$this->html .= '<option value="'.$category['id_category'].'"'.($id_category == $category['id_category'] ? ' selected="selected"' : '').'>'.$category['name'].'</option>';
 			$this->html .= '
@@ -330,18 +329,18 @@ class StatsProduct extends StatsModule
 					</div>
 				</div>
 			</form>
-			<h4>'.$this->l('Products available').'</h4>
+			<h4>'.Translate::getModuleTranslation('statsmodule', 'Products available', 'statsmodule').'</h4>
 			<table class="table" style="border: 0; cellspacing: 0;">
 				<thead>
 					<tr>
 						<th>
-							<span class="title_box  active">'.$this->l('Reference').'</span>
+							<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Reference', 'statsmodule').'</span>
 						</th>
 						<th>
-							<span class="title_box  active">'.$this->l('Name').'</span>
+							<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule').'</span>
 						</th>
 						<th>
-							<span class="title_box  active">'.$this->l('Available quantity for sale').'</span>
+							<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule').'</span>
 						</th>
 					</tr>
 				</thead>
@@ -361,7 +360,7 @@ class StatsProduct extends StatsModule
 				</tbody>
 			</table>
 			<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-				<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+				<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 			</a>';
 		}
 
@@ -379,9 +378,9 @@ class StatsProduct extends StatsModule
 		switch ($this->option)
 		{
 			case 1:
-				$this->_titles['main'][0] = $this->l('Popularity');
-				$this->_titles['main'][1] = $this->l('Sales');
-				$this->_titles['main'][2] = $this->l('Visits (x100)');
+				$this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Popularity', 'statsmodule');
+				$this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule');
+				$this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Visits (x100)', 'statsmodule');
 				$this->query[0] = 'SELECT o.`date_add`, SUM(od.`product_quantity`) AS total
 						FROM `'._DB_PREFIX_.'order_detail` od
 						LEFT JOIN `'._DB_PREFIX_.'orders` o ON o.`id_order` = od.`id_order`
@@ -413,13 +412,13 @@ class StatsProduct extends StatsModule
 							AND o.valid = 1
 							AND o.`date_add` BETWEEN '.$date_between.'
 						GROUP BY od.`product_attribute_id`';
-				$this->_titles['main'] = $this->l('Attributes');
+				$this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Attributes', 'statsmodule');
 				break;
 
 			case 42:
-				$this->_titles['main'][1] = $this->l('Reference');
-				$this->_titles['main'][2] = $this->l('Name');
-				$this->_titles['main'][3] = $this->l('Stock');
+				$this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'Reference', 'statsmodule');
+				$this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule');
+				$this->_titles['main'][3] = Translate::getModuleTranslation('statsmodule', 'Stock', 'statsmodule');
 				break;
 		}
 	}

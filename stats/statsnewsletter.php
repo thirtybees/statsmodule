@@ -59,9 +59,8 @@ class StatsNewsletter extends StatsModule
 
         parent::__construct();
 
-        $this->displayName = $this->l('Newsletter');
-        $this->description = $this->l('Adds a tab with a graph showing newsletter registrations to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Newsletter', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab with a graph showing newsletter registrations to the Stats dashboard.', 'statsmodule');
     }
 
     public function install()
@@ -86,19 +85,19 @@ class StatsNewsletter extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.$this->l('Customer registrations:').' '.(int) $totals['customers'].'</li>
-							<li>'.$this->l('Visitor registrations: ').' '.(int) $totals['visitors'].'</li>
-							<li>'.$this->l('Both:').' '.(int) $totals['both'].'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Customer registrations:', 'statsmodule').' '.(int) $totals['customers'].'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Visitor registrations: ', 'statsmodule').' '.(int) $totals['visitors'].'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Both:', 'statsmodule').' '.(int) $totals['both'].'</li>
 						</ul>
 						<hr/>
 						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-							<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 						</a>
 					</div>
 				</div>
 			</div>';
         } else
-            $this->_html = '<p>'.$this->l('The "'.$this->newsletter_module_human_readable_name.'" module must be installed.').'</p>';
+            $this->_html = '<p>'.Translate::getModuleTranslation('statsmodule', 'The "'.$this->newsletter_module_human_readable_name.'" module must be installed.', 'statsmodule').'</p>';
 
         return $this->_html;
     }
@@ -123,10 +122,10 @@ class StatsNewsletter extends StatsModule
 
     protected function getData($layers)
     {
-        $this->_titles['main'][0] = $this->l('Newsletter statistics');
-        $this->_titles['main'][1] = $this->l('customers');
-        $this->_titles['main'][2] = $this->l('Visitors');
-        $this->_titles['main'][3] = $this->l('Both');
+        $this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Newsletter statistics', 'statsmodule');
+        $this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'customers', 'statsmodule');
+        $this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Visitors', 'statsmodule');
+        $this->_titles['main'][3] = Translate::getModuleTranslation('statsmodule', 'Both', 'statsmodule');
 
         $this->_query = 'SELECT newsletter_date_add
 				FROM `'._DB_PREFIX_.'customer`

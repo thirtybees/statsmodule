@@ -50,39 +50,38 @@ class StatsBestVouchers extends StatsModule
 
         $this->default_sort_column = 'ca';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = $this->l('Empty recordset returned.');
-        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
+        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty recordset returned.', 'statsmodule');
+        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s'), '{0} - {1}', '{2}', 'statsmodule');
 
         $this->columns = array(
             array(
                 'id'        => 'code',
-                'header'    => $this->l('Code'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Code', 'statsmodule'),
                 'dataIndex' => 'code',
                 'align'     => 'left',
             ),
             array(
                 'id'        => 'name',
-                'header'    => $this->l('Name'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
                 'align'     => 'left',
             ),
             array(
                 'id'        => 'ca',
-                'header'    => $this->l('Sales'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
                 'dataIndex' => 'ca',
                 'align'     => 'right',
             ),
             array(
                 'id'        => 'total',
-                'header'    => $this->l('Total used'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Total used', 'statsmodule'),
                 'dataIndex' => 'total',
                 'align'     => 'center',
             ),
         );
 
-        $this->displayName = $this->l('Best vouchers');
-        $this->description = $this->l('Adds a list of the best vouchers to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best vouchers', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best vouchers to the Stats dashboard.', 'statsmodule');
     }
 
     public function install()
@@ -111,7 +110,7 @@ class StatsBestVouchers extends StatsModule
 			</div>
 			'.$this->engine($this->type, $engine_params).'
 			<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-				<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+				<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 			</a>';
 
         return $this->html;

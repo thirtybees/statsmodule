@@ -54,9 +54,8 @@ class StatsSearch extends StatsModule
 				HAVING occurences > 1
 				ORDER BY occurences DESC';
 
-		$this->displayName = $this->l('Shop search');
-		$this->description = $this->l('Adds a tab to the Stats dashboard, showing which keywords have been searched by your store\'s visitors.');
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Shop search', 'statsmodule');
+		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab to the Stats dashboard, showing which keywords have been searched by your store\'s visitors.', 'statsmodule');
 	}
 
 	public function install()
@@ -108,9 +107,9 @@ class StatsSearch extends StatsModule
 		<table class="table">
 			<thead>
 				<tr>
-					<th><span class="title_box active">'.$this->l('Keywords').'</span></th>
-					<th><span class="title_box active">'.$this->l('Occurrences').'</span></th>
-					<th><span class="title_box active">'.$this->l('Results').'</span></th>
+					<th><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Keywords', 'statsmodule').'</span></th>
+					<th><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Occurrences', 'statsmodule').'</span></th>
+					<th><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Results', 'statsmodule').'</span></th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -131,17 +130,17 @@ class StatsSearch extends StatsModule
 		if (count($result))
 			$this->html .= '<div>'.$this->engine($this->type, ['type' => 'pie']).'</div>
 							<a class="btn btn-default" href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1">
-								<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+								<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 							</a>'.$table;
 		else
-			$this->html .= '<p>'.$this->l('Cannot find any keywords that have been searched for more than once.').'</p>';
+			$this->html .= '<p>'.Translate::getModuleTranslation('statsmodule', 'Cannot find any keywords that have been searched for more than once.', 'statsmodule').'</p>';
 
 		return $this->html;
 	}
 
 	protected function getData($layers)
 	{
-		$this->_titles['main'] = $this->l('Top 10 keywords');
+		$this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Top 10 keywords', 'statsmodule');
 		$total_result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query.$this->getDate().$this->query_group_by);
 		$total = 0;
 		$total2 = 0;
@@ -158,7 +157,7 @@ class StatsSearch extends StatsModule
 		}
 		if ($total > $total2)
 		{
-			$this->_legend[] = $this->l('Others');
+			$this->_legend[] = Translate::getModuleTranslation('statsmodule', 'Others', 'statsmodule');
 			$this->_values[] = $total - $total2;
 		}
 	}

@@ -43,9 +43,8 @@ class StatsRegistrations extends StatsModule
 
 		parent::__construct();
 
-		$this->displayName = $this->l('Customer accounts');
-		$this->description = $this->l('Adds a registration progress tab to the Stats dashboard.');
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Customer accounts', 'statsmodule');
+		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds a registration progress tab to the Stats dashboard.', 'statsmodule');
 	}
 
 	/**
@@ -122,26 +121,26 @@ class StatsRegistrations extends StatsModule
 		<div class="alert alert-info">
 			<ul>
 				<li>
-					'.$this->l('Number of visitors who stopped at the registering step:').' <span class="totalStats">'.(int)$total_blocked.($total_registrations ? ' ('.number_format(100 * $total_blocked / ($total_registrations + $total_blocked), 2).'%)' : '').'</span></li>
-					<li>'.$this->l('Number of visitors who placed an order directly after registration:').' <span class="totalStats">'.(int)$total_buyers.($total_registrations ? ' ('.number_format(100 * $total_buyers / ($total_registrations), 2).'%)' : '').'</span></li>
+					'.Translate::getModuleTranslation('statsmodule', 'Number of visitors who stopped at the registering step:', 'statsmodule').' <span class="totalStats">'.(int)$total_blocked.($total_registrations ? ' ('.number_format(100 * $total_blocked / ($total_registrations + $total_blocked), 2).'%)' : '').'</span></li>
+					<li>'.Translate::getModuleTranslation('statsmodule', 'Number of visitors who placed an order directly after registration:', 'statsmodule').' <span class="totalStats">'.(int)$total_buyers.($total_registrations ? ' ('.number_format(100 * $total_buyers / ($total_registrations), 2).'%)' : '').'</span></li>
 				<li>
-					'.$this->l('Total customer accounts:').' <span class="totalStats">'.$total_registrations.'</span></li>
+					'.Translate::getModuleTranslation('statsmodule', 'Total customer accounts:', 'statsmodule').' <span class="totalStats">'.$total_registrations.'</span></li>
 			</ul>
 		</div>
-		<h4>'.$this->l('Guide').'</h4>
+		<h4>'.Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule').'</h4>
 		<div class="alert alert-warning">
-			<h4>'.$this->l('Number of customer accounts created').'</h4>
-			<p>'.$this->l('The total number of accounts created is not in itself important information. However, it is beneficial to analyze the number created over time. This will indicate whether or not things are on the right track. You feel me?').'</p>
+			<h4>'.Translate::getModuleTranslation('statsmodule', 'Number of customer accounts created', 'statsmodule').'</h4>
+			<p>'.Translate::getModuleTranslation('statsmodule', 'The total number of accounts created is not in itself important information. However, it is beneficial to analyze the number created over time. This will indicate whether or not things are on the right track. You feel me?', 'statsmodule').'</p>
 		</div>
-		<h4>'.$this->l('How to act on the registrations\' evolution?').'</h4>
+		<h4>'.Translate::getModuleTranslation('statsmodule', 'How to act on the registrations\' evolution?', 'statsmodule').'</h4>
 		<div class="alert alert-warning">
-			'.$this->l('If you let your shop run without changing anything, the number of customer registrations should stay stable or show a slight decline.').'
-			'.$this->l('A significant increase or decrease in customer registration shows that there has probably been a change to your shop. With that in mind, we suggest that you identify the cause, correct the issue and get back in the business of making money!').'<br />
-			'.$this->l('Here is a summary of what may affect the creation of customer accounts:').'
+			'.Translate::getModuleTranslation('statsmodule', 'If you let your shop run without changing anything, the number of customer registrations should stay stable or show a slight decline.', 'statsmodule').'
+			'.Translate::getModuleTranslation('statsmodule', 'A significant increase or decrease in customer registration shows that there has probably been a change to your shop. With that in mind, we suggest that you identify the cause, correct the issue and get back in the business of making money!', 'statsmodule').'<br />
+			'.Translate::getModuleTranslation('statsmodule', 'Here is a summary of what may affect the creation of customer accounts:', 'statsmodule').'
 			<ul>
-				<li>'.$this->l('An advertising campaign can attract an increased number of visitors to your online store. This will likely be followed by an increase in customer accounts and profit margins, which will depend on customer "quality." Well-targeted advertising is typically more effective than large-scale advertising... and it\'s cheaper too!').'</li>
-				<li>'.$this->l('Specials, sales, promotions and/or contests typically demand a shoppers\' attentions. Offering such things will not only keep your business lively, it will also increase traffic, build customer loyalty and genuinely change your current e-commerce philosophy.').'</li>
-				<li>'.$this->l('Design and user-friendliness are more important than ever in the world of online sales. An ill-chosen or hard-to-follow graphical theme can keep shoppers at bay. This means that you should aspire to find the right balance between beauty and functionality for your online store.').'</li>
+				<li>'.Translate::getModuleTranslation('statsmodule', 'An advertising campaign can attract an increased number of visitors to your online store. This will likely be followed by an increase in customer accounts and profit margins, which will depend on customer "quality." Well-targeted advertising is typically more effective than large-scale advertising... and it\'s cheaper too!', 'statsmodule').'</li>
+				<li>'.Translate::getModuleTranslation('statsmodule', 'Specials, sales, promotions and/or contests typically demand a shoppers\' attentions. Offering such things will not only keep your business lively, it will also increase traffic, build customer loyalty and genuinely change your current e-commerce philosophy.', 'statsmodule').'</li>
+				<li>'.Translate::getModuleTranslation('statsmodule', 'Design and user-friendliness are more important than ever in the world of online sales. An ill-chosen or hard-to-follow graphical theme can keep shoppers at bay. This means that you should aspire to find the right balance between beauty and functionality for your online store.', 'statsmodule').'</li>
 			</ul>
 		</div>
 		
@@ -152,7 +151,7 @@ class StatsRegistrations extends StatsModule
 				</div>
 				<div class="col-lg-4">
 					<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-						<i class="icon-cloud-upload"></i>'.$this->l('CSV Export').'
+						<i class="icon-cloud-upload"></i>'.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 					</a>
 				</div>
 			</div>
@@ -169,7 +168,7 @@ class StatsRegistrations extends StatsModule
 			WHERE 1
 				'.Shop::addSqlRestriction(Shop::SHARE_CUSTOMER).'
 				AND `date_add` BETWEEN';
-		$this->_titles['main'] = $this->l('Number of customer accounts created');
+		$this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Number of customer accounts created', 'statsmodule');
 		$this->setDateGraph($layers, true);
 	}
 

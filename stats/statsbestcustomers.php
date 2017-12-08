@@ -49,53 +49,52 @@ class StatsBestCustomers extends StatsModule
 
         $this->default_sort_column = 'totalMoneySpent';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = $this->l('Empty recordset returned');
-        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
+        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty recordset returned', 'statsmodule');
+        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
 
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
 
         $this->columns = array(
             array(
                 'id'        => 'lastname',
-                'header'    => $this->l('Last Name'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Last Name', 'statsmodule'),
                 'dataIndex' => 'lastname',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'firstname',
-                'header'    => $this->l('First Name'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'First Name', 'statsmodule'),
                 'dataIndex' => 'firstname',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'email',
-                'header'    => $this->l('Email'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Email', 'statsmodule'),
                 'dataIndex' => 'email',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'totalVisits',
-                'header'    => $this->l('Visits'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Visits', 'statsmodule'),
                 'dataIndex' => 'totalVisits',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'totalValidOrders',
-                'header'    => $this->l('Valid orders'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Valid orders', 'statsmodule'),
                 'dataIndex' => 'totalValidOrders',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'totalMoneySpent',
-                'header'    => $this->l('Money spent').' ('.Tools::safeOutput($currency->iso_code).')',
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Money spent', 'statsmodule').' ('.Tools::safeOutput($currency->iso_code).')',
                 'dataIndex' => 'totalMoneySpent',
                 'align'     => 'center',
             ),
         );
 
-        $this->displayName = $this->l('Best customers');
-        $this->description = $this->l('Adds a list of the best customers to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best customers', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best customers to the Stats dashboard.', 'statsmodule');
     }
 
     public function install()
@@ -122,23 +121,23 @@ class StatsBestCustomers extends StatsModule
 		<div class="panel-heading">
 			'.$this->displayName.'
 		</div>
-		<h4>'.$this->l('Guide').'</h4>
+		<h4>'.Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule').'</h4>
 			<div class="alert alert-warning">
-				<h4>'.$this->l('Develop clients\' loyalty').'</h4>
+				<h4>'.Translate::getModuleTranslation('statsmodule', 'Develop clients\' loyalty', 'statsmodule').'</h4>
 				<div>
-					'.$this->l('Keeping a client can be more profitable than gaining a new one. That is one of the many reasons it is necessary to cultivate customer loyalty.').' <br />
-					'.$this->l('Word of mouth is also a means for getting new, satisfied clients. A dissatisfied customer can hurt your e-reputation and obstruct future sales goals.').'<br />
-					'.$this->l('In order to achieve this goal, you can organize:').'
+					'.Translate::getModuleTranslation('statsmodule', 'Keeping a client can be more profitable than gaining a new one. That is one of the many reasons it is necessary to cultivate customer loyalty.', 'statsmodule').' <br />
+					'.Translate::getModuleTranslation('statsmodule', 'Word of mouth is also a means for getting new, satisfied clients. A dissatisfied customer can hurt your e-reputation and obstruct future sales goals.', 'statsmodule').'<br />
+					'.Translate::getModuleTranslation('statsmodule', 'In order to achieve this goal, you can organize:', 'statsmodule').'
 					<ul>
-						<li>'.$this->l('Punctual operations: commercial rewards (personalized special offers, product or service offered), non commercial rewards (priority handling of an order or a product), pecuniary rewards (bonds, discount coupons, payback).').'</li>
-						<li>'.$this->l('Sustainable operations: loyalty points or cards, which not only justify communication between merchant and client, but also offer advantages to clients (private offers, discounts).').'</li>
+						<li>'.Translate::getModuleTranslation('statsmodule', 'Punctual operations: commercial rewards (personalized special offers, product or service offered), non commercial rewards (priority handling of an order or a product), pecuniary rewards (bonds, discount coupons, payback).', 'statsmodule').'</li>
+						<li>'.Translate::getModuleTranslation('statsmodule', 'Sustainable operations: loyalty points or cards, which not only justify communication between merchant and client, but also offer advantages to clients (private offers, discounts).', 'statsmodule').'</li>
 					</ul>
-					'.$this->l('These operations encourage clients to buy products and visit your online store more regularly.').'
+					'.Translate::getModuleTranslation('statsmodule', 'These operations encourage clients to buy products and visit your online store more regularly.', 'statsmodule').'
 				</div>
 			</div>
 		'.$this->engine($this->type, $engine_params).'
 		<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=').'1">
-			<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+			<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 		</a>';
 
         return $this->html;

@@ -50,69 +50,68 @@ class StatsBestProducts extends StatsModule
 
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = $this->l('An empty record-set was returned.');
-        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
+        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'An empty record-set was returned.', 'statsmodule');
+        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s'), '{0} - {1}', '{2}', 'statsmodule');
 
         $this->columns = array(
             array(
                 'id'        => 'reference',
-                'header'    => $this->l('Reference'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Reference', 'statsmodule'),
                 'dataIndex' => 'reference',
                 'align'     => 'left',
             ),
             array(
                 'id'        => 'name',
-                'header'    => $this->l('Name'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
                 'align'     => 'left',
             ),
             array(
                 'id'        => 'totalQuantitySold',
-                'header'    => $this->l('Quantity sold'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
                 'dataIndex' => 'totalQuantitySold',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'avgPriceSold',
-                'header'    => $this->l('Price sold'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Price sold', 'statsmodule'),
                 'dataIndex' => 'avgPriceSold',
                 'align'     => 'right',
             ),
             array(
                 'id'        => 'totalPriceSold',
-                'header'    => $this->l('Sales'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
                 'dataIndex' => 'totalPriceSold',
                 'align'     => 'right',
             ),
             array(
                 'id'        => 'averageQuantitySold',
-                'header'    => $this->l('Quantity sold in a day'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Quantity sold in a day', 'statsmodule'),
                 'dataIndex' => 'averageQuantitySold',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'totalPageViewed',
-                'header'    => $this->l('Page views'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Page views', 'statsmodule'),
                 'dataIndex' => 'totalPageViewed',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'quantity',
-                'header'    => $this->l('Available quantity for sale'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule'),
                 'dataIndex' => 'quantity',
                 'align'     => 'center',
             ),
             array(
                 'id'        => 'active',
-                'header'    => $this->l('Active'),
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Active', 'statsmodule'),
                 'dataIndex' => 'active',
                 'align'     => 'center',
             ),
         );
 
-        $this->displayName = $this->l('Best-selling products');
-        $this->description = $this->l('Adds a list of the best-selling products to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best-selling products', 'statsmodule');
+        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best-selling products to the Stats dashboard.', 'statsmodule');
     }
 
     public function install()
@@ -138,7 +137,7 @@ class StatsBestProducts extends StatsModule
         return '<div class="panel-heading">'.$this->displayName.'</div>
 		'.$this->engine($this->type, $engine_params).'
 		<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-			<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+			<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
 		</a>';
     }
 
