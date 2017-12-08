@@ -127,9 +127,9 @@ class StatsCheckUp extends StatsModule
         $languages = $db->executeS($sql);
 
         $arrayColors = [
-            0 => '<img src="../modules/statscheckup/views/img/red.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Bad', 'statsmodule').'" />',
-            1 => '<img src="../modules/statscheckup/views/img/orange.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Average', 'statsmodule').'" />',
-            2 => '<img src="../modules/statscheckup/views/img/green.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Good', 'statsmodule').'" />',
+            0 => '<img src="../modules/statsmodule/views/img/red.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Bad', 'statsmodule').'" />',
+            1 => '<img src="../modules/statsmodule/views/img/orange.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Average', 'statsmodule').'" />',
+            2 => '<img src="../modules/statsmodule/views/img/green.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Good', 'statsmodule').'" />',
         ];
         $tokenProducts = Tools::getAdminToken('AdminProducts'.(int) Tab::getIdFromClassName('AdminProducts').(int) Context::getContext()->employee->id);
         $divisor = 4;
