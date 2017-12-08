@@ -140,13 +140,14 @@ class StatsCheckUp extends StatsModule
         }
 
         $orderBy = 'p.id_product';
-        if ($this->context->cookie->checkup_order == 2) {
-            $orderBy = 'pl.name';
-        } else {
-            if ($this->context->cookie->checkup_order == 3) {
-                $orderBy = 'nbSales DESC';
-            }
-        }
+        // FIXME: it's not works ^MD
+//        if ($this->context->cookie->checkup_order == 2) {
+//            $orderBy = 'pl.name';
+//        } else {
+//            if ($this->context->cookie->checkup_order == 3) {
+//                $orderBy = 'nbSales DESC';
+//            }
+//        }
 
         // Get products stats
         $sql = 'SELECT p.id_product, product_shop.active, pl.name, (
@@ -226,23 +227,24 @@ class StatsCheckUp extends StatsModule
         $this->html .= '</table>
 			<button type="submit" name="submitCheckup" class="btn btn-default pull-right">
 				<i class="icon-save"></i> '.Translate::getModuleTranslation('statsmodule', 'Save', 'statsmodule').'
-			</button> 
-		</form>
-		<form action="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module='.$this->name).'" method="post" class="form-horizontal alert">
-			<div class="row">
-				<div class="col-lg-12">
-					<label class="control-label pull-left">'.Translate::getModuleTranslation('statsmodule', 'Order by', 'statsmodule').'</label>
-					<div class="col-lg-3">
-						<select name="submitCheckupOrder" onchange="this.form.submit();">
-							<option value="1">'.Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule').'</option>
-							<option value="2" '.($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule').'</option>
-							<option value="3" '.($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</form>
-		<div style="overflow-x:auto">
+			</button>';
+        // FIXME: restore the sort option
+//		</form>
+//		<form action="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module='.$this->name).'" method="post" class="form-horizontal alert">';
+//			<div class="row">
+//				<div class="col-lg-12">
+//					<label class="control-label pull-left">'.Translate::getModuleTranslation('statsmodule', 'Order by', 'statsmodule').'</label>
+//					<div class="col-lg-3">
+//						<select name="submitCheckupOrder" onchange="this.form.submit();">
+//							<option value="1">'.Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule').'</option>
+//							<option value="2" '.($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule').'</option>
+//							<option value="3" '.($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</option>
+//						</select>
+//					</div>
+//				</div>
+//			</div>
+//		</form>
+		$this->html .= '<div style="overflow-x:auto">
 		<table class="table checkup2">
 			<thead>
 				<tr>
@@ -285,7 +287,7 @@ class StatsCheckUp extends StatsModule
                     $row['desclength_'.$description['iso_code']] = Tools::strlen(strip_tags($description['description']));
                 }
                 if (isset($description['iso_code'])) {
-                    $scores['description_'.$description['iso_code']] = ($row['desclength_'.$description['iso_code']] < Configuration::get('CHECKUP_DESCRIPTIONS_LT') ? 0 : ($row['desclength_'.$description['iso_code']] > Configuration::get('CHECKUP_DESCRIPTIONS_GT') ? 2 : 1));
+                    $scores['description_'.$description['iso_code']] = (!isset($row['desclength_'.$description['iso_code']]) || $row['desclength_'.$description['iso_code']] < Configuration::get('CHECKUP_DESCRIPTIONS_LT') ? 0 : ($row['desclength_'.$description['iso_code']] > Configuration::get('CHECKUP_DESCRIPTIONS_GT') ? 2 : 1));
                     $totals['description_'.$description['iso_code']] += $scores['description_'.$description['iso_code']];
                 }
             }
