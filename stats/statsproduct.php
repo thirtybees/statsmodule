@@ -351,7 +351,7 @@ class StatsProduct extends StatsModule
 				<tr>
 					<td>'.$product['reference'].'</td>
 					<td>
-						<a href="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module='.$this->name.'&id_product='.$product['id_product']).'">'.$product['name'].'</a>
+						<a href="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module=statsproduct&id_product='.$product['id_product']).'">'.$product['name'].'</a>
 					</td>
 					<td>'.$product['quantity'].'</td>
 				</tr>';

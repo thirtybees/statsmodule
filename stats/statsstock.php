@@ -55,7 +55,7 @@ class StatsStock extends StatsModule
 		if (Tools::isSubmit('submitCategory'))
 			$this->context->cookie->statsstock_id_category = Tools::getValue('statsstock_id_category');
 
-		$ru = AdminController::$currentIndex.'&module='.$this->name.'&token='.Tools::getValue('token');
+		$ru = AdminController::$currentIndex.'&module=statsstock&token='.Tools::getValue('token');
 		$currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
 		$filter = ((int)$this->context->cookie->statsstock_id_category ? ' AND p.id_product IN (SELECT cp.id_product FROM '._DB_PREFIX_.'category_product cp WHERE cp.id_category = '.(int)$this->context->cookie->statsstock_id_category.')' : '');
 

@@ -65,7 +65,7 @@ class StatsForecast extends Module
 
     public function hookAdminStatsModules()
     {
-        $ru = AdminController::$currentIndex.'&module='.$this->name.'&token='.Tools::getValue('token');
+        $ru = AdminController::$currentIndex.'&module=statsforecast&token='.Tools::getValue('token');
 
         $db = Db::getInstance();
 

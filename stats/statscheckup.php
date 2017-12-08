@@ -127,9 +127,9 @@ class StatsCheckUp extends StatsModule
         $languages = $db->executeS($sql);
 
         $arrayColors = [
-            0 => '<img src="../modules/'.$this->name.'/views/img/red.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Bad', 'statsmodule').'" />',
-            1 => '<img src="../modules/'.$this->name.'/views/img/orange.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Average', 'statsmodule').'" />',
-            2 => '<img src="../modules/'.$this->name.'/views/img/green.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Good', 'statsmodule').'" />',
+            0 => '<img src="../modules/statscheckup/views/img/red.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Bad', 'statsmodule').'" />',
+            1 => '<img src="../modules/statscheckup/views/img/orange.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Average', 'statsmodule').'" />',
+            2 => '<img src="../modules/statscheckup/views/img/green.png" alt="'.Translate::getModuleTranslation('statsmodule', 'Good', 'statsmodule').'" />',
         ];
         $tokenProducts = Tools::getAdminToken('AdminProducts'.(int) Tab::getIdFromClassName('AdminProducts').(int) Context::getContext()->employee->id);
         $divisor = 4;
@@ -141,13 +141,13 @@ class StatsCheckUp extends StatsModule
 
         $orderBy = 'p.id_product';
         // FIXME: it's not works ^MD
-//        if ($this->context->cookie->checkup_order == 2) {
-//            $orderBy = 'pl.name';
-//        } else {
-//            if ($this->context->cookie->checkup_order == 3) {
-//                $orderBy = 'nbSales DESC';
-//            }
-//        }
+        if ($this->context->cookie->checkup_order == 2) {
+            $orderBy = 'pl.name';
+        } else {
+            if ($this->context->cookie->checkup_order == 3) {
+                $orderBy = 'nbSales DESC';
+            }
+        }
 
         // Get products stats
         $sql = 'SELECT p.id_product, product_shop.active, pl.name, (
@@ -187,7 +187,7 @@ class StatsCheckUp extends StatsModule
 		<div class="panel-heading">'
             .$this->displayName.'
 		</div>
-		<form action="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module='.$this->name).'" method="post" class="checkup form-horizontal">
+		<form action="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module=statscheckup').'" method="post" class="checkup form-horizontal">
 			<table class="table checkup">
 				<thead>
 					<tr>
@@ -227,24 +227,23 @@ class StatsCheckUp extends StatsModule
         $this->html .= '</table>
 			<button type="submit" name="submitCheckup" class="btn btn-default pull-right">
 				<i class="icon-save"></i> '.Translate::getModuleTranslation('statsmodule', 'Save', 'statsmodule').'
-			</button>';
-        // FIXME: restore the sort option
-//		</form>
-//		<form action="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module='.$this->name).'" method="post" class="form-horizontal alert">';
-//			<div class="row">
-//				<div class="col-lg-12">
-//					<label class="control-label pull-left">'.Translate::getModuleTranslation('statsmodule', 'Order by', 'statsmodule').'</label>
-//					<div class="col-lg-3">
-//						<select name="submitCheckupOrder" onchange="this.form.submit();">
-//							<option value="1">'.Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule').'</option>
-//							<option value="2" '.($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule').'</option>
-//							<option value="3" '.($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</option>
-//						</select>
-//					</div>
-//				</div>
-//			</div>
-//		</form>
-		$this->html .= '<div style="overflow-x:auto">
+			</button>
+		</form>
+		<form action="'.Tools::safeOutput(AdminController::$currentIndex.'&token='.Tools::getValue('token').'&module=statscheckup').'" method="post" class="form-horizontal alert">
+			<div class="row">
+				<div class="col-lg-12">
+					<label class="control-label pull-left">'.Translate::getModuleTranslation('statsmodule', 'Order by', 'statsmodule').'</label>
+					<div class="col-lg-3">
+						<select name="submitCheckupOrder" onchange="this.form.submit();">
+							<option value="1">'.Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule').'</option>
+							<option value="2" '.($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule').'</option>
+							<option value="3" '.($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div style="overflow-x:auto">
 		<table class="table checkup2">
 			<thead>
 				<tr>

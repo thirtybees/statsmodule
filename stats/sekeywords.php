@@ -99,7 +99,7 @@ class SEKeywords extends StatsModule
         if (Tools::isSubmit('submitSEK')) {
             Configuration::updateValue('SEK_FILTER_KW', trim(Tools::getValue('SEK_FILTER_KW')));
             Configuration::updateValue('SEK_MIN_OCCURENCES', (int) Tools::getValue('SEK_MIN_OCCURENCES'));
-            Tools::redirectAdmin('index.php?tab=AdminStats&token='.Tools::getValue('token').'&module='.$this->name);
+            Tools::redirectAdmin('index.php?tab=AdminStats&token='.Tools::getValue('token').'&module=');
         }
 
         if (Tools::getValue('export'))
