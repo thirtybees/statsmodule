@@ -656,7 +656,9 @@ class StatsModule extends ModuleStats
         $this->registerHook('top');
         $this->registerHook('AdminStatsModules');
 
-        $this->unregisterStatsModuleHooks();
+        if (!defined('TB_INSTALLATION_IN_PROGRESS') || !TB_INSTALLATION_IN_PROGRESS) {
+            $this->unregisterStatsModuleHooks();
+        }
 
 
         // statscheckup
