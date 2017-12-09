@@ -29,15 +29,15 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsNewsletter extends StatsModule
 {
-    private $type = 'Graph';
-    private $_html = '';
-    private $_query = '';
-    private $_query2 = '';
-    private $_option = '';
+    protected $type = 'Graph';
+    protected $_html = '';
+    protected $_query = '';
+    protected $_query2 = '';
+    protected $_option = '';
 
-    private $table_name;
-    private $newsletter_module_name;
-    private $newsletter_module_human_readable_name;
+    protected $table_name;
+    protected $newsletter_module_name;
+    protected $newsletter_module_human_readable_name;
 
     public function __construct()
     {

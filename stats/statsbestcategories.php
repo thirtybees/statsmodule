@@ -30,14 +30,14 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestCategories extends StatsModule
 {
-    private $type = 'Grid';
-    private $html;
-    private $query;
-    private $columns;
-    private $default_sort_column;
-    private $default_sort_direction;
-    private $empty_message;
-    private $paging_message;
+    protected $type = 'Grid';
+    protected $html;
+    protected $query;
+    protected $columns;
+    protected $default_sort_column;
+    protected $default_sort_direction;
+    protected $empty_message;
+    protected $paging_message;
 
     public function __construct()
     {

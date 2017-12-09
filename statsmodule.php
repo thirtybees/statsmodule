@@ -1017,4 +1017,9 @@ class StatsModule extends ModuleStats
 
         return $result;
     }
+
+    protected function csvExport($datas)
+    {
+        return $this->{"csvExport{$this->type}"}($datas);
+    }
 }

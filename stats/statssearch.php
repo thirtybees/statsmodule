@@ -29,10 +29,10 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsSearch extends StatsModule
 {
-	private $type = 'Graph';
-	private $html = '';
-	private $query = '';
-	private $query_group_by = '';
+	protected $type = 'Graph';
+	protected $html = '';
+	protected $query = '';
+	protected $query_group_by = '';
 
 	public function __construct()
 	{

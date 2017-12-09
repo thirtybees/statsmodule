@@ -29,14 +29,14 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestSuppliers extends StatsModule
 {
-    private $type = 'Grid';
-    private $html = null;
-    private $query = null;
-    private $columns = null;
-    private $default_sort_column = null;
-    private $default_sort_direction = null;
-    private $empty_message = null;
-    private $paging_message = null;
+    protected $type = 'Grid';
+    protected $html = null;
+    protected $query = null;
+    protected $columns = null;
+    protected $default_sort_column = null;
+    protected $default_sort_direction = null;
+    protected $empty_message = null;
+    protected $paging_message = null;
 
     public function __construct()
     {

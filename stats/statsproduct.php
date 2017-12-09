@@ -29,11 +29,11 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsProduct extends StatsModule
 {
-	private $type = 'Graph';
-	private $html = '';
-	private $query = '';
-	private $option = 0;
-	private $id_product = 0;
+	protected $type = 'Graph';
+	protected $html = '';
+	protected $query = '';
+	protected $option = 0;
+	protected $id_product = 0;
 
 	public function __construct()
 	{

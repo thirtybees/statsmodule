@@ -29,12 +29,12 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsSales extends StatsModule
 {
-    private $type = 'Graph';
-    private $html = '';
-    private $query = '';
-    private $query_group_by = '';
-    private $option = '';
-    private $id_country = '';
+    protected $type = 'Graph';
+    protected $html = '';
+    protected $query = '';
+    protected $query_group_by = '';
+    protected $option = '';
+    protected $id_country = '';
 
     public function __construct()
     {

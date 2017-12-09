@@ -28,8 +28,8 @@ if (!defined('_TB_VERSION_'))
 
 class StatsOrigin extends StatsModule
 {
-    private $type = 'Graph';
-    private $_html;
+    protected $type = 'Graph';
+    protected $_html;
 
     public function __construct()
     {
