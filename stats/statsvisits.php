@@ -29,9 +29,9 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsVisits extends StatsModule
 {
-	private $type = 'Graph';
-	private $html = '';
-	private $query = '';
+	protected $type = 'Graph';
+	protected $html = '';
+	protected $query = '';
 
 	public function __construct()
 	{

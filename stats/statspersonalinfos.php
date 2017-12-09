@@ -29,9 +29,9 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsPersonalInfos extends StatsModule
 {
-    private $type = 'Graph';
-    private $html = '';
-    private $option;
+    protected $type = 'Graph';
+    protected $html = '';
+    protected $option;
 
     public function __construct()
     {

@@ -29,8 +29,8 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsCatalog extends StatsModule
 {
-    private $join = '';
-    private $where = '';
+    protected $join = '';
+    protected $where = '';
 
     public function __construct()
     {

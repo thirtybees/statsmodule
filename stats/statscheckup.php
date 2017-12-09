@@ -34,7 +34,7 @@ if (!defined('_TB_VERSION_')) {
  */
 class StatsCheckUp extends StatsModule
 {
-    private $html = '';
+    protected $html = '';
 
     /**
      * StatsCheckUp constructor.

@@ -29,15 +29,15 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsForecast extends Module
 {
-    private $html = '';
-    private $t1 = 0;
-    private $t2 = 0;
-    private $t3 = 0;
-    private $t4 = 0;
-    private $t5 = 0;
-    private $t6 = 0;
-    private $t7 = 0;
-    private $t8 = 0;
+    protected $html = '';
+    protected $t1 = 0;
+    protected $t2 = 0;
+    protected $t3 = 0;
+    protected $t4 = 0;
+    protected $t5 = 0;
+    protected $t6 = 0;
+    protected $t7 = 0;
+    protected $t8 = 0;
 
     public function __construct()
     {

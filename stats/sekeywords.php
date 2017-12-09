@@ -29,10 +29,10 @@ if (!defined('_TB_VERSION_')) {
 
 class SEKeywords extends StatsModule
 {
-    private $type = 'Graph';
-    private $html = '';
-    private $query = '';
-    private $query2 = '';
+    protected $type = 'Graph';
+    protected $html = '';
+    protected $query = '';
+    protected $query2 = '';
 
     public function __construct()
     {

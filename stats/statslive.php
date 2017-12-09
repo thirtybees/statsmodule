@@ -28,7 +28,7 @@ if (!defined('_TB_VERSION_'))
 
 class StatsLive extends Module
 {
-    private $html = '';
+    protected $html = '';
 
     public function __construct()
     {

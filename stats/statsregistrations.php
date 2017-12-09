@@ -30,8 +30,8 @@ if (!defined('_TB_VERSION_')) {
 class StatsRegistrations extends StatsModule
 {
 	private  $type = 'Graph';
-	private $html = '';
-	private $query = '';
+	protected $html = '';
+	protected $query = '';
 
 	public function __construct()
 	{
