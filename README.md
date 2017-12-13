@@ -1,6 +1,6 @@
 # thirty bees Statistics module
 
-This module replaces 22 statistics modules in your thirty bees shop, cleaning up the module page by reducing 22 entries to one entry. It is available for versions 1.0.4 and greater.
+This module replaces 23 statistics modules in your thirty bees shop, cleaning up the module page by reducing 23 entries to one entry. It is available for versions 1.0.4 and greater.
 
 **The deprecated modules are:**
 
@@ -8,6 +8,7 @@ This module replaces 22 statistics modules in your thirty bees shop, cleaning up
 * sekeywords
 * statsbestcategories
 * statsbestcustomers
+* statsbestmanufacturers
 * statsbestproducts
 * statsbestsuppliers
 * statsbestvouchers
