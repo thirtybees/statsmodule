@@ -109,6 +109,16 @@ if (!defined('_TB_VERSION_')) {
  * $this->l('These operations encourage clients to buy products and visit your online store more regularly.')
  * $this->l('CSV Export')
  *
+ * // statsbestmanufacturers
+ * $this->l('Empty record set returned')
+ * $this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}')
+ * $this->l('Name')
+ * $this->l('Quantity sold')
+ * $this->l('Total paid')
+ * $this->l('Best manufacturers')
+ * $this->l('Adds a list of the best manufacturers to the Stats dashboard.')
+ * $this->l('CSV Export')
+ *
  * // statsbestproducts
  * $this->l('An empty record-set was returned.');
  * $this->l('Displaying %1$s of %2$s');
