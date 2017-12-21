@@ -1,0 +1,1 @@
+The Stats Module was introduced in 1.0.4 to reduce the number of back office modules making the module list easier to navigate. The module combines 24 statistics modules into one module cleaning the module page up. The Stats Module has all of the same statistics features of the previous 24 modules. 
