@@ -1,0 +1,13 @@
+module_name: Stats Module
+compatible_versions: 1.0.4+
+author: thirty bees
+category: statistics
+tags:
+  - stats
+  - statistics
+  - stats module
+description_short: The Stats Module is the stats core for thirty bees statistic system.
+description: description.md
+images:
+  - image-1.png
+license: AFL
