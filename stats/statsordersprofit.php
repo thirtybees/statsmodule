@@ -184,7 +184,13 @@ class StatsOrdersProfit extends StatsModule
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {
+            $value['paid'] = Tools::displayPrice($value['paid'], $currency);
             $value['total'] = Tools::displayPrice($value['total'], $currency);
+            $value['shipping'] = Tools::displayPrice($value['shipping'], $currency);
+            $value['TaxTotal'] = Tools::displayPrice($value['TaxTotal'], $currency);
+            $value['cost'] = Tools::displayPrice($value['cost'], $currency);
+            $value['totalDiscount'] = Tools::displayPrice($value['totalDiscount'], $currency);
+            $value['profit'] = Tools::displayPrice($value['profit'], $currency);
         }
         unset($value);
 
