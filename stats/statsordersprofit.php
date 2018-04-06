@@ -73,10 +73,16 @@ class StatsOrdersProfit extends StatsModule
                 'align'     => 'right',
             ),
             array(
+                'id'        => 'paid',
+                'header'    => Translate::getModuleTranslation('statsmodule', 'Paid', 'statsmodule'),
+                'dataIndex' => 'paid',
+                'align'     => 'right',
+            ),
+            array(
                 'id'        => 'total',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule'),
                 'dataIndex' => 'total',
-                'align'     => 'center',
+                'align'     => 'right',
             ),
             array(
                 'id'        => 'shipping',
@@ -165,7 +171,7 @@ class StatsOrdersProfit extends StatsModule
 			ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 )
 			) AS profit
 			FROM `'._DB_PREFIX_.'orders` o		
-			WHERE o.valid =1
+			WHERE o.valid = 1
 			AND o.invoice_date BETWEEN '.$date_between.'
 			GROUP BY o.`id_order`';
 

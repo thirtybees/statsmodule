@@ -359,6 +359,7 @@ if (!defined('_TB_VERSION_')) {
  * $this->l('Order ID'),
  * $this->l('Invoice Number')
  * $this->l('Invoice Date')
+ * $this->l('Paid')
  * $this->l('Total')
  * $this->l('Shipping')
  * $this->l('Tax')
