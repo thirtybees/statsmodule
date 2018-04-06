@@ -147,29 +147,27 @@ class StatsOrdersProfit extends StatsModule
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
 
-		$this->query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%d.%m.%Y\') as invoice_date, ROUND( o.total_products , 2 ) as total, ROUND((o.total_paid - total_paid_tax_excl) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl  , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
-				SELECT ROUND(SUM(p.wholesale_price * od.product_quantity), 2)
-                	        FROM '._DB_PREFIX_.'order_detail od
-				LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
-				LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
-				WHERE od.id_order = o.`id_order`
-				)) AS cost,
-				((
-				SELECT ROUND(o.`total_products`  - SUM(p.wholesale_price * od.product_quantity) , 2)
-				FROM '._DB_PREFIX_.'order_detail od
-
-				LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
-				LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
-				WHERE od.id_order = o.`id_order`
-				) -		
-				(ROUND( o.total_paid_tax_incl - o.total_paid_tax_excl, 2 )) +
-				ROUND( o.total_shipping_tax_excl , 2 ) -
-				ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2)
-				) AS profit
-				FROM `'._DB_PREFIX_.'orders` o		
-				WHERE o.valid = 1
-				AND o.invoice_date BETWEEN '.$date_between.'
-				GROUP BY o.`id_order`';
+        $this->query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%d.%m.%Y\') as invoice_date, ROUND( o.total_paid / o.conversion_rate , 2 ) as paid,  ROUND((o.total_paid / o.conversion_rate + o.total_discounts_tax_incl / o.conversion_rate), 2 ) as total, ROUND((o.total_paid / o.conversion_rate - total_paid_tax_excl / o.conversion_rate) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
+			SELECT ROUND(SUM(p.wholesale_price / o.conversion_rate * od.product_quantity / o.conversion_rate), 2)
+                        FROM '._DB_PREFIX_.'order_detail od
+			LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
+			LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
+			WHERE od.id_order = o.`id_order`
+			)) AS cost,
+			((
+			SELECT ROUND(o.`total_paid` / o.conversion_rate  - SUM(p.wholesale_price / o.conversion_rate * od.product_quantity) , 2)
+			FROM '._DB_PREFIX_.'order_detail od
+			LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
+			LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
+			WHERE od.id_order = o.`id_order`
+			) -
+			(ROUND( o.total_paid_tax_incl / o.conversion_rate - o.total_paid_tax_excl / o.conversion_rate, 2 )) -
+			ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 )
+			) AS profit
+			FROM `'._DB_PREFIX_.'orders` o		
+			WHERE o.valid =1
+			AND o.invoice_date BETWEEN '.$date_between.'
+			GROUP BY o.`id_order`';
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `'.bqSQL($this->_sort).'`';
