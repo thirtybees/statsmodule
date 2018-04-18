@@ -353,6 +353,23 @@ if (!defined('_TB_VERSION_')) {
  * $this->l('Visitors')
  * $this->l('Both')
  *
+ * // statsordersprofit
+ * $this->l('An empty record-set was returned.');
+ * $this->l('Displaying %1$s of %2$s');
+ * $this->l('Order ID'),
+ * $this->l('Invoice Number')
+ * $this->l('Invoice Date')
+ * $this->l('Paid')
+ * $this->l('Total')
+ * $this->l('Shipping')
+ * $this->l('Tax')
+ * $this->l('Cost')
+ * $this->l('Discount')
+ * $this->l('Profit')
+ * $this->l('Orders Profit')
+ * $this->l('Adds a list of the orders profit to the Stats dashboard.')
+ * $this->l('CSV Export')
+ *
  * // statsorigins
  * $this->l('Visitors origin')
  * $this->l('Adds a graph displaying the websites your visitors came from to the Stats dashboard.')
@@ -572,6 +589,7 @@ class StatsModule extends ModuleStats
         'statsforecast',
         'statslive',
         'statsnewsletter',
+        'statsordersprofit',
         'statsorigin',
         'statspersonalinfos',
         'statsproduct',
