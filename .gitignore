@@ -1,2 +1,7 @@
-.idea/
-*statsmodule*.zip
+
+/translations/*
+!/translations/index.php
+
+/config*.xml
+
+statsmodule-*.zip
