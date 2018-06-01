@@ -1,14 +1,14 @@
 <?php
 /**
- * 2007-2016 PrestaShop
+ * Copyright (C) 2017-2018 thirty bees
+ * Copyright (C) 2007-2016 PrestaShop SA
  *
- * thirty bees is an extension to the PrestaShop e-commerce software developed by PrestaShop SA
- * Copyright (C) 2017 thirty bees
+ * thirty bees is an extension to the PrestaShop software by PrestaShop SA.
  *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * that is bundled with this package in the file LICENSE.md.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/afl-3.0.php
  * If you did not receive a copy of the license and are unable to
@@ -19,8 +19,8 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @copyright 2017 thirty bees
  * @copyright 2007-2016 PrestaShop SA
- * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- * PrestaShop is an internationally registered trademark & property of PrestaShop SA
+ * @license   Academic Free License (AFL 3.0)
+ * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
 if (!defined('_TB_VERSION_')) {
@@ -170,7 +170,7 @@ class StatsOrdersProfit extends StatsModule
 			(ROUND( o.total_paid_tax_incl / o.conversion_rate - o.total_paid_tax_excl / o.conversion_rate, 2 )) -
 			ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 )
 			) AS profit
-			FROM `'._DB_PREFIX_.'orders` o		
+			FROM `'._DB_PREFIX_.'orders` o
 			WHERE o.valid = 1
 			AND o.invoice_date BETWEEN '.$date_between.'
 			GROUP BY o.`id_order`';
