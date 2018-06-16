@@ -171,10 +171,10 @@ class PagesNotFound extends StatsModule
 
     public function hookTop($params)
     {
-        if (strstr($_SERVER['REQUEST_URI'], '404.php') && isset($_SERVER['REDIRECT_URL']))
-            $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_URL'];
-        if (!Validate::isUrl($request_uri = $_SERVER['REQUEST_URI']) || strstr($_SERVER['REQUEST_URI'], '-admin404'))
+        if (!Validate::isUrl($request_uri = $_SERVER['REQUEST_URI'])
+            || strpos($_SERVER['REQUEST_URI'], '-admin404') !== false) {
             return;
+        }
 
         if (get_class(Context::getContext()->controller) == 'PageNotFoundController') {
             $http_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
