@@ -6,6 +6,7 @@ tags:
   - stats
   - statistics
   - stats module
+  - statsmodule
 description_short: The Stats Module is the stats core for thirty bees statistic system.
 description: description.md
 images:
