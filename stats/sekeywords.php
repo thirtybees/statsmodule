@@ -46,7 +46,7 @@ class SEKeywords extends StatsModule
 
         $this->query = 'SELECT `keyword`, COUNT(TRIM(`keyword`)) AS occurences
 				FROM `'._DB_PREFIX_.'sekeyword`
-				WHERE '.(Configuration::get('SEK_FILTER_KW') == '' ? '1' : '`keyword` REGEXP \''.pSQL(Configuration::get('SEK_FILTER_KW')).'\'')
+				WHERE '.(Configuration::get('SEK_FILTER_KW') == '' ? '1' : '`keyword` REGEXP \''.Configuration::get('SEK_FILTER_KW').'\'')
             .Shop::addSqlRestriction().
             ' AND `date_add` BETWEEN ';
 
