@@ -240,7 +240,11 @@ if (!defined('_TB_VERSION_')) {
  * $this->l('Web browser used')
  * $this->l('Operating system used')
  *
- *  // statsforecast
+ * // statsgroups
+ * $this->l('Group');
+ * $this->l('Members per group')
+ *
+ * // statsforecast
  * $this->l('Stats Dashboard')
  * $this->l('This is the main module for the Stats dashboard. It displays a summary of all your current statistics.')
  * $this->l('The listed amounts do not include tax.')
@@ -587,6 +591,7 @@ class StatsModule extends ModuleStats
         'statscheckup',
         'statsequipment',
         'statsforecast',
+        'statsgroups',
         'statslive',
         'statsnewsletter',
         'statsordersprofit',
