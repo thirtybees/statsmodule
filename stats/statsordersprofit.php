@@ -58,61 +58,61 @@ class StatsOrdersProfit extends StatsModule
                 'id'        => 'number',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Order ID', 'statsmodule'),
                 'dataIndex' => 'number',
-                 'align'    => 'right',
+                 'align'    => 'center',
             ),
             array(
                 'id'        => 'invoice_number',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Invoice Number', 'statsmodule'),
                 'dataIndex' => 'invoice_number',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'invoice_date',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Invoice Date', 'statsmodule'),
                 'dataIndex' => 'invoice_date',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'paid',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Paid', 'statsmodule'),
                 'dataIndex' => 'paid',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'total',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule'),
                 'dataIndex' => 'total',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'shipping',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Shipping', 'statsmodule'),
                 'dataIndex' => 'shipping',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'TaxTotal',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Tax', 'statsmodule'),
                 'dataIndex' => 'TaxTotal',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'cost',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Cost', 'statsmodule'),
                 'dataIndex' => 'cost',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'totalDiscount',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Discount', 'statsmodule'),
                 'dataIndex' => 'totalDiscount',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
             array(
                 'id'        => 'profit',
                 'header'    => Translate::getModuleTranslation('statsmodule', 'Profit', 'statsmodule'),
                 'dataIndex' => 'profit',
-                'align'     => 'right',
+                'align'     => 'center',
             ),
         );
 
@@ -153,7 +153,7 @@ class StatsOrdersProfit extends StatsModule
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
 
-        $this->query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%d.%m.%Y\') as invoice_date, ROUND( o.total_paid / o.conversion_rate , 2 ) as paid,  ROUND((o.total_paid / o.conversion_rate + o.total_discounts_tax_incl / o.conversion_rate), 2 ) as total, ROUND((o.total_paid / o.conversion_rate - total_paid_tax_excl / o.conversion_rate) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
+        $this->query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%Y-%m-%d\') as invoice_date, ROUND( o.total_paid / o.conversion_rate , 2 ) as paid,  ROUND((o.total_paid / o.conversion_rate + o.total_discounts_tax_incl / o.conversion_rate), 2 ) as total, ROUND((o.total_paid / o.conversion_rate - total_paid_tax_excl / o.conversion_rate) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
 			SELECT ROUND(SUM(p.wholesale_price / o.conversion_rate * od.product_quantity / o.conversion_rate), 2)
                         FROM '._DB_PREFIX_.'order_detail od
 			LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
