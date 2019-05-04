@@ -651,6 +651,7 @@ class StatsModule extends ModuleStats
         $this->displayName = $this->l('Statistics Module');
         $this->description = $this->l('Adds several statistics to the shop.');
         $this->tb_versions_compliancy = '> 1.0.3';
+        $this->tb_min_version = '1.0.4';
     }
 
     /**
