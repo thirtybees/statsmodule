@@ -47,15 +47,9 @@ class StatsNewsletter extends StatsModule
         $this->author = 'thirty bees';
         $this->need_instance = 0;
 
-        if (version_compare(_PS_VERSION_, '1.7.0.0', '>=')) {
-            $this->table_name = _DB_PREFIX_.'emailsubscription';
-            $this->newsletter_module_name = 'ps_emailsubscription';
-            $this->newsletter_module_human_readable_name = 'Email subscription';
-        } else {
-            $this->table_name = _DB_PREFIX_.'newsletter';
-            $this->newsletter_module_name = 'blocknewsletter';
-            $this->newsletter_module_human_readable_name = 'Newsletter block';
-        }
+        $this->table_name = _DB_PREFIX_.'newsletter';
+        $this->newsletter_module_name = 'blocknewsletter';
+        $this->newsletter_module_human_readable_name = 'Newsletter block';
 
         parent::__construct();
 
