@@ -30,14 +30,6 @@ if (!defined('_TB_VERSION_')) {
 class StatsGroups extends Module
 {
     protected $html = '';
-    protected $t1 = 0;
-    protected $t2 = 0;
-    protected $t3 = 0;
-    protected $t4 = 0;
-    protected $t5 = 0;
-    protected $t6 = 0;
-    protected $t7 = 0;
-    protected $t8 = 0;
 
     public function __construct()
     {
@@ -65,10 +57,6 @@ class StatsGroups extends Module
 
     public function hookAdminStatsModules()
     {
-        $ru = AdminController::$currentIndex.'&module=statsgroups&token='.Tools::getValue('token');
-
-        $db = Db::getInstance();
-
         if (!isset($this->context->cookie->stats_granularity)) {
             $this->context->cookie->stats_granularity = 10;
         }
@@ -81,43 +69,6 @@ class StatsGroups extends Module
 
         $currency = $this->context->currency;
         $employee = $this->context->employee;
-
-        $from = max(strtotime(_PS_CREATION_DATE_.' 00:00:00'), strtotime($employee->stats_date_from.' 00:00:00'));
-        $to = strtotime($employee->stats_date_to.' 23:59:59');
-        $to2 = min(time(), $to);
-        $interval = ($to - $from) / 60 / 60 / 24;
-        $interval2 = ($to2 - $from) / 60 / 60 / 24;
-        $prop30 = $interval / $interval2;
-
-        if ($this->context->cookie->stats_granularity == 7) {
-            $intervalAvg = $interval2 / 30;
-        }
-        if ($this->context->cookie->stats_granularity == 4) {
-            $intervalAvg = $interval2 / 365;
-        }
-        if ($this->context->cookie->stats_granularity == 10) {
-            $intervalAvg = $interval2;
-        }
-        if ($this->context->cookie->stats_granularity == 42) {
-            $intervalAvg = $interval2 / 7;
-        }
-
-        $dataTable = [];
-        if ($this->context->cookie->stats_granularity == 10) {
-            for ($i = $from; $i <= $to2; $i = strtotime('+1 day', $i)) {
-                $dataTable[date('Y-m-d', $i)] = [
-                    'fix_date'      => date('Y-m-d', $i),
-                    'countOrders'   => 0,
-                    'countProducts' => 0,
-                    'totalSales'    => 0,
-                ];
-            }
-        }
-
-        $dateFromGadd = ($this->context->cookie->stats_granularity != 42
-            ? 'LEFT(date_add, '.(int) $this->context->cookie->stats_granularity.')'
-            : 'IFNULL(MAKEDATE(YEAR(date_add),DAYOFYEAR(date_add)-WEEKDAY(date_add)), CONCAT(YEAR(date_add),"-01-01*"))'
-        );
 
         $dateFromGinvoice = ($this->context->cookie->stats_granularity != 42
             ? 'LEFT(invoice_date, '.(int) $this->context->cookie->stats_granularity.')'
