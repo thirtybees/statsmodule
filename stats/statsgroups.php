@@ -90,22 +90,22 @@ class StatsGroups extends Module
         $prop30 = $interval / $interval2;
 
         if ($this->context->cookie->stats_granularity == 7) {
-            $interval_avg = $interval2 / 30;
+            $intervalAvg = $interval2 / 30;
         }
         if ($this->context->cookie->stats_granularity == 4) {
-            $interval_avg = $interval2 / 365;
+            $intervalAvg = $interval2 / 365;
         }
         if ($this->context->cookie->stats_granularity == 10) {
-            $interval_avg = $interval2;
+            $intervalAvg = $interval2;
         }
         if ($this->context->cookie->stats_granularity == 42) {
-            $interval_avg = $interval2 / 7;
+            $intervalAvg = $interval2 / 7;
         }
 
-        $data_table = [];
+        $dataTable = [];
         if ($this->context->cookie->stats_granularity == 10) {
             for ($i = $from; $i <= $to2; $i = strtotime('+1 day', $i)) {
-                $data_table[date('Y-m-d', $i)] = [
+                $dataTable[date('Y-m-d', $i)] = [
                     'fix_date'      => date('Y-m-d', $i),
                     'countOrders'   => 0,
                     'countProducts' => 0,
@@ -114,12 +114,12 @@ class StatsGroups extends Module
             }
         }
 
-        $date_from_gadd = ($this->context->cookie->stats_granularity != 42
+        $dateFromGadd = ($this->context->cookie->stats_granularity != 42
             ? 'LEFT(date_add, '.(int) $this->context->cookie->stats_granularity.')'
             : 'IFNULL(MAKEDATE(YEAR(date_add),DAYOFYEAR(date_add)-WEEKDAY(date_add)), CONCAT(YEAR(date_add),"-01-01*"))'
         );
 
-        $date_from_ginvoice = ($this->context->cookie->stats_granularity != 42
+        $dateFromGinvoice = ($this->context->cookie->stats_granularity != 42
             ? 'LEFT(invoice_date, '.(int) $this->context->cookie->stats_granularity.')'
             : 'IFNULL(MAKEDATE(YEAR(invoice_date),DAYOFYEAR(invoice_date)-WEEKDAY(invoice_date)), CONCAT(YEAR(invoice_date),"-01-01*"))'
         );
@@ -128,7 +128,7 @@ class StatsGroups extends Module
             <div class="panel-heading"><i class="icon-dashboard"></i> '.$this->displayName.'</div>
             <div class="alert alert-info">'.Translate::getModuleTranslation('statsmodule', 'The listed amounts do not include tax.', 'statsmodule').'</div>';
 
-        $result_sql = 'SELECT COUNT(*) as countOrders,
+        $resultSql = 'SELECT COUNT(*) as countOrders,
             SUM((SELECT SUM(od.product_quantity) FROM '._DB_PREFIX_.'order_detail od WHERE o.id_order = od.id_order)) as countProducts,
             SUM(o.total_paid_tax_excl / o.conversion_rate) as totalSales
             FROM '._DB_PREFIX_.'orders o
@@ -136,8 +136,8 @@ class StatsGroups extends Module
             AND o.invoice_date BETWEEN '.ModuleGraph::getDateBetween().'
             '.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
 
-        if ($newresult = Db::getInstance()->getRow($result_sql)) {
-            $this->html .= '<div>'.Translate::getModuleTranslation('statsmodule', 'Placed orders', 'statsmodule').': '.$newresult['countOrders'].' | '.Translate::getModuleTranslation('statsmodule', 'Bought items', 'statsmodule').': '.$newresult['countProducts'].' | '.Translate::getModuleTranslation('statsmodule', 'Revenue', 'statsmodule').': '.Tools::displayPrice($newresult['totalSales'], $currency).'</div><br /><br />';
+        if ($newResult = Db::getInstance()->getRow($resultSql)) {
+            $this->html .= '<div>'.Translate::getModuleTranslation('statsmodule', 'Placed orders', 'statsmodule').': '.$newResult['countOrders'].' | '.Translate::getModuleTranslation('statsmodule', 'Bought items', 'statsmodule').': '.$newResult['countProducts'].' | '.Translate::getModuleTranslation('statsmodule', 'Revenue', 'statsmodule').': '.Tools::displayPrice($newResult['totalSales'], $currency).'</div><br /><br />';
 
             $this->html .= '<table class="table">
                 <thead>
@@ -152,14 +152,14 @@ class StatsGroups extends Module
                 </thead>
                 <tbody>';
 
-            $group_sql = 'SELECT * FROM `'._DB_PREFIX_.'group_lang` WHERE `id_lang`='.(int) $this->context->language->id.' GROUP BY `id_group` ORDER BY `id_group`';
-            if ($results = Db::getInstance()->ExecuteS($group_sql)) {
+            $groupSql = 'SELECT * FROM `'._DB_PREFIX_.'group_lang` WHERE `id_lang`='.(int) $this->context->language->id.' GROUP BY `id_group` ORDER BY `id_group`';
+            if ($results = Db::getInstance()->ExecuteS($groupSql)) {
                 foreach ($results as $grow) {
                     $this->html .= '<tr>';
                     $this->html .= '<td>'.$grow['id_group'].'</td>';
                     $this->html .= '<td>'.$grow['name'].'</td>';
 
-                    $cagroup_sql = 'SELECT SUM(o.total_paid_tax_excl / o.conversion_rate) as totalCA,
+                    $cagroupSql = 'SELECT SUM(o.total_paid_tax_excl / o.conversion_rate) as totalCA,
                         COUNT(o.id_order) as nbrCommandes
                         FROM '._DB_PREFIX_.'orders o
                         LEFT JOIN '._DB_PREFIX_.'customer c ON c.id_customer=o.id_customer
@@ -167,10 +167,10 @@ class StatsGroups extends Module
                         AND o.valid = 1
                         AND o.invoice_date BETWEEN '.ModuleGraph::getDateBetween().'
                         '.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-                        GROUP BY '.$date_from_ginvoice;
-                    if ($cagroup = Db::getInstance()->getrow($cagroup_sql)) {
-                        $this->html .= '<td class="text-right">'.Tools::displayPrice($cagroup['totalCA'],$currency).'</td>';
-                        $this->html .= '<td class="text-right">'.Tools::displayPrice(($cagroup['totalCA']/$cagroup['nbrCommandes']),$currency).'</td>';
+                        GROUP BY '.$dateFromGinvoice;
+                    if ($cagroup = Db::getInstance()->getrow($cagroupSql)) {
+                        $this->html .= '<td class="text-right">'.Tools::displayPrice($cagroup['totalCA'], $currency).'</td>';
+                        $this->html .= '<td class="text-right">'.Tools::displayPrice(($cagroup['totalCA'] / $cagroup['nbrCommandes']), $currency).'</td>';
                         $this->html .= '<td class="text-center">'.$cagroup['nbrCommandes'].'</td>';
                     } else {
                         $this->html .= '<td></td>';
@@ -178,11 +178,11 @@ class StatsGroups extends Module
                         $this->html .= '<td></td>';
                     }
 
-                    $members_sql= 'SELECT COUNT(*) as nombread
+                    $membersSql = 'SELECT COUNT(*) as nombread
                         FROM '._DB_PREFIX_.'customer WHERE id_default_group='.$grow['id_group'].'
                         AND date_add <= "'.$employee->stats_date_to.' 23:59:59"';
 
-                    if ($members = Db::getInstance()->getrow($members_sql)) {
+                    if ($members = Db::getInstance()->getrow($membersSql)) {
                         $this->html .= '<td class="text-center">'.$members['nombread'].'</td>';
                     }
                     $this->html .= '</tr>';
