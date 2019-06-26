@@ -978,6 +978,8 @@ class StatsModule extends ModuleStats
      *
      * @return bool result
      *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      * @since   1.0.0
      * @version 1.0.0 Initial version
      */
@@ -987,16 +989,15 @@ class StatsModule extends ModuleStats
         $hookName = 'displayAdminStatsModules';
         $hookId = Hook::getIdByName($hookName);
 
+        $result = true;
         foreach ($this->modules as $moduleName) {
             Hook::exec('actionModuleUnRegisterHookBefore', ['object' => $this, 'hook_name' => $hookName]);
+
             // Unregister module on hook by id
-            try {
-                $result = Db::getInstance()->delete(
-                    'hook_modul0e',
-                    '`id_module` = '.(int) Module::getModuleIdByName($moduleName).' AND `id_hook` = '.(int) $hookId
-                );
-            } catch (PrestaShopDatabaseException $e) {
-            }
+            $result = Db::getInstance()->delete(
+                'hook_module',
+                '`id_module` = '.(int) Module::getModuleIdByName($moduleName).' AND `id_hook` = '.(int) $hookId
+            ) && $result;
 
             // Clean modules position
             $this->cleanPositions($hookId);
