@@ -609,7 +609,7 @@ class StatsModule extends ModuleStats
     {
         $this->name = 'statsmodule';
         $this->tab = 'analytics_stats';
-        $this->version = '2.0.2';
+        $this->version = '2.1.0';
         $this->author = 'thirty bees';
         $this->need_instance = 0;
 
