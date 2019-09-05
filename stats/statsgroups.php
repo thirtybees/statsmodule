@@ -117,8 +117,8 @@ class StatsGroups extends Module
                         WHERE c.id_default_group='.$grow['id_group'].'
                         AND o.valid = 1
                         AND o.invoice_date BETWEEN '.ModuleGraph::getDateBetween().'
-                        '.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-                        GROUP BY '.$dateFromGinvoice;
+                        '.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
+
                     if ($cagroup = Db::getInstance()->getrow($cagroupSql)) {
                         $this->html .= '<td class="text-right">'.Tools::displayPrice($cagroup['totalCA'], $currency).'</td>';
                         $this->html .= '<td class="text-right">'.Tools::displayPrice(($cagroup['totalCA'] / $cagroup['nbrCommandes']), $currency).'</td>';
