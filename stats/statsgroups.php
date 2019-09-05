@@ -118,18 +118,17 @@ class StatsGroups extends Module
                         AND o.valid = 1
                         AND o.invoice_date BETWEEN '.ModuleGraph::getDateBetween().'
                         '.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
-
-                    if ($cagroup = Db::getInstance()->getrow($cagroupSql)) {
-                        if ($cagroup['totalCA']) {
-							$this->html .= '<td class="text-right">'.Tools::displayPrice($cagroup['totalCA'],$currency).'</td>';
-							$this->html .= '<td class="text-right">'.Tools::displayPrice(($cagroup['totalCA']/$cagroup['nbrCommandes']),$currency).'</td>';
-							$this->html .= '<td class="text-center">'.$cagroup['nbrCommandes'].'</td>';
-						}
-						else {
-							$this->html .= '<td></td>';
-							$this->html .= '<td></td>';
-							$this->html .= '<td></td>';
-						}
+		    if ($cagroup = Db::getInstance()->getrow($cagroupSql)) {
+		        if ($cagroup['totalCA']) {
+			    $this->html .= '<td class="text-right">'.Tools::displayPrice($cagroup['totalCA'],$currency).'</td>';
+			    $this->html .= '<td class="text-right">'.Tools::displayPrice(($cagroup['totalCA']/$cagroup['nbrCommandes']),$currency).'</td>';
+			    $this->html .= '<td class="text-center">'.$cagroup['nbrCommandes'].'</td>';
+		        }
+		        else {
+			    $this->html .= '<td></td>';
+			    $this->html .= '<td></td>';
+			    $this->html .= '<td></td>';
+			}
                     } else {
                         $this->html .= '<td></td>';
                         $this->html .= '<td></td>';
