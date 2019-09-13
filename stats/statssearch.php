@@ -51,7 +51,7 @@ class StatsSearch extends StatsModule
 					AND `date_add` BETWEEN ';
 
 		$this->query_group_by = 'GROUP BY `keywords`
-				HAVING occurences > 1
+				HAVING occurences >= 1
 				ORDER BY occurences DESC';
 
 		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Shop search', 'statsmodule');
