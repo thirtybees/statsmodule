@@ -166,7 +166,7 @@ class StatsLive extends Module
 						<td class="center">
 							<a href="'.Tools::safeOutput('index.php?tab=AdminCustomers&id_customer='.$customer['id_customer'].'&viewcustomer&token='.Tools::getAdminToken('AdminCustomers'.(int) Tab::getIdFromClassName('AdminCustomers').(int) $this->context->employee->id)).'"
 								target="_blank">
-								<img src="../modules/statslive/logo.gif" />
+								<i class="icon icon-eye"></i>
 							</a>
 						</td>
 					</tr>';
