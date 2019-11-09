@@ -1010,4 +1010,14 @@ class StatsModule extends ModuleStats
     {
         return $this->{"csvExport{$this->type}"}($datas);
     }
+
+    /**
+     * No-op implementation
+     *
+     * AdminStatsTabController never calls this hook handler for this particular module because of specific exception.
+     * However, the hook handler must exists
+     */
+    public function hookDisplayAdminStatsModules()
+    {
+    }
 }
