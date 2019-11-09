@@ -779,11 +779,9 @@ class StatsModule extends ModuleStats
 
     public function getStatsModulesList()
     {
-        foreach ($this->modules as $module) {
-            $list[] = ['name' => $module];
-        }
-
-        return $list;
+        return array_map(function($module) {
+            return [ 'name' => $module ];
+        }, $this->modules);
     }
 
     public function executeStatsInstance($moduleName, $hook = false)
