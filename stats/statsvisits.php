@@ -139,6 +139,7 @@ class StatsVisits extends StatsModule
 				$this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Number of visits and unique visitors', 'statsmodule');
 				$this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'Visits', 'statsmodule');
 				$this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Visitors', 'statsmodule');
+				$this->query = [];
 				$this->query[0] = 'SELECT date_add, COUNT(`date_add`) as total
 					FROM `'._DB_PREFIX_.'connections`
 					WHERE 1
