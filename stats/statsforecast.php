@@ -614,13 +614,14 @@ class StatsForecast extends Module
         uasort($ca['cat'], 'statsforecast_sort');
 
         $lang_values = '';
-        $sql = 'SELECT l.id_lang, l.iso_code
+        $sql = 'SELECT DISTINCT l.id_lang, l.iso_code
 				FROM `'._DB_PREFIX_.'lang` l
 				'.Shop::addSqlAssociation('lang', 'l').'
 				WHERE l.active = 1';
         $languages = Db::getInstance()->executeS($sql);
-        foreach ($languages as $language)
-            $lang_values .= 'SUM(IF(o.id_lang = '.(int) $language['id_lang'].', total_paid_tax_excl / o.conversion_rate, 0)) as '.pSQL($language['iso_code']).',';
+        foreach ($languages as $language) {
+            $lang_values .= 'SUM(IF(o.id_lang = '.(int) $language['id_lang'].', total_paid_tax_excl / o.conversion_rate, 0)) as `'. pSQL($language['iso_code']) .'`,';
+        }
         $lang_values = rtrim($lang_values, ',');
 
         if ($lang_values) {
