@@ -381,6 +381,7 @@ class StatsProduct extends StatsModule
 				$this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Popularity', 'statsmodule');
 				$this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule');
 				$this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Visits (x100)', 'statsmodule');
+				$this->query = [];
 				$this->query[0] = 'SELECT o.`date_add`, SUM(od.`product_quantity`) AS total
 						FROM `'._DB_PREFIX_.'order_detail` od
 						LEFT JOIN `'._DB_PREFIX_.'orders` o ON o.`id_order` = od.`id_order`
