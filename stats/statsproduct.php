@@ -34,6 +34,7 @@ class StatsProduct extends StatsModule
 	protected $query = '';
 	protected $option = 0;
 	protected $id_product = 0;
+    protected $packTracking = false;
 
 	public function __construct()
 	{
@@ -47,6 +48,8 @@ class StatsProduct extends StatsModule
 
 		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Product details', 'statsmodule');
 		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds detailed statistics for each product to the Stats dashboard.', 'statsmodule');
+
+        $this->packTracking = class_exists('OrderDetailPack');
 	}
 
 	public function install()
@@ -54,19 +57,53 @@ class StatsProduct extends StatsModule
 		return (parent::install() && $this->registerHook('AdminStatsModules'));
 	}
 
-	public function getTotalBought($id_product)
-	{
-		$date_between = ModuleGraph::getDateBetween();
-		$sql = 'SELECT SUM(od.`product_quantity`) AS total
-				FROM `'._DB_PREFIX_.'order_detail` od
-				LEFT JOIN `'._DB_PREFIX_.'orders` o ON o.`id_order` = od.`id_order`
-				WHERE od.`product_id` = '.(int)$id_product.'
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-					AND o.valid = 1
-					AND o.`date_add` BETWEEN '.$date_between;
-
+    /**
+     * Returns total sales of product as individual item -- separate line in order
+     *
+     * @param int $productId
+     * @return int
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function getTotalBought($productId)
+    {
+		$dateBetween = ModuleGraph::getDateBetween();
+        $productId = (int)$productId;
+        $sql = (new DbQuery())
+            ->select('SUM(od.product_quantity) AS total')
+            ->from('order_detail', 'od')
+            ->innerJoin('orders', 'o', 'o.id_order = od.id_order')
+            ->where("od.product_id = $productId")
+            ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+            ->where("o.date_add BETWEEN $dateBetween");
 		return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
 	}
+
+    /**
+     * Returns total sales of product sold as part of a pack
+     *
+     * @param int $productId
+     * @return int
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function getTotalBoughtAsPartOfPack($productId)
+    {
+        if ($this->packTracking) {
+            $dateBetween = ModuleGraph::getDateBetween();
+            $productId = (int)$productId;
+            $sql = (new DbQuery())
+                ->select('SUM(od.product_quantity * p.quantity) AS total')
+                ->from('order_detail', 'od')
+                ->innerJoin('order_detail_pack', 'p', 'p.id_order_detail = od.id_order_detail')
+                ->innerJoin('orders', 'o', 'o.id_order = od.id_order')
+                ->where("p.id_product = $productId")
+                ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+                ->where("o.date_add BETWEEN $dateBetween");
+            return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        }
+        return 0;
+    }
 
 	public function getTotalSales($id_product)
 	{
@@ -115,17 +152,38 @@ class StatsProduct extends StatsModule
 		return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 	}
 
-	private function getSales($id_product)
+    /**
+     * @param int $productId
+     * @return array
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+	private function getSales($productId)
 	{
-		$sql = 'SELECT o.date_add, o.id_order, o.id_customer, od.product_quantity, (od.product_price * od.product_quantity) as total, od.tax_name, od.product_name
-				FROM `'._DB_PREFIX_.'orders` o
-				LEFT JOIN `'._DB_PREFIX_.'order_detail` od ON o.id_order = od.id_order
-				WHERE o.date_add BETWEEN '.$this->getDate().'
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-					AND o.valid = 1
-					AND od.product_id = '.(int)$id_product;
+        $productId = (int)$productId;
+        $sql = (new DbQuery())
+            ->select('o.date_add')
+            ->select('o.id_order')
+            ->select('od.product_id AS id_product')
+            ->select('o.id_customer')
+            ->select('od.product_quantity')
+            ->select('(od.product_price * od.product_quantity) as total')
+            ->select('od.product_name')
+            ->from('orders', 'o')
+            ->innerJoin('order_detail', 'od', 'o.id_order = od.id_order')
+            ->where('o.date_add BETWEEN ' . $this->getDate())
+            ->where('o.valid ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'));
 
-		return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+        if ($this->packTracking) {
+            $sql->leftJoin('order_detail_pack', 'p', 'p.id_order_detail = od.id_order_detail');
+            $sql->select('IFNULL(p.quantity, 0) AS pack_quantity');
+            $sql->where("(od.product_id = $productId OR p.id_product = $productId)");
+        } else {
+            $sql->select('0 AS pack_quantity');
+            $sql->where('od.product_id = ' . $productId);
+        }
+        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        return $conn->executeS($sql);
 	}
 
 	private function getCrossSales($id_product, $id_lang)
@@ -152,8 +210,16 @@ class StatsProduct extends StatsModule
 		return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 	}
 
+    /**
+     * Hook
+     *
+     * @return string
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
 	public function hookAdminStatsModules()
 	{
+        $link = $this->context->link;
 		$id_category = (int)Tools::getValue('id_category');
 		$currency = Context::getContext()->currency;
 
@@ -196,9 +262,12 @@ class StatsProduct extends StatsModule
 					));
 			}
 			$product = new Product($id_product, false, $this->context->language->id);
-			$total_bought = $this->getTotalBought($product->id);
+			$totalBought = $this->getTotalBought($product->id);
+            $isPartOfPack = $this->packTracking && Pack::isPacked($product->id);
+            $totalBoughtPack = $isPartOfPack ? $this->getTotalBoughtAsPartOfPack($product->id) : 0;
 			$total_sales = $this->getTotalSales($product->id);
 			$total_viewed = $this->getTotalViewed($product->id);
+            $hasSales = $totalBought > 0 || $totalBoughtPack > 0;
 			$this->html .= '<h4>'.$product->name.' - '.Translate::getModuleTranslation('statsmodule', 'Details', 'statsmodule').'</h4>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
@@ -211,10 +280,11 @@ class StatsProduct extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.Translate::getModuleTranslation('statsmodule', 'Total bought', 'statsmodule').' '.$total_bought.'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Total bought', 'statsmodule').' '.$totalBought.'</li>
+							'.($isPartOfPack ? ('<li>'.Translate::getModuleTranslation('statsmodule', 'Total bought in pack', 'statsmodule').' '.$totalBoughtPack.'</li>'): '').'
 							<li>'.Translate::getModuleTranslation('statsmodule', 'Sales (tax excluded)', 'statsmodule').' '.Tools::displayprice($total_sales, $currency).'</li>
 							<li>'.Translate::getModuleTranslation('statsmodule', 'Total viewed', 'statsmodule').' '.$total_viewed.'</li>
-							<li>'.Translate::getModuleTranslation('statsmodule', 'Conversion rate', 'statsmodule').' '.number_format($total_viewed ? $total_bought / $total_viewed : 0, 2).'</li>
+							<li>'.Translate::getModuleTranslation('statsmodule', 'Conversion rate', 'statsmodule').' '.number_format($total_viewed ? $totalBought / $total_viewed : 0, 2).'</li>
 						</ul>
 						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1&exportType=1">
 							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
@@ -222,13 +292,16 @@ class StatsProduct extends StatsModule
 					</div>
 				</div>
 			</div>';
-			if ($has_attribute = $product->hasAttributes() && $total_bought)
-				$this->html .= '
-				<h3 class="space">'.Translate::getModuleTranslation('statsmodule', 'Attribute sales distribution', 'statsmodule').'</h3>
-				<center>'.$this->engine($this->type, array('type' => 'pie', 'option' => '3-'.$id_product)).'</center><br />
-				<a href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1&exportType=2"><img src="../img/admin/asterisk.gif" alt=""/>'.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'</a>';
-			if ($total_bought)
+			if ($hasSales)
 			{
+                $hasAttribute = $product->hasAttributes();
+                if ($hasAttribute) {
+                    $this->html .= '
+                        <h3 class="space">'.Translate::getModuleTranslation('statsmodule', 'Attribute sales distribution', 'statsmodule').'</h3>
+                        <center>'.$this->engine($this->type, array('type' => 'pie', 'option' => '3-'.$id_product)).'</center><br />
+                        <a href="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'&export=1&exportType=2"><img src="../img/admin/asterisk.gif" alt=""/>'.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'</a>';
+                }
+
 				$sales = $this->getSales($id_product);
 				$this->html .= '
 				<h4>'.Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule').'</h4>
@@ -245,10 +318,14 @@ class StatsProduct extends StatsModule
 								<th>
 									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Customer', 'statsmodule').'</span>
 								</th>
-								'.($has_attribute ? '<th><span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Attribute', 'statsmodule').'</span></th>' : '').'
+								<th>
+								    <span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Product name', 'statsmodule').'</span>
+								</th>
 								<th>
 									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Quantity', 'statsmodule').'</span>
 								</th>
+								'.($isPartOfPack ? '<th><span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Items in pack', 'statsmodule').'</span></th>' : '').'
+								'.($isPartOfPack ? '<th><span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Items total', 'statsmodule').'</span></th>' : '').'
 								<th>
 									<span class="title_box  active">'.Translate::getModuleTranslation('statsmodule', 'Price', 'statsmodule').'</span>
 								</th>
@@ -257,16 +334,20 @@ class StatsProduct extends StatsModule
 						<tbody>';
 				$token_order = Tools::getAdminToken('AdminOrders'.(int)Tab::getIdFromClassName('AdminOrders').(int)$this->context->employee->id);
 				$token_customer = Tools::getAdminToken('AdminCustomers'.(int)Tab::getIdFromClassName('AdminCustomers').(int)$this->context->employee->id);
-				foreach ($sales as $sale)
-					$this->html .= '
+                $productUrl = $link->getAdminLink('AdminProducts', true);
+                foreach ($sales as $sale) {
+                    $this->html .= '
 						<tr>
-							<td>'.Tools::displayDate($sale['date_add'], null, false).'</td>
-							<td class="text-center"><a href="?tab=AdminOrders&id_order='.$sale['id_order'].'&vieworder&token='.$token_order.'">'.(int)$sale['id_order'].'</a></td>
-							<td class="text-center"><a href="?tab=AdminCustomers&id_customer='.$sale['id_customer'].'&viewcustomer&token='.$token_customer.'">'.(int)$sale['id_customer'].'</a></td>
-							'.($has_attribute ? '<td>'.$sale['product_name'].'</td>' : '').'
-							<td>'.(int)$sale['product_quantity'].'</td>
-							<td>'.Tools::displayprice($sale['total'], $currency).'</td>
+							<td>' . Tools::displayDate($sale['date_add'], null, false) . '</td>
+							<td class="text-center"><a href="?tab=AdminOrders&id_order=' . $sale['id_order'] . '&vieworder&token=' . $token_order . '">' . (int)$sale['id_order'] . '</a></td>
+							<td class="text-center"><a href="?tab=AdminCustomers&id_customer=' . $sale['id_customer'] . '&viewcustomer&token=' . $token_customer . '">' . (int)$sale['id_customer'] . '</a></td>
+							<td><a href="'.$productUrl.'&updateproduct&id_product='.$sale['id_product'].'">' . $sale['product_name'] . '</a></td>
+							<td>' . (int)$sale['product_quantity'] . '</td>
+							' . ($isPartOfPack ? '<td>' . ($sale['pack_quantity'] ? $sale['pack_quantity'] : '--') . '</td>' : '') . '
+							' . ($isPartOfPack ? '<td>' . ($sale['product_quantity'] * ($sale['pack_quantity'] ? $sale['pack_quantity'] : 1)) . '</td>' : '') . '
+							<td>' . Tools::displayprice($sale['total'], $currency) . '</td>
 						</tr>';
+                }
 				$this->html .= '
 						</tbody>
 					</table>
