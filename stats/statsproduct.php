@@ -36,6 +36,9 @@ class StatsProduct extends StatsModule
     protected $id_product = 0;
     protected $packTracking = false;
 
+    /**
+     * @throws PrestaShopException
+     */
     public function __construct()
     {
         $this->name = 'statsproduct';
@@ -52,6 +55,10 @@ class StatsProduct extends StatsModule
         $this->packTracking = class_exists('OrderDetailPack');
     }
 
+    /**
+     * @return bool
+     * @throws PrestaShopException
+     */
     public function install()
     {
         return (parent::install() && $this->registerHook('AdminStatsModules'));
@@ -105,6 +112,12 @@ class StatsProduct extends StatsModule
         return 0;
     }
 
+    /**
+     * @param $id_product
+     * @return float
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function getTotalSales($id_product)
     {
         $date_between = ModuleGraph::getDateBetween();
@@ -119,6 +132,12 @@ class StatsProduct extends StatsModule
         return (float)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
+    /**
+     * @param $id_product
+     * @return int|mixed
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function getTotalViewed($id_product)
     {
         $date_between = ModuleGraph::getDateBetween();
@@ -137,6 +156,12 @@ class StatsProduct extends StatsModule
         return isset($result['total']) ? $result['total'] : 0;
     }
 
+    /**
+     * @param $id_lang
+     * @return array|bool|PDOStatement|null
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     private function getProducts($id_lang)
     {
         $sql = 'SELECT p.`id_product`, p.reference, pl.`name`, IFNULL(stock.quantity, 0) as quantity
@@ -186,6 +211,13 @@ class StatsProduct extends StatsModule
         return $conn->executeS($sql);
     }
 
+    /**
+     * @param $id_product
+     * @param $id_lang
+     * @return array|bool|PDOStatement|null
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     private function getCrossSales($id_product, $id_lang)
     {
         $sql = 'SELECT pl.name as pname, pl.id_product, SUM(od.product_quantity) as pqty, AVG(od.product_price) as pprice
@@ -442,6 +474,13 @@ class StatsProduct extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param $option
+     * @param $layers
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function setOption($option, $layers = 1)
     {
         $options = explode('-', $option);
@@ -498,6 +537,12 @@ class StatsProduct extends StatsModule
         }
     }
 
+    /**
+     * @param $layers
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         if ($this->option == 42) {
@@ -537,6 +582,12 @@ class StatsProduct extends StatsModule
         }
     }
 
+    /**
+     * @param $layers
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     protected function setAllTimeValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
@@ -546,6 +597,12 @@ class StatsProduct extends StatsModule
         }
     }
 
+    /**
+     * @param $layers
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     protected function setYearValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
@@ -555,6 +612,12 @@ class StatsProduct extends StatsModule
         }
     }
 
+    /**
+     * @param $layers
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     protected function setMonthValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
@@ -564,6 +627,12 @@ class StatsProduct extends StatsModule
         }
     }
 
+    /**
+     * @param $layers
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     protected function setDayValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
