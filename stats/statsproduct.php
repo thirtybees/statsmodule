@@ -200,7 +200,7 @@ class StatsProduct extends StatsModule
             ->where('o.valid ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'));
 
         if ($this->packTracking) {
-            $sql->leftJoin('order_detail_pack', 'p', 'p.id_order_detail = od.id_order_detail');
+            $sql->leftJoin('order_detail_pack', 'p', "(p.id_order_detail = od.id_order_detail AND p.id_product = $productId)");
             $sql->select('IFNULL(p.quantity, 0) AS pack_quantity');
             $sql->where("(od.product_id = $productId OR p.id_product = $productId)");
         } else {
