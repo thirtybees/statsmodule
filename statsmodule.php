@@ -882,13 +882,13 @@ class StatsModule extends ModuleStats
 						IFNULL(SUM(
 							CASE
 								WHEN cp.`original_wholesale_price` <> "0.000000"
-								THEN cp.`original_wholesale_price` * cp.`product_quantity`
+								THEN cp.`original_wholesale_price` / o.`conversion_rate` * cp.`product_quantity`
 								WHEN pa.`wholesale_price` <> "0.000000"
 								THEN pa.`wholesale_price` * cp.`product_quantity`
 								WHEN pr.`wholesale_price` <> "0.000000"
 								THEN pr.`wholesale_price` * cp.`product_quantity`
 							END
-						), 0) / o.conversion_rate AS totalWholeSalePriceSold
+						), 0) AS totalWholeSalePriceSold
 					FROM `'._DB_PREFIX_.'product` pr
 					LEFT OUTER JOIN `'._DB_PREFIX_.'order_detail` cp ON pr.`id_product` = cp.`product_id`
 					LEFT JOIN `'._DB_PREFIX_.'orders` o ON o.`id_order` = cp.`id_order`
