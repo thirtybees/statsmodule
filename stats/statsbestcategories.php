@@ -153,12 +153,6 @@ class StatsBestCategories extends StatsModule
         $date_between = $this->getDate();
         $id_lang = $this->getLang();
 
-        //If column 'order_detail.original_wholesale_price' does not exist, create it
-        Db::getInstance(_PS_USE_SQL_SLAVE_)->query('SHOW COLUMNS FROM `'._DB_PREFIX_.'order_detail` LIKE "original_wholesale_price"');
-        if (Db::getInstance()->NumRows() == 0) {
-            Db::getInstance()->execute('ALTER TABLE `'._DB_PREFIX_.'order_detail` ADD `original_wholesale_price` DECIMAL( 20, 6 ) NOT NULL DEFAULT  "0.000000"');
-        }
-
         // If a shop is selected, get all children categories for the shop
         $categories = array();
         if (Shop::getContext() != Shop::CONTEXT_ALL) {
