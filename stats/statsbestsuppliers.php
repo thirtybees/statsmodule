@@ -30,34 +30,33 @@ if (!defined('_TB_VERSION_')) {
 class StatsBestSuppliers extends StatsModule
 {
     /**
-     * @var null
-     */
-    protected $html = null;
-    /**
-     * @var null
-     */
-    protected $query = null;
-    /**
      * @var array[]|null
      */
     protected $columns = null;
+
     /**
      * @var string|null
      */
     protected $default_sort_column = null;
+
     /**
      * @var string|null
      */
     protected $default_sort_direction = null;
+
     /**
      * @var string|null
      */
     protected $empty_message = null;
+
     /**
      * @var string|null
      */
     protected $paging_message = null;
 
+    /**
+     * @throws PrestaShopException
+     */
     public function __construct()
     {
         parent::__construct();
@@ -111,7 +110,7 @@ class StatsBestSuppliers extends StatsModule
         if (Tools::getValue('export') == 1) {
             $this->csvExport($engine_params);
         }
-        $this->html = '
+        return '
 			<div class="panel-heading">
 				' . $this->displayName . '
 			</div>
@@ -119,7 +118,6 @@ class StatsBestSuppliers extends StatsModule
 			<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
 				<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 			</a>';
-        return $this->html;
     }
 
     /**
@@ -150,7 +148,7 @@ class StatsBestSuppliers extends StatsModule
     {
         $this->_totalCount = $this->getTotalCount();
 
-        $this->query = 'SELECT s.name, SUM(od.product_quantity) AS quantity, ROUND(SUM(od.product_quantity * od.product_price) / o.conversion_rate, 2) AS sales
+        $query = 'SELECT s.name, SUM(od.product_quantity) AS quantity, ROUND(SUM(od.product_quantity * od.product_price) / o.conversion_rate, 2) AS sales
 				FROM ' . _DB_PREFIX_ . 'order_detail od
 				LEFT JOIN ' . _DB_PREFIX_ . 'product p ON p.id_product = od.product_id
 				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = od.id_order
@@ -161,15 +159,15 @@ class StatsBestSuppliers extends StatsModule
 					AND s.id_supplier IS NOT NULL
 				GROUP BY p.id_supplier';
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `' . $this->_sort . '`';
+            $query .= ' ORDER BY `' . $this->_sort . '`';
             if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
-                $this->query .= ' ' . $this->_direction;
+                $query .= ' ' . $this->_direction;
             }
         }
 
         if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
-            $this->query .= ' LIMIT ' . $this->_start . ', ' . ($this->_limit);
+            $query .= ' LIMIT ' . $this->_start . ', ' . ($this->_limit);
         }
-        $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+        $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
     }
 }

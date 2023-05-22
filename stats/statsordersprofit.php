@@ -30,107 +30,12 @@ if (!defined('_TB_VERSION_')) {
 class StatsOrdersProfit extends StatsModule
 {
     /**
-     * @var null
+     * @throws PrestaShopException
      */
-    protected $html = null;
-    /**
-     * @var null
-     */
-    protected $query = null;
-    /**
-     * @var array[]|null
-     */
-    protected $columns = null;
-    /**
-     * @var string|null
-     */
-    protected $default_sort_column = null;
-    /**
-     * @var string|null
-     */
-    protected $default_sort_direction = null;
-    /**
-     * @var string|null
-     */
-    protected $empty_message = null;
-    /**
-     * @var string|null
-     */
-    protected $paging_message = null;
-
     public function __construct()
     {
         parent::__construct();
         $this->type = static::TYPE_GRID;
-
-        $this->default_sort_column = 'date_add';
-        $this->default_sort_direction = 'ASC';
-        $this->empty_message = $this->l('An empty record-set was returned.');
-        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
-
-        $this->columns = [
-            [
-                'id' => 'number',
-                'header' => $this->l('Order ID'),
-                'dataIndex' => 'number',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'invoice_number',
-                'header' => $this->l('Invoice Number'),
-                'dataIndex' => 'invoice_number',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'invoice_date',
-                'header' => $this->l('Invoice Date'),
-                'dataIndex' => 'invoice_date',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'paid',
-                'header' => $this->l('Paid'),
-                'dataIndex' => 'paid',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'total',
-                'header' => $this->l('Total'),
-                'dataIndex' => 'total',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'shipping',
-                'header' => $this->l('Shipping'),
-                'dataIndex' => 'shipping',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'TaxTotal',
-                'header' => $this->l('Tax'),
-                'dataIndex' => 'TaxTotal',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'cost',
-                'header' => $this->l('Cost'),
-                'dataIndex' => 'cost',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'totalDiscount',
-                'header' => $this->l('Discount'),
-                'dataIndex' => 'totalDiscount',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'profit',
-                'header' => $this->l('Profit'),
-                'dataIndex' => 'profit',
-                'align' => 'center',
-            ],
-        ];
-
         $this->displayName = $this->l('Orders Profit');
     }
 
@@ -143,11 +48,72 @@ class StatsOrdersProfit extends StatsModule
         $engine_params = [
             'id' => 'id_product',
             'title' => $this->displayName,
-            'columns' => $this->columns,
-            'defaultSortColumn' => $this->default_sort_column,
-            'defaultSortDirection' => $this->default_sort_direction,
-            'emptyMessage' => $this->empty_message,
-            'pagingMessage' => $this->paging_message,
+            'columns' => [
+                [
+                    'id' => 'number',
+                    'header' => $this->l('Order ID'),
+                    'dataIndex' => 'number',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'invoice_number',
+                    'header' => $this->l('Invoice Number'),
+                    'dataIndex' => 'invoice_number',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'invoice_date',
+                    'header' => $this->l('Invoice Date'),
+                    'dataIndex' => 'invoice_date',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'paid',
+                    'header' => $this->l('Paid'),
+                    'dataIndex' => 'paid',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'total',
+                    'header' => $this->l('Total'),
+                    'dataIndex' => 'total',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'shipping',
+                    'header' => $this->l('Shipping'),
+                    'dataIndex' => 'shipping',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'TaxTotal',
+                    'header' => $this->l('Tax'),
+                    'dataIndex' => 'TaxTotal',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'cost',
+                    'header' => $this->l('Cost'),
+                    'dataIndex' => 'cost',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'totalDiscount',
+                    'header' => $this->l('Discount'),
+                    'dataIndex' => 'totalDiscount',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'profit',
+                    'header' => $this->l('Profit'),
+                    'dataIndex' => 'profit',
+                    'align' => 'center',
+                ],
+            ],
+            'defaultSortColumn' => 'date_add',
+            'defaultSortDirection' => 'ASC',
+            'emptyMessage' => $this->l('An empty record-set was returned.'),
+            'pagingMessage' => sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}'),
         ];
 
         if (Tools::getValue('export')) {
@@ -172,7 +138,7 @@ class StatsOrdersProfit extends StatsModule
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $date_between = $this->getDate();
 
-        $this->query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%Y-%m-%d\') as invoice_date, ROUND( o.total_paid / o.conversion_rate , 2 ) as paid,  ROUND((o.total_paid / o.conversion_rate + o.total_discounts_tax_incl / o.conversion_rate), 2 ) as total, ROUND((o.total_paid / o.conversion_rate - total_paid_tax_excl / o.conversion_rate) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
+        $query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%Y-%m-%d\') as invoice_date, ROUND( o.total_paid / o.conversion_rate , 2 ) as paid,  ROUND((o.total_paid / o.conversion_rate + o.total_discounts_tax_incl / o.conversion_rate), 2 ) as total, ROUND((o.total_paid / o.conversion_rate - total_paid_tax_excl / o.conversion_rate) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
 			SELECT ROUND(SUM(od.original_wholesale_price / o.conversion_rate * od.product_quantity), 2)
                         FROM ' . _DB_PREFIX_ . 'order_detail od
 			LEFT JOIN ' . _DB_PREFIX_ . 'product p ON od.product_id = p.id_product
@@ -195,14 +161,14 @@ class StatsOrdersProfit extends StatsModule
 			GROUP BY o.`id_order`';
 
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
+            $query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
             if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
-                $this->query .= ' ' . $this->_direction;
+                $query .= ' ' . $this->_direction;
             }
         }
 
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
         foreach ($values as &$value) {
             $value['paid'] = Tools::displayPrice($value['paid'], $currency);
             $value['total'] = Tools::displayPrice($value['total'], $currency);

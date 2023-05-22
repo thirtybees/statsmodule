@@ -33,18 +33,22 @@ class StatsProduct extends StatsModule
      * @var string
      */
     protected $html = '';
+
     /**
      * @var string
      */
     protected $query = '';
+
     /**
      * @var int
      */
     protected $option = 0;
+
     /**
      * @var int
      */
     protected $id_product = 0;
+
     /**
      * @var bool
      */

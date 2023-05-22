@@ -33,10 +33,12 @@ class SEKeywords extends StatsModule
      * @var string
      */
     protected $html = '';
+
     /**
      * @var string
      */
     protected $query = '';
+
     /**
      * @var string
      */

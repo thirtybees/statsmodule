@@ -33,21 +33,6 @@ class StatsBestCategories extends StatsModule
     /**
      * @var string
      */
-    protected $html;
-
-    /**
-     * @var string
-     */
-    protected $query;
-
-    /**
-     * @var array[]
-     */
-    protected $columns;
-
-    /**
-     * @var string
-     */
     protected $default_sort_column;
 
     /**
@@ -74,40 +59,6 @@ class StatsBestCategories extends StatsModule
         $this->default_sort_direction = 'DESC';
         $this->empty_message = $this->l('Empty recordset returned');
         $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
-
-        $this->columns = [
-            [
-                'id' => 'name',
-                'header' => $this->l('Name'),
-                'dataIndex' => 'name',
-                'align' => 'left',
-            ],
-            [
-                'id' => 'totalQuantitySold',
-                'header' => $this->l('Total Quantity Sold'),
-                'dataIndex' => 'totalQuantitySold',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'totalPriceSold',
-                'header' => $this->l('Total Price'),
-                'dataIndex' => 'totalPriceSold',
-                'align' => 'right',
-            ],
-            [
-                'id' => 'totalWholeSalePriceSold',
-                'header' => $this->l('Total Margin'),
-                'dataIndex' => 'totalWholeSalePriceSold',
-                'align' => 'center',
-            ],
-            [
-                'id' => 'totalPageViewed',
-                'header' => $this->l('Total Viewed'),
-                'dataIndex' => 'totalPageViewed',
-                'align' => 'center',
-            ],
-        ];
-
         $this->displayName = $this->l('Best categories');
     }
 
@@ -123,7 +74,38 @@ class StatsBestCategories extends StatsModule
         $engine_params = [
             'id' => 'id_category',
             'title' => $this->displayName,
-            'columns' => $this->columns,
+            'columns' => [
+                [
+                    'id' => 'name',
+                    'header' => $this->l('Name'),
+                    'dataIndex' => 'name',
+                    'align' => 'left',
+                ],
+                [
+                    'id' => 'totalQuantitySold',
+                    'header' => $this->l('Total Quantity Sold'),
+                    'dataIndex' => 'totalQuantitySold',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'totalPriceSold',
+                    'header' => $this->l('Total Price'),
+                    'dataIndex' => 'totalPriceSold',
+                    'align' => 'right',
+                ],
+                [
+                    'id' => 'totalWholeSalePriceSold',
+                    'header' => $this->l('Total Margin'),
+                    'dataIndex' => 'totalWholeSalePriceSold',
+                    'align' => 'center',
+                ],
+                [
+                    'id' => 'totalPageViewed',
+                    'header' => $this->l('Total Viewed'),
+                    'dataIndex' => 'totalPageViewed',
+                    'align' => 'center',
+                ],
+            ],
             'defaultSortColumn' => $this->default_sort_column,
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
@@ -137,7 +119,7 @@ class StatsBestCategories extends StatsModule
             $this->csvExport($engine_params);
         }
 
-        $this->html = '
+        return '
 			<div class="panel-heading">
 				<i class="icon-sitemap"></i> ' . $this->displayName . '
 			</div>
@@ -165,7 +147,6 @@ class StatsBestCategories extends StatsModule
                     });
                 });
             </script>';
-        return $this->html;
     }
 
     /**
@@ -215,7 +196,7 @@ class StatsBestCategories extends StatsModule
         }
 
         // Get best categories
-        $this->query = '
+        $query = '
 				SELECT SQL_CALC_FOUND_ROWS ca.`id_category`, CONCAT(parent.name, \' > \', calang.`name`) AS name,
 				IFNULL(SUM(t.`totalQuantitySold`), 0) AS totalQuantitySold,
 				ROUND(IFNULL(SUM(t.`totalPriceSold`), 0), 2) AS totalPriceSold,
@@ -272,17 +253,17 @@ class StatsBestCategories extends StatsModule
 			HAVING ca.`id_category` != 1';
 
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
+            $query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
             if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
-                $this->query .= ' ' . $this->_direction;
+                $query .= ' ' . $this->_direction;
             }
         }
 
         if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
-            $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
+            $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
         foreach ($values as &$value) {
 
             if ((int)Tools::getIsset('export') == false) {

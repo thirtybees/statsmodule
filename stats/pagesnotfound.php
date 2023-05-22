@@ -29,11 +29,10 @@ if (!defined('_TB_VERSION_')) {
 
 class PagesNotFound extends StatsModule
 {
-    /**
-     * @var string
-     */
-    protected $html = '';
 
+    /**
+     * @throws PrestaShopException
+     */
     public function __construct()
     {
         parent::__construct();
@@ -79,20 +78,22 @@ class PagesNotFound extends StatsModule
      */
     public function hookAdminStatsModules()
     {
+        $html = '';
+
         if (Tools::isSubmit('submitTruncatePNF')) {
             Db::getInstance()->execute('TRUNCATE `' . _DB_PREFIX_ . 'pagenotfound`');
-            $this->html .= '<div class="alert alert-warning"> ' . $this->l('The "pages not found" cache has been emptied.') . '</div>';
+            $html .= '<div class="alert alert-warning"> ' . $this->l('The "pages not found" cache has been emptied.') . '</div>';
         } else {
             if (Tools::isSubmit('submitDeletePNF')) {
                 Db::getInstance()->execute(
                     'DELETE FROM `' . _DB_PREFIX_ . 'pagenotfound`
 				WHERE date_add BETWEEN ' . ModuleGraph::getDateBetween()
                 );
-                $this->html .= '<div class="alert alert-warning"> ' . $this->l('The "pages not found" cache has been deleted.') . '</div>';
+                $html .= '<div class="alert alert-warning"> ' . $this->l('The "pages not found" cache has been deleted.') . '</div>';
             }
         }
 
-        $this->html .= '
+        $html .= '
 			<div class="panel-heading">
 				' . $this->displayName . '
 			</div>
@@ -110,12 +111,12 @@ class PagesNotFound extends StatsModule
 				</p>
 			</div>';
         if (!file_exists($this->_normalizeDirectory(_PS_ROOT_DIR_) . '.htaccess')) {
-            $this->html .= '<div class="alert alert-warning">' . $this->l('You must use a .htaccess file to redirect 404 errors to the "404.php" page.') . '</div>';
+            $html .= '<div class="alert alert-warning">' . $this->l('You must use a .htaccess file to redirect 404 errors to the "404.php" page.') . '</div>';
         }
 
         $pages = $this->getPages();
         if (count($pages)) {
-            $this->html .= '
+            $html .= '
 			<table class="table">
 				<thead>
 					<tr>
@@ -128,7 +129,7 @@ class PagesNotFound extends StatsModule
             foreach ($pages as $ru => $hrs) {
                 foreach ($hrs as $hr => $counter) {
                     if ($hr != 'nb') {
-                        $this->html .= '
+                        $html .= '
 						<tr>
 							<td><a href="' . $ru . '-admin404">' . wordwrap($ru, 30, '<br />', true) . '</a></td>
 							<td><a href="' . Tools::getProtocol() . $hr . '">' . wordwrap($hr, 40, '<br />', true) . '</a></td>
@@ -137,15 +138,15 @@ class PagesNotFound extends StatsModule
                     }
                 }
             }
-            $this->html .= '
+            $html .= '
 				</tbody>
 			</table>';
         } else {
-            $this->html .= '<div class="alert alert-warning"> ' . $this->l('No "page not found" issue registered for now.') . '</div>';
+            $html .= '<div class="alert alert-warning"> ' . $this->l('No "page not found" issue registered for now.') . '</div>';
         }
 
         if (count($pages)) {
-            $this->html .= '
+            $html .= '
 				<h4>' . $this->l('Empty database') . '</h4>
 				<form action="' . Tools::htmlEntitiesUtf8($_SERVER['REQUEST_URI']) . '" method="post">
 					<button type="submit" class="btn btn-default" name="submitDeletePNF">
@@ -157,7 +158,7 @@ class PagesNotFound extends StatsModule
 				</form>';
         }
 
-        return $this->html;
+        return $html;
     }
 
     /**

@@ -30,34 +30,33 @@ if (!defined('_TB_VERSION_')) {
 class StatsBestProducts extends StatsModule
 {
     /**
-     * @var null
-     */
-    protected $html = null;
-    /**
-     * @var null
-     */
-    protected $query = null;
-    /**
      * @var array[]|null
      */
     protected $columns = null;
+
     /**
      * @var string|null
      */
     protected $default_sort_column = null;
+
     /**
      * @var string|null
      */
     protected $default_sort_direction = null;
+
     /**
      * @var string|null
      */
     protected $empty_message = null;
+
     /**
      * @var string|null
      */
     protected $paging_message = null;
 
+    /**
+     * @throws PrestaShopException
+     */
     public function __construct()
     {
         parent::__construct();
@@ -167,7 +166,7 @@ class StatsBestProducts extends StatsModule
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
 
-        $this->query = 'SELECT SQL_CALC_FOUND_ROWS p.reference, p.id_product, pl.name,
+        $query = 'SELECT SQL_CALC_FOUND_ROWS p.reference, p.id_product, pl.name,
 				ROUND(AVG(od.product_price / o.conversion_rate), 2) as avgPriceSold,
 				IFNULL(stock.quantity, 0) as quantity,
 				IFNULL(SUM(od.product_quantity), 0) AS totalQuantitySold,
@@ -195,17 +194,17 @@ class StatsBestProducts extends StatsModule
 				GROUP BY od.product_id';
 
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
+            $query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
             if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
-                $this->query .= ' ' . $this->_direction;
+                $query .= ' ' . $this->_direction;
             }
         }
 
         if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
-            $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
+            $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
         foreach ($values as &$value) {
             $value['avgPriceSold'] = Tools::displayPrice($value['avgPriceSold'], $currency);
             $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);
