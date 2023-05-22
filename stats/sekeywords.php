@@ -75,7 +75,7 @@ class SEKeywords extends StatsModule
 
         if ($keywords = $this->getKeywords($_SERVER['HTTP_REFERER'])) {
             Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'sekeyword` (`keyword`, `date_add`, `id_shop`, `id_shop_group`)
-										VALUES (\'' . pSQL(Tools::strtolower(trim($keywords))) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')');
+										VALUES (\'' . pSQL(mb_strtolower(trim($keywords))) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')');
         }
     }
 
@@ -204,11 +204,11 @@ class SEKeywords extends StatsModule
                     return false;
                 }
 
-                if ($k_array[0][0] == '&' && Tools::strlen($k_array[0]) == 1) {
+                if ($k_array[0][0] == '&' && mb_strlen($k_array[0]) == 1) {
                     return false;
                 }
 
-                return urldecode(str_replace('+', ' ', ltrim(Tools::substr(rtrim($k_array[0], '&'), Tools::strlen($varname) + 1), '=')));
+                return urldecode(str_replace('+', ' ', ltrim(mb_substr(rtrim($k_array[0], '&'), mb_strlen($varname) + 1), '=')));
             }
         }
 

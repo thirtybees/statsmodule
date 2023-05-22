@@ -206,7 +206,7 @@ class StatsLive extends StatsModule
                 $this->html .= '<tr' . ($irow++ % 2 ? ' class="alt_row"' : '') . '>
 						<td class="center">' . $visitor['id_guest'] . '</td>
 						<td class="center">' . long2ip($visitor['ip_address']) . '</td>
-						<td class="center">' . Tools::substr($visitor['date_add'], 11) . '</td>
+						<td class="center">' . substr($visitor['date_add'], 11) . '</td>
 						<td class="center">' . (isset($visitor['page']) ? $visitor['page'] : Translate::getModuleTranslation('statsmodule', 'Undefined', 'statsmodule')) . '</td>
 						<td class="center">' . (empty($visitor['http_referer']) ? Translate::getModuleTranslation('statsmodule', 'None', 'statsmodule') : parse_url($visitor['http_referer'], PHP_URL_HOST)) . '</td>
 					</tr>';

@@ -223,7 +223,7 @@ class StatsCheckUp extends StatsModule
 					<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Item', 'statsmodule') . '</span></th>
 					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Active', 'statsmodule') . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Desc.', 'statsmodule') . ' (' . Tools::strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Desc.', 'statsmodule') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
         }
         $this->html .= '
 					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Images', 'statsmodule') . '</span></th>
@@ -255,7 +255,7 @@ class StatsCheckUp extends StatsModule
             );
             foreach ($descriptions as $description) {
                 if (isset($description['iso_code']) && isset($description['description'])) {
-                    $row['desclength_' . $description['iso_code']] = Tools::strlen(strip_tags($description['description']));
+                    $row['desclength_' . $description['iso_code']] = mb_strlen(strip_tags($description['description']));
                 }
                 if (isset($description['iso_code'])) {
                     $scores['description_' . $description['iso_code']] = (!isset($row['desclength_' . $description['iso_code']]) || $row['desclength_' . $description['iso_code']] < Configuration::get('CHECKUP_DESCRIPTIONS_LT') ? 0 : ($row['desclength_' . $description['iso_code']] > Configuration::get('CHECKUP_DESCRIPTIONS_GT') ? 2 : 1));
@@ -268,7 +268,7 @@ class StatsCheckUp extends StatsModule
             $this->html .= '
 				<tr>
 					<td>' . $row['id_product'] . '</td>
-					<td><a href="' . Tools::safeOutput('index.php?tab=AdminProducts&updateproduct&id_product=' . $row['id_product'] . '&token=' . $tokenProducts) . '">' . Tools::substr($row['name'], 0, 42) . '</a></td>
+					<td><a href="' . Tools::safeOutput('index.php?tab=AdminProducts&updateproduct&id_product=' . $row['id_product'] . '&token=' . $tokenProducts) . '">' . mb_substr($row['name'], 0, 42) . '</a></td>
 					<td class="center">' . $arrayColors[$scores['active']] . '</td>';
             foreach ($languages as $language) {
                 if (isset($row['desclength_' . $language['iso_code']])) {

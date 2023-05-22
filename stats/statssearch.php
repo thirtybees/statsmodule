@@ -88,7 +88,7 @@ class StatsSearch extends StatsModule
 			<tbody>';
 
         foreach ($result as $row) {
-            if (Tools::strlen($row['keywords']) >= Configuration::get('PS_SEARCH_MINWORDLEN')) {
+            if (mb_strlen($row['keywords']) >= Configuration::get('PS_SEARCH_MINWORDLEN')) {
                 $table .= '<tr>
 					<td>' . $row['keywords'] . '</td>
 					<td>' . $row['occurences'] . '</td>

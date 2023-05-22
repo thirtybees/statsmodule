@@ -160,7 +160,7 @@ class StatsBestVouchers extends StatsModule
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
-            if (isset($this->_direction) && (Tools::strtoupper($this->_direction) == 'ASC' || Tools::strtoupper($this->_direction) == 'DESC')) {
+            if (isset($this->_direction) && (strtoupper($this->_direction) == 'ASC' || strtoupper($this->_direction) == 'DESC')) {
                 $this->query .= ' ' . pSQL($this->_direction);
             }
         }

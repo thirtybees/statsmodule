@@ -204,7 +204,7 @@ class StatsForecast extends StatsModule
 
             $date_from_greg = ($this->context->cookie->stats_granularity != 42
                 ? 'LIKE \'' . $row['fix_date'] . '%\''
-                : 'BETWEEN \'' . Tools::substr($row['fix_date'], 0, 10) . ' 00:00:00\' AND DATE_ADD(\'' . Tools::substr($row['fix_date'], 0, 8) . Tools::substr($row['fix_date'], 8, 2) . ' 23:59:59\', INTERVAL 7 DAY)');
+                : 'BETWEEN \'' . substr($row['fix_date'], 0, 10) . ' 00:00:00\' AND DATE_ADD(\'' . substr($row['fix_date'], 0, 8) . substr($row['fix_date'], 8, 2) . ' 23:59:59\', INTERVAL 7 DAY)');
             $row['registrations'] = Db::getInstance()->getValue('
 			SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'customer
 			WHERE date_add BETWEEN ' . ModuleGraph::getDateBetween() . '

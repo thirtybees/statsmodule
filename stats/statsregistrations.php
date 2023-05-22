@@ -191,7 +191,7 @@ class StatsRegistrations extends StatsModule
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
         foreach ($result as $row) {
-            $this->_values[(int)Tools::substr($row['date_add'], 0, 4)]++;
+            $this->_values[(int)substr($row['date_add'], 0, 4)]++;
         }
     }
 
@@ -223,7 +223,7 @@ class StatsRegistrations extends StatsModule
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
         foreach ($result as $row) {
-            $this->_values[(int)Tools::substr($row['date_add'], 8, 2)]++;
+            $this->_values[(int)substr($row['date_add'], 8, 2)]++;
         }
     }
 
@@ -237,7 +237,7 @@ class StatsRegistrations extends StatsModule
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
         foreach ($result as $row) {
-            $this->_values[(int)Tools::substr($row['date_add'], 11, 2)]++;
+            $this->_values[(int)substr($row['date_add'], 11, 2)]++;
         }
     }
 }
