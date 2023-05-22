@@ -128,7 +128,7 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, [ 'type' => 'line', 'option' => '1-' . (int)Tools::getValue('id_country'), 'layers' => 2 ]) . '
+						' . $this->engine([ 'type' => 'line', 'option' => '1-' . (int)Tools::getValue('id_country'), 'layers' => 2 ]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
@@ -145,7 +145,7 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, ['type' => 'line', 'option' => '2-' . (int)Tools::getValue('id_country')]) . '
+						' . $this->engine(['type' => 'line', 'option' => '2-' . (int)Tools::getValue('id_country')]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
@@ -164,7 +164,7 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . ($totals['orderCount'] ? $this->engine($this->type, ['type' => 'pie', 'option' => '3-' . (int)Tools::getValue('id_country') ]) : $this->l('No orders for this period.')) . '
+						' . ($totals['orderCount'] ? $this->engine(['type' => 'pie', 'option' => '3-' . (int)Tools::getValue('id_country') ]) : $this->l('No orders for this period.')) . '
 					</div>
 					<div class="col-lg-4">
 						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=3') . '">

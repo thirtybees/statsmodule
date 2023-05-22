@@ -88,7 +88,7 @@ class StatsCarrier extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . ($result['total'] ? $this->engine($this->type, ['type' => 'pie', 'option' => Tools::getValue('id_order_state')]) . '
+						' . ($result['total'] ? $this->engine(['type' => 'pie', 'option' => Tools::getValue('id_order_state')]) . '
 					</div>
 					<div class="col-lg-4">
 						<a href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=language') . '" class="btn btn-default">

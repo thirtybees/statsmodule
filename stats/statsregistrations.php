@@ -147,7 +147,7 @@ class StatsRegistrations extends StatsModule
 		<div class="row row-margin-bottom">
 			<div class="col-lg-12">
 				<div class="col-lg-8">
-					' . $this->engine($this->type, ['type' => 'line']) . '
+					' . $this->engine(['type' => 'line']) . '
 				</div>
 				<div class="col-lg-4">
 					<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">

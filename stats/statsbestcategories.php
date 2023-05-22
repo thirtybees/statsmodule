@@ -123,7 +123,7 @@ class StatsBestCategories extends StatsModule
 			<div class="panel-heading">
 				<i class="icon-sitemap"></i> ' . $this->displayName . '
 			</div>
-			' . $this->engine($this->type, $engine_params) . '
+			' . $this->engine($engine_params) . '
             <div class="row form-horizontal">
                 <div class="col-md-3">
                     <a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">

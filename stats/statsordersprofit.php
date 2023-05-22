@@ -121,7 +121,7 @@ class StatsOrdersProfit extends StatsModule
         }
 
         return '<div class="panel-heading">' . $this->displayName . '</div>
-		' . $this->engine($this->type, $engine_params) . '
+		' . $this->engine($engine_params) . '
 		<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
 			<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 		</a>';

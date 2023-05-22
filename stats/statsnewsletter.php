@@ -91,7 +91,7 @@ class StatsNewsletter extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, ['type' => 'line', 'layers' => 3]) . '
+						' . $this->engine(['type' => 'line', 'layers' => 3]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">

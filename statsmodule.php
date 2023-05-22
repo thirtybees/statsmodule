@@ -206,14 +206,20 @@ class StatsModule extends ModuleStats
     }
 
     /**
-     * @param string $type
      * @param array $params
      *
-     * @return mixed
+     * @return string
+     * @throws PrestaShopException
      */
-    protected function engine($type, $params)
+    protected function engine($params)
     {
-        return call_user_func_array([$this, 'engine' . $type], [$params]);
+        switch ($this->type) {
+            case static::TYPE_GRAPH:
+                return $this->engineGraph($params);
+            case static::TYPE_GRID:
+                return $this->engineGrid($params);
+        }
+        throw new PrestaShopException("Cant generate statis: invalid type");
     }
 
     /**

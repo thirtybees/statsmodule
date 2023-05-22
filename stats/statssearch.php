@@ -100,7 +100,7 @@ class StatsSearch extends StatsModule
 		</table>';
 
         if (count($result)) {
-            $this->html .= '<div>' . $this->engine($this->type, ['type' => 'pie']) . '</div>
+            $this->html .= '<div>' . $this->engine(['type' => 'pie']) . '</div>
 							<a class="btn btn-default" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1">
 								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 							</a>' . $table;

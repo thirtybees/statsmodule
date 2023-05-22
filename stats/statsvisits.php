@@ -120,7 +120,7 @@ class StatsVisits extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . ($total_visits ? $this->engine($this->type, $graph_params) . '
+						' . ($total_visits ? $this->engine($graph_params) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">

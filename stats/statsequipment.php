@@ -142,7 +142,7 @@ class StatsEquipment extends StatsModule
 		<div class="row row-margin-bottom">
 			<div class="col-lg-12">
 				<div class="col-lg-8">
-					' . $this->engine($this->type, ['type' => 'pie', 'option' => 'wb']) . '
+					' . $this->engine(['type' => 'pie', 'option' => 'wb']) . '
 				</div>
 				<div class="col-lg-4">
 					<p>' . $this->l('Indicates the percentage of each web browser used by customers.') . '</p>
@@ -156,7 +156,7 @@ class StatsEquipment extends StatsModule
 		<div class="row row-margin-bottom">
 			<div class="col-lg-12">
 				<div class="col-lg-8">
-					' . $this->engine($this->type, ['type' => 'pie', 'option' => 'os']) . '
+					' . $this->engine(['type' => 'pie', 'option' => 'os']) . '
 				</div>
 				<div class="col-lg-4">
 					<p>' . $this->l('Indicates the percentage of each operating system used by customers.') . '</p>

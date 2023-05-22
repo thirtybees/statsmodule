@@ -111,7 +111,7 @@ class StatsOrigin extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, ['type' => 'pie']) . '
+						' . $this->engine(['type' => 'pie']) . '
 					</div>
 					<div class="col-lg-4">
 						<a href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=top') . '" class="btn btn-default">

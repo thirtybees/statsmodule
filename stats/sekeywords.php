@@ -140,7 +140,7 @@ class SEKeywords extends StatsModule
                 $table .= '<tr><td>' . $keyword . '</td><td>' . $occurences . '</td></tr>';
             }
             $table .= '</tbody></table>';
-            $this->html .= '<div>' . $this->engine($this->type, ['type' => 'pie']) . '</div>
+            $this->html .= '<div>' . $this->engine(['type' => 'pie']) . '</div>
 			<a class="btn btn-default" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=language"><<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '</a>
 			' . $form . '<br/>' . $table;
         } else {

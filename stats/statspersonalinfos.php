@@ -120,7 +120,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, [
+							' . $this->engine([
                     'type' => 'pie',
                     'option' => 'gender',
                 ]) . '
@@ -137,7 +137,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, [ 'type' => 'pie', 'option' => 'age' ]) . '
+							' . $this->engine([ 'type' => 'pie', 'option' => 'age' ]) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . $this->l('Age ranges allow you to better understand target demographics.') . '</p>
@@ -151,7 +151,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, [ 'type' => 'pie', 'option' => 'country' ]) . '
+							' . $this->engine([ 'type' => 'pie', 'option' => 'country' ]) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . $this->l('Country distribution allows you to analyze which part of the World your customers are shopping from.') . '</p>
@@ -165,7 +165,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, ['type' => 'pie', 'option' => 'currency']) . '
+							' . $this->engine(['type' => 'pie', 'option' => 'currency']) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . $this->l('Currency range allows you to determine which currency your customers are using.') . '</p>
@@ -179,7 +179,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, ['type' => 'pie', 'option' => 'language']) . '
+							' . $this->engine(['type' => 'pie', 'option' => 'language']) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . $this->l('Language distribution allows you to analyze the browsing language used by your customers.') . '</p>

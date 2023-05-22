@@ -306,7 +306,7 @@ class StatsProduct extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, [ 'layers' => 2, 'type' => 'line', 'option' => '1-' . $id_product ]) . '
+						' . $this->engine([ 'layers' => 2, 'type' => 'line', 'option' => '1-' . $id_product ]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
@@ -327,7 +327,7 @@ class StatsProduct extends StatsModule
                 if ($hasAttribute) {
                     $this->html .= '
                         <h3 class="space">' . $this->l('Attribute sales distribution') . '</h3>
-                        <center>' . $this->engine($this->type, ['type' => 'pie', 'option' => '3-' . $id_product]) . '</center><br />
+                        <center>' . $this->engine(['type' => 'pie', 'option' => '3-' . $id_product]) . '</center><br />
                         <a href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=2"><img src="../img/admin/asterisk.gif" alt=""/>' . $this->l('CSV Export') . '</a>';
                 }
 

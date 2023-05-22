@@ -152,7 +152,7 @@ class StatsBestCustomers extends StatsModule
 					' . $this->l('These operations encourage clients to buy products and visit your online store more regularly.') . '
 				</div>
 			</div>
-		' . $this->engine($this->type, $engine_params) . '
+		' . $this->engine($engine_params) . '
 		<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=') . '1">
 			<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 		</a>';
