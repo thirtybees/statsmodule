@@ -63,24 +63,6 @@ class SEKeywords extends StatsModule
     }
 
     /**
-     * @param array $params
-     *
-     * @return void
-     * @throws PrestaShopException
-     */
-    public function hookTop($params)
-    {
-        if (!isset($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], Tools::getHttpHost(false, false) == 0)) {
-            return;
-        }
-
-        if ($keywords = $this->getKeywords($_SERVER['HTTP_REFERER'])) {
-            Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'sekeyword` (`keyword`, `date_add`, `id_shop`, `id_shop_group`)
-										VALUES (\'' . pSQL(mb_strtolower(trim($keywords))) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')');
-        }
-    }
-
-    /**
      * @return string
      *
      * @throws PrestaShopException
@@ -166,54 +148,6 @@ class SEKeywords extends StatsModule
         }
 
         return $this->html;
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return false|string
-     * @throws PrestaShopException
-     */
-    public function getKeywords($url)
-    {
-        if (!Validate::isAbsoluteUrl($url)) {
-            return false;
-        }
-
-        $parsed_url = parse_url($url);
-        if (!isset($parsed_url['query']) && isset($parsed_url['fragment'])) {
-            $parsed_url['query'] = $parsed_url['fragment'];
-        }
-
-        if (!isset($parsed_url['query'])) {
-            return false;
-        }
-
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('SELECT `server`, `getvar` FROM `' . _DB_PREFIX_ . 'search_engine`');
-        foreach ($result as $row) {
-            $host =& $row['server'];
-            $varname =& $row['getvar'];
-            if (strstr($parsed_url['host'], $host)) {
-                $k_array = [];
-                preg_match('/[^a-zA-Z&]?' . $varname . '=.*\&' . '/U', $parsed_url['query'], $k_array);
-
-                if (empty($k_array[0])) {
-                    preg_match('/[^a-zA-Z&]?' . $varname . '=.*$' . '/', $parsed_url['query'], $k_array);
-                }
-
-                if (empty($k_array[0])) {
-                    return false;
-                }
-
-                if ($k_array[0][0] == '&' && mb_strlen($k_array[0]) == 1) {
-                    return false;
-                }
-
-                return urldecode(str_replace('+', ' ', ltrim(mb_substr(rtrim($k_array[0], '&'), mb_strlen($varname) + 1), '=')));
-            }
-        }
-
-        return false;
     }
 
     /**

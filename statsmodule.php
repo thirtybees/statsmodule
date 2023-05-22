@@ -259,55 +259,43 @@ class StatsModule extends ModuleStats
     /**
      * @param array $params Module params
      *
-     * @return string
+     * @return void
      * @throws PrestaShopException
      */
     public function hookTop($params)
     {
-        return $this->propagateHook('top', $params);
-    }
+        $uri = $_SERVER['REQUEST_URI'] ?: '';
+        $referer = $_SERVER['HTTP_REFERER'] ?: '';
+        $controller = $this->context->controller;
 
-    /**
-     * @param string $hookName
-     * @param array $params
-     *
-     * @return string
-     * @throws PrestaShopException
-     */
-    protected function propagateHook($hookName, $params)
-    {
-        $result = '';
-        $hookId = Hook::getIdByName($hookName);
-        $hookName = Hook::getNameById($hookId);
-        $retroName = Hook::getRetroHookName($hookName);
-
-        $methods = ['hook' . ucfirst($hookName)];
-        if ($retroName) {
-            $methods[] = 'hook' . ucfirst($retroName);
+        // track page not found
+        if (Validate::isUrl($uri) && get_class($controller) === 'PageNotFoundController') {
+            if (empty($referer) || Validate::isAbsoluteUrl($referer)) {
+                Db::getInstance()->insert('pagenotfound', [
+                    'request_uri' => pSQL($uri),
+                    'http_referer' => pSQL($referer),
+                    'date_add' => date('Y-m-d H:I:s'),
+                    'id_shop' => (int)$this->context->shop->id,
+                    'id_shop_group' => (int)$this->context->shop->id_shop_group
+                ]);
+            }
         }
 
-        foreach ($this->modules as $moduleName) {
-            if (include_once dirname(__FILE__) . '/stats/' . $moduleName . '.php') {
-                try {
-                    $refl = new ReflectionClass($moduleName);
-                    foreach ($methods as $methodName) {
-                        if ($refl->hasMethod($methodName)) {
-                            $methodInfo = $refl->getMethod($methodName);
-                            if ($methodInfo->class !== static::class) {
-                                if (!isset($instance)) {
-                                    $instance = $this->getSubmoduleInstance($moduleName);
-                                }
-                                $result .= $instance->{$methodName}($params);
-                            }
-                        }
-                    }
-                    unset($instance);
-                } catch (ReflectionException $e) {
-                    throw new PrestaShopException("Failed to propagate hook $hookName", 0, $e);
+        // track search engine query words, if passed in referrer
+        if ($referer) {
+            $pos = strpos($referer, Tools::getHttpHost());
+            if ($pos === false) {
+                $keywords = $this->getKeywords($referer);
+                if ($keywords) {
+                    Db::getInstance()->insert('sekeyword', [
+                        'keyword' => pSQL(mb_strtolower(trim($keywords))),
+                        'date_add' => date('Y-m-d H:I:s'),
+                        'id_shop' => (int)$this->context->shop->id,
+                        'id_shop_group' => (int)$this->context->shop->id_shop_group
+                    ]);
                 }
             }
         }
-        return $result;
     }
 
     /**
@@ -374,6 +362,55 @@ class StatsModule extends ModuleStats
     public function hookDisplayAdminStatsModules()
     {
     }
+
+    /**
+     * @param string $url
+     *
+     * @return false|string
+     * @throws PrestaShopException
+     */
+    public function getKeywords($url)
+    {
+        if (!Validate::isAbsoluteUrl($url)) {
+            return false;
+        }
+
+        $parsed_url = parse_url($url);
+        if (!isset($parsed_url['query']) && isset($parsed_url['fragment'])) {
+            $parsed_url['query'] = $parsed_url['fragment'];
+        }
+
+        if (!isset($parsed_url['query'])) {
+            return false;
+        }
+
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('SELECT `server`, `getvar` FROM `' . _DB_PREFIX_ . 'search_engine`');
+        foreach ($result as $row) {
+            $host =& $row['server'];
+            $varname =& $row['getvar'];
+            if (strstr($parsed_url['host'], $host)) {
+                $k_array = [];
+                preg_match('/[^a-zA-Z&]?' . $varname . '=.*\&' . '/U', $parsed_url['query'], $k_array);
+
+                if (empty($k_array[0])) {
+                    preg_match('/[^a-zA-Z&]?' . $varname . '=.*$' . '/', $parsed_url['query'], $k_array);
+                }
+
+                if (empty($k_array[0])) {
+                    return false;
+                }
+
+                if ($k_array[0][0] == '&' && mb_strlen($k_array[0]) == 1) {
+                    return false;
+                }
+
+                return urldecode(str_replace('+', ' ', ltrim(mb_substr(rtrim($k_array[0], '&'), mb_strlen($varname) + 1), '=')));
+            }
+        }
+
+        return false;
+    }
+
 }
 
 /**

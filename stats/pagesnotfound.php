@@ -162,32 +162,6 @@ class PagesNotFound extends StatsModule
     }
 
     /**
-     * @param array $params
-     *
-     * @return void
-     * @throws PrestaShopException
-     */
-    public function hookTop($params)
-    {
-        if (!Validate::isUrl($request_uri = $_SERVER['REQUEST_URI'])
-            || strpos($_SERVER['REQUEST_URI'], '-admin404') !== false) {
-            return;
-        }
-
-        if (get_class(Context::getContext()->controller) == 'PageNotFoundController') {
-            $http_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-            if (empty($http_referer) || Validate::isAbsoluteUrl($http_referer)) {
-                Db::getInstance()->execute(
-                    '
-										INSERT INTO `' . _DB_PREFIX_ . 'pagenotfound` (`request_uri`, `http_referer`, `date_add`, `id_shop`, `id_shop_group`)
-					VALUES (\'' . pSQL($request_uri) . '\', \'' . pSQL($http_referer) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')
-				'
-                );
-            }
-        }
-    }
-
-    /**
      * @param string $directory
      *
      * @return string
