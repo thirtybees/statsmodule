@@ -43,15 +43,15 @@ class PagesNotFound extends StatsModule
     private function getPages()
     {
         $sql = 'SELECT http_referer, request_uri, COUNT(*) AS nb
-				FROM `'._DB_PREFIX_.'pagenotfound`
-				WHERE date_add BETWEEN '.ModuleGraph::getDateBetween()
-            .Shop::addSqlRestriction().
+				FROM `' . _DB_PREFIX_ . 'pagenotfound`
+				WHERE date_add BETWEEN ' . ModuleGraph::getDateBetween()
+            . Shop::addSqlRestriction() .
             'GROUP BY http_referer, request_uri';
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
         $pages = array();
         foreach ($result as $row) {
-            $row['http_referer'] = parse_url($row['http_referer'], PHP_URL_HOST).parse_url($row['http_referer'], PHP_URL_PATH);
+            $row['http_referer'] = parse_url($row['http_referer'], PHP_URL_HOST) . parse_url($row['http_referer'], PHP_URL_PATH);
             if (!isset($row['http_referer']) || empty($row['http_referer']))
                 $row['http_referer'] = '--';
             if (!isset($pages[$row['request_uri']]))
@@ -67,35 +67,35 @@ class PagesNotFound extends StatsModule
     public function hookAdminStatsModules()
     {
         if (Tools::isSubmit('submitTruncatePNF')) {
-            Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'pagenotfound`');
-            $this->html .= '<div class="alert alert-warning"> '.Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been emptied.', 'statsmodule').'</div>';
+            Db::getInstance()->execute('TRUNCATE `' . _DB_PREFIX_ . 'pagenotfound`');
+            $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been emptied.', 'statsmodule') . '</div>';
         } else if (Tools::isSubmit('submitDeletePNF')) {
             Db::getInstance()->execute(
-                'DELETE FROM `'._DB_PREFIX_.'pagenotfound`
-				WHERE date_add BETWEEN '.ModuleGraph::getDateBetween()
+                'DELETE FROM `' . _DB_PREFIX_ . 'pagenotfound`
+				WHERE date_add BETWEEN ' . ModuleGraph::getDateBetween()
             );
-            $this->html .= '<div class="alert alert-warning"> '.Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been deleted.', 'statsmodule').'</div>';
+            $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been deleted.', 'statsmodule') . '</div>';
         }
 
         $this->html .= '
 			<div class="panel-heading">
-				'.$this->displayName.'
+				' . $this->displayName . '
 			</div>
-			<h4>'.Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule').'</h4>
+			<h4>' . Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule') . '</h4>
 			<div class="alert alert-warning">
-				<h4>'.Translate::getModuleTranslation('statsmodule', '404 errors', 'statsmodule').'</h4>
+				<h4>' . Translate::getModuleTranslation('statsmodule', '404 errors', 'statsmodule') . '</h4>
 				<p>'
-            .Translate::getModuleTranslation('statsmodule', 'A 404 error is an HTTP error code which means that the file requested by the user cannot be found. In your case it means that one of your visitors entered a wrong URL in the address bar, or that you or another website has a dead link. When possible, the referrer is shown so you can find the page/site which contains the dead link. If not, it generally means that it is a direct access, so someone may have bookmarked a link which doesn\'t exist anymore.', 'statsmodule').'
+            . Translate::getModuleTranslation('statsmodule', 'A 404 error is an HTTP error code which means that the file requested by the user cannot be found. In your case it means that one of your visitors entered a wrong URL in the address bar, or that you or another website has a dead link. When possible, the referrer is shown so you can find the page/site which contains the dead link. If not, it generally means that it is a direct access, so someone may have bookmarked a link which doesn\'t exist anymore.', 'statsmodule') . '
 				</p>
 				<p>&nbsp;</p>
-				<h4>'.Translate::getModuleTranslation('statsmodule', 'How to catch these errors?', 'statsmodule').'</h4>
+				<h4>' . Translate::getModuleTranslation('statsmodule', 'How to catch these errors?', 'statsmodule') . '</h4>
 				<p>'
-            .sprintf(Translate::getModuleTranslation('statsmodule', 'If your webhost supports .htaccess files, you can create one in the root directory of PrestaShop and insert the following line inside: "%s".', 'statsmodule'), 'ErrorDocument 404 '.__PS_BASE_URI__.'404.php').'<br />'.
-            sprintf(Translate::getModuleTranslation('statsmodule', 'A user requesting a page which doesn\'t exist will be redirected to the following page: %s. This module logs access to this page.', 'statsmodule'), __PS_BASE_URI__.'404.php').'
+            . sprintf(Translate::getModuleTranslation('statsmodule', 'If your webhost supports .htaccess files, you can create one in the root directory of PrestaShop and insert the following line inside: "%s".', 'statsmodule'), 'ErrorDocument 404 ' . __PS_BASE_URI__ . '404.php') . '<br />' .
+            sprintf(Translate::getModuleTranslation('statsmodule', 'A user requesting a page which doesn\'t exist will be redirected to the following page: %s. This module logs access to this page.', 'statsmodule'), __PS_BASE_URI__ . '404.php') . '
 				</p>
 			</div>';
-        if (!file_exists($this->_normalizeDirectory(_PS_ROOT_DIR_).'.htaccess'))
-            $this->html .= '<div class="alert alert-warning">'.Translate::getModuleTranslation('statsmodule', 'You must use a .htaccess file to redirect 404 errors to the "404.php" page.', 'statsmodule').'</div>';
+        if (!file_exists($this->_normalizeDirectory(_PS_ROOT_DIR_) . '.htaccess'))
+            $this->html .= '<div class="alert alert-warning">' . Translate::getModuleTranslation('statsmodule', 'You must use a .htaccess file to redirect 404 errors to the "404.php" page.', 'statsmodule') . '</div>';
 
         $pages = $this->getPages();
         if (count($pages)) {
@@ -103,9 +103,9 @@ class PagesNotFound extends StatsModule
 			<table class="table">
 				<thead>
 					<tr>
-						<th><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Page', 'statsmodule').'</span></th>
-						<th><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Referrer', 'statsmodule').'</span></th>
-						<th><span class="title_box active">'.Translate::getModuleTranslation('statsmodule', 'Counter', 'statsmodule').'</span></th>
+						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Page', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Referrer', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Counter', 'statsmodule') . '</span></th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -114,25 +114,25 @@ class PagesNotFound extends StatsModule
                     if ($hr != 'nb')
                         $this->html .= '
 						<tr>
-							<td><a href="'.$ru.'-admin404">'.wordwrap($ru, 30, '<br />', true).'</a></td>
-							<td><a href="'.Tools::getProtocol().$hr.'">'.wordwrap($hr, 40, '<br />', true).'</a></td>
-							<td>'.$counter.'</td>
+							<td><a href="' . $ru . '-admin404">' . wordwrap($ru, 30, '<br />', true) . '</a></td>
+							<td><a href="' . Tools::getProtocol() . $hr . '">' . wordwrap($hr, 40, '<br />', true) . '</a></td>
+							<td>' . $counter . '</td>
 						</tr>';
             $this->html .= '
 				</tbody>
 			</table>';
         } else
-            $this->html .= '<div class="alert alert-warning"> '.Translate::getModuleTranslation('statsmodule', 'No "page not found" issue registered for now.', 'statsmodule').'</div>';
+            $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'No "page not found" issue registered for now.', 'statsmodule') . '</div>';
 
         if (count($pages))
             $this->html .= '
-				<h4>'.Translate::getModuleTranslation('statsmodule', 'Empty database', 'statsmodule').'</h4>
-				<form action="'.Tools::htmlEntitiesUtf8($_SERVER['REQUEST_URI']).'" method="post">
+				<h4>' . Translate::getModuleTranslation('statsmodule', 'Empty database', 'statsmodule') . '</h4>
+				<form action="' . Tools::htmlEntitiesUtf8($_SERVER['REQUEST_URI']) . '" method="post">
 					<button type="submit" class="btn btn-default" name="submitDeletePNF">
-						<i class="icon-remove"></i> '.Translate::getModuleTranslation('statsmodule', 'Empty ALL "pages not found" notices for this period', 'statsmodule').'
+						<i class="icon-remove"></i> ' . Translate::getModuleTranslation('statsmodule', 'Empty ALL "pages not found" notices for this period', 'statsmodule') . '
 					</button>
 					<button type="submit" class="btn btn-default" name="submitTruncatePNF">
-						<i class="icon-remove"></i> '.Translate::getModuleTranslation('statsmodule', 'Empty ALL "pages not found" notices', 'statsmodule').'
+						<i class="icon-remove"></i> ' . Translate::getModuleTranslation('statsmodule', 'Empty ALL "pages not found" notices', 'statsmodule') . '
 					</button>
 				</form>';
 
@@ -151,8 +151,8 @@ class PagesNotFound extends StatsModule
             if (empty($http_referer) || Validate::isAbsoluteUrl($http_referer)) {
                 Db::getInstance()->execute(
                     '
-										INSERT INTO `'._DB_PREFIX_.'pagenotfound` (`request_uri`, `http_referer`, `date_add`, `id_shop`, `id_shop_group`)
-					VALUES (\''.pSQL($request_uri).'\', \''.pSQL($http_referer).'\', NOW(), '.(int) $this->context->shop->id.', '.(int) $this->context->shop->id_shop_group.')
+										INSERT INTO `' . _DB_PREFIX_ . 'pagenotfound` (`request_uri`, `http_referer`, `date_add`, `id_shop`, `id_shop_group`)
+					VALUES (\'' . pSQL($request_uri) . '\', \'' . pSQL($http_referer) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')
 				'
                 );
             }

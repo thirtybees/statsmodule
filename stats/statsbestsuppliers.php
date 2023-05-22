@@ -49,22 +49,22 @@ class StatsBestSuppliers extends StatsModule
 
         $this->columns = array(
             array(
-                'id'        => 'name',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
+                'id' => 'name',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'quantity',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
+                'id' => 'quantity',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
                 'dataIndex' => 'quantity',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'sales',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Total paid', 'statsmodule'),
+                'id' => 'sales',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Total paid', 'statsmodule'),
                 'dataIndex' => 'sales',
-                'align'     => 'center',
+                'align' => 'center',
             ),
         );
 
@@ -75,24 +75,24 @@ class StatsBestSuppliers extends StatsModule
     public function hookAdminStatsModules()
     {
         $engine_params = array(
-            'id'                   => 'id_category',
-            'title'                => $this->displayName,
-            'columns'              => $this->columns,
-            'defaultSortColumn'    => $this->default_sort_column,
+            'id' => 'id_category',
+            'title' => $this->displayName,
+            'columns' => $this->columns,
+            'defaultSortColumn' => $this->default_sort_column,
             'defaultSortDirection' => $this->default_sort_direction,
-            'emptyMessage'         => $this->empty_message,
-            'pagingMessage'        => $this->paging_message,
+            'emptyMessage' => $this->empty_message,
+            'pagingMessage' => $this->paging_message,
         );
 
         if (Tools::getValue('export') == 1)
             $this->csvExport($engine_params);
         $this->html = '
 			<div class="panel-heading">
-				'.$this->displayName.'
+				' . $this->displayName . '
 			</div>
-			'.$this->engine($this->type, $engine_params).'
-			<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-				<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
+			' . $this->engine($this->type, $engine_params) . '
+			<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
+				<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 			</a>';
         return $this->html;
     }
@@ -103,12 +103,12 @@ class StatsBestSuppliers extends StatsModule
     public function getTotalCount()
     {
         $sql = 'SELECT COUNT(DISTINCT(s.id_supplier))
-				FROM '._DB_PREFIX_.'order_detail od
-				LEFT JOIN '._DB_PREFIX_.'product p ON p.id_product = od.product_id
-				LEFT JOIN '._DB_PREFIX_.'orders o ON o.id_order = od.id_order
-				LEFT JOIN '._DB_PREFIX_.'supplier s ON s.id_supplier = p.id_supplier
-				WHERE o.invoice_date BETWEEN '.$this->getDate().'
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
+				FROM ' . _DB_PREFIX_ . 'order_detail od
+				LEFT JOIN ' . _DB_PREFIX_ . 'product p ON p.id_product = od.product_id
+				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = od.id_order
+				LEFT JOIN ' . _DB_PREFIX_ . 'supplier s ON s.id_supplier = p.id_supplier
+				WHERE o.invoice_date BETWEEN ' . $this->getDate() . '
+					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
 					AND o.valid = 1
 					AND s.id_supplier IS NOT NULL';
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
@@ -119,23 +119,23 @@ class StatsBestSuppliers extends StatsModule
         $this->_totalCount = $this->getTotalCount();
 
         $this->query = 'SELECT s.name, SUM(od.product_quantity) AS quantity, ROUND(SUM(od.product_quantity * od.product_price) / o.conversion_rate, 2) AS sales
-				FROM '._DB_PREFIX_.'order_detail od
-				LEFT JOIN '._DB_PREFIX_.'product p ON p.id_product = od.product_id
-				LEFT JOIN '._DB_PREFIX_.'orders o ON o.id_order = od.id_order
-				LEFT JOIN '._DB_PREFIX_.'supplier s ON s.id_supplier = p.id_supplier
-				WHERE o.invoice_date BETWEEN '.$this->getDate().'
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
+				FROM ' . _DB_PREFIX_ . 'order_detail od
+				LEFT JOIN ' . _DB_PREFIX_ . 'product p ON p.id_product = od.product_id
+				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = od.id_order
+				LEFT JOIN ' . _DB_PREFIX_ . 'supplier s ON s.id_supplier = p.id_supplier
+				WHERE o.invoice_date BETWEEN ' . $this->getDate() . '
+					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
 					AND o.valid = 1
 					AND s.id_supplier IS NOT NULL
 				GROUP BY p.id_supplier';
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `'.$this->_sort.'`';
+            $this->query .= ' ORDER BY `' . $this->_sort . '`';
             if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
-                $this->query .= ' '.$this->_direction;
+                $this->query .= ' ' . $this->_direction;
         }
 
         if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit))
-            $this->query .= ' LIMIT '.$this->_start.', '.($this->_limit);
+            $this->query .= ' LIMIT ' . $this->_start . ', ' . ($this->_limit);
         $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
     }
 }

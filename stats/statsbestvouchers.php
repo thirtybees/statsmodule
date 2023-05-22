@@ -49,28 +49,28 @@ class StatsBestVouchers extends StatsModule
 
         $this->columns = array(
             array(
-                'id'        => 'code',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Code', 'statsmodule'),
+                'id' => 'code',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Code', 'statsmodule'),
                 'dataIndex' => 'code',
-                'align'     => 'left',
+                'align' => 'left',
             ),
             array(
-                'id'        => 'name',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
+                'id' => 'name',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
-                'align'     => 'left',
+                'align' => 'left',
             ),
             array(
-                'id'        => 'ca',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
+                'id' => 'ca',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
                 'dataIndex' => 'ca',
-                'align'     => 'right',
+                'align' => 'right',
             ),
             array(
-                'id'        => 'total',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Total used', 'statsmodule'),
+                'id' => 'total',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Total used', 'statsmodule'),
                 'dataIndex' => 'total',
-                'align'     => 'center',
+                'align' => 'center',
             ),
         );
 
@@ -81,13 +81,13 @@ class StatsBestVouchers extends StatsModule
     public function hookAdminStatsModules()
     {
         $engine_params = array(
-            'id'                   => 'id_product',
-            'title'                => $this->displayName,
-            'columns'              => $this->columns,
-            'defaultSortColumn'    => $this->default_sort_column,
+            'id' => 'id_product',
+            'title' => $this->displayName,
+            'columns' => $this->columns,
+            'defaultSortColumn' => $this->default_sort_column,
             'defaultSortDirection' => $this->default_sort_direction,
-            'emptyMessage'         => $this->empty_message,
-            'pagingMessage'        => $this->paging_message,
+            'emptyMessage' => $this->empty_message,
+            'pagingMessage' => $this->paging_message,
         );
 
         if (Tools::getValue('export'))
@@ -95,11 +95,11 @@ class StatsBestVouchers extends StatsModule
 
         $this->html = '
 			<div class="panel-heading">
-				'.$this->displayName.'
+				' . $this->displayName . '
 			</div>
-			'.$this->engine($this->type, $engine_params).'
-			<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-				<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
+			' . $this->engine($this->type, $engine_params) . '
+			<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
+				<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 			</a>';
 
         return $this->html;
@@ -109,22 +109,22 @@ class StatsBestVouchers extends StatsModule
     {
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $this->query = 'SELECT SQL_CALC_FOUND_ROWS cr.code, ocr.name, COUNT(ocr.id_cart_rule) AS total, ROUND(SUM(o.total_paid_real) / o.conversion_rate,2) AS ca
-				FROM '._DB_PREFIX_.'order_cart_rule ocr
-				LEFT JOIN '._DB_PREFIX_.'orders o ON o.id_order = ocr.id_order
-				LEFT JOIN '._DB_PREFIX_.'cart_rule cr ON cr.id_cart_rule = ocr.id_cart_rule
+				FROM ' . _DB_PREFIX_ . 'order_cart_rule ocr
+				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = ocr.id_order
+				LEFT JOIN ' . _DB_PREFIX_ . 'cart_rule cr ON cr.id_cart_rule = ocr.id_cart_rule
 				WHERE o.valid = 1
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-					AND o.invoice_date BETWEEN '.$this->getDate().'
+					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					AND o.invoice_date BETWEEN ' . $this->getDate() . '
 				GROUP BY ocr.id_cart_rule';
 
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `'.bqSQL($this->_sort).'`';
+            $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
             if (isset($this->_direction) && (Tools::strtoupper($this->_direction) == 'ASC' || Tools::strtoupper($this->_direction) == 'DESC'))
-                $this->query .= ' '.pSQL($this->_direction);
+                $this->query .= ' ' . pSQL($this->_direction);
         }
 
         if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit))
-            $this->query .= ' LIMIT '.(int) $this->_start.', '.(int) $this->_limit;
+            $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value)

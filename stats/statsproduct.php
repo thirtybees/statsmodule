@@ -53,6 +53,7 @@ class StatsProduct extends StatsModule
      * Returns total sales of product as individual item -- separate line in order
      *
      * @param int $productId
+     *
      * @return int
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -75,6 +76,7 @@ class StatsProduct extends StatsModule
      * Returns total sales of product sold as part of a pack
      *
      * @param int $productId
+     *
      * @return int
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -99,6 +101,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $id_product
+     *
      * @return float
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -119,6 +122,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $id_product
+     *
      * @return int|mixed
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -143,6 +147,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $id_lang
+     *
      * @return array|bool|PDOStatement|null
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -164,6 +169,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param int $productId
+     *
      * @return array
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -199,6 +205,7 @@ class StatsProduct extends StatsModule
     /**
      * @param $id_product
      * @param $id_lang
+     *
      * @return array|bool|PDOStatement|null
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -462,6 +469,7 @@ class StatsProduct extends StatsModule
     /**
      * @param $option
      * @param $layers
+     *
      * @return void
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -524,6 +532,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $layers
+     *
      * @return void
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -569,6 +578,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $layers
+     *
      * @return void
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -584,6 +594,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $layers
+     *
      * @return void
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -599,6 +610,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $layers
+     *
      * @return void
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -614,6 +626,7 @@ class StatsProduct extends StatsModule
 
     /**
      * @param $layers
+     *
      * @return void
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException

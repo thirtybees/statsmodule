@@ -49,64 +49,64 @@ class StatsOrdersProfit extends StatsModule
 
         $this->columns = array(
             array(
-                'id'        => 'number',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Order ID', 'statsmodule'),
+                'id' => 'number',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Order ID', 'statsmodule'),
                 'dataIndex' => 'number',
-                 'align'    => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'invoice_number',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Invoice Number', 'statsmodule'),
+                'id' => 'invoice_number',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Invoice Number', 'statsmodule'),
                 'dataIndex' => 'invoice_number',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'invoice_date',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Invoice Date', 'statsmodule'),
+                'id' => 'invoice_date',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Invoice Date', 'statsmodule'),
                 'dataIndex' => 'invoice_date',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'paid',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Paid', 'statsmodule'),
+                'id' => 'paid',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Paid', 'statsmodule'),
                 'dataIndex' => 'paid',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'total',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule'),
+                'id' => 'total',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule'),
                 'dataIndex' => 'total',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'shipping',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Shipping', 'statsmodule'),
+                'id' => 'shipping',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Shipping', 'statsmodule'),
                 'dataIndex' => 'shipping',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'TaxTotal',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Tax', 'statsmodule'),
+                'id' => 'TaxTotal',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Tax', 'statsmodule'),
                 'dataIndex' => 'TaxTotal',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'cost',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Cost', 'statsmodule'),
+                'id' => 'cost',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Cost', 'statsmodule'),
                 'dataIndex' => 'cost',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'totalDiscount',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Discount', 'statsmodule'),
+                'id' => 'totalDiscount',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Discount', 'statsmodule'),
                 'dataIndex' => 'totalDiscount',
-                'align'     => 'center',
+                'align' => 'center',
             ),
             array(
-                'id'        => 'profit',
-                'header'    => Translate::getModuleTranslation('statsmodule', 'Profit', 'statsmodule'),
+                'id' => 'profit',
+                'header' => Translate::getModuleTranslation('statsmodule', 'Profit', 'statsmodule'),
                 'dataIndex' => 'profit',
-                'align'     => 'center',
+                'align' => 'center',
             ),
         );
 
@@ -117,22 +117,22 @@ class StatsOrdersProfit extends StatsModule
     public function hookAdminStatsModules()
     {
         $engine_params = array(
-            'id'                   => 'id_product',
-            'title'                => $this->displayName,
-            'columns'              => $this->columns,
-            'defaultSortColumn'    => $this->default_sort_column,
+            'id' => 'id_product',
+            'title' => $this->displayName,
+            'columns' => $this->columns,
+            'defaultSortColumn' => $this->default_sort_column,
             'defaultSortDirection' => $this->default_sort_direction,
-            'emptyMessage'         => $this->empty_message,
-            'pagingMessage'        => $this->paging_message,
+            'emptyMessage' => $this->empty_message,
+            'pagingMessage' => $this->paging_message,
         );
 
         if (Tools::getValue('export'))
             $this->csvExport($engine_params);
 
-        return '<div class="panel-heading">'.$this->displayName.'</div>
-		'.$this->engine($this->type, $engine_params).'
-		<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-			<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
+        return '<div class="panel-heading">' . $this->displayName . '</div>
+		' . $this->engine($this->type, $engine_params) . '
+		<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
+			<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 		</a>';
     }
 
@@ -143,30 +143,30 @@ class StatsOrdersProfit extends StatsModule
 
         $this->query = 'SELECT o.id_order as number, o.invoice_number as invoice_number, DATE_FORMAT(o.invoice_date, \'%Y-%m-%d\') as invoice_date, ROUND( o.total_paid / o.conversion_rate , 2 ) as paid,  ROUND((o.total_paid / o.conversion_rate + o.total_discounts_tax_incl / o.conversion_rate), 2 ) as total, ROUND((o.total_paid / o.conversion_rate - total_paid_tax_excl / o.conversion_rate) , 2 ) as TaxTotal, ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 ) AS shipping, ROUND(SUM(o.total_discounts_tax_incl / o.conversion_rate),2) as totalDiscount, ((
 			SELECT ROUND(SUM(od.original_wholesale_price / o.conversion_rate * od.product_quantity), 2)
-                        FROM '._DB_PREFIX_.'order_detail od
-			LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
-			LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
+                        FROM ' . _DB_PREFIX_ . 'order_detail od
+			LEFT JOIN ' . _DB_PREFIX_ . 'product p ON od.product_id = p.id_product
+			LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
 			WHERE od.id_order = o.`id_order`
 			)) AS cost,
 			((
 			SELECT ROUND(o.`total_paid` / o.conversion_rate - SUM(od.original_wholesale_price / o.conversion_rate * od.product_quantity) , 2)
-			FROM '._DB_PREFIX_.'order_detail od
-			LEFT JOIN '._DB_PREFIX_.'product p ON od.product_id = p.id_product
-			LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
+			FROM ' . _DB_PREFIX_ . 'order_detail od
+			LEFT JOIN ' . _DB_PREFIX_ . 'product p ON od.product_id = p.id_product
+			LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
 			WHERE od.id_order = o.`id_order`
 			) -
 			(ROUND( o.total_paid_tax_incl / o.conversion_rate - o.total_paid_tax_excl / o.conversion_rate, 2 )) -
 			ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 )
 			) AS profit
-			FROM `'._DB_PREFIX_.'orders` o
+			FROM `' . _DB_PREFIX_ . 'orders` o
 			WHERE o.valid = 1
-			AND o.invoice_date BETWEEN '.$date_between.'
+			AND o.invoice_date BETWEEN ' . $date_between . '
 			GROUP BY o.`id_order`';
 
         if (Validate::IsName($this->_sort)) {
-            $this->query .= ' ORDER BY `'.bqSQL($this->_sort).'`';
+            $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
             if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
-                $this->query .= ' '.$this->_direction;
+                $this->query .= ' ' . $this->_direction;
         }
 
 

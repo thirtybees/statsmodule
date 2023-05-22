@@ -26,6 +26,7 @@
 if (!defined('_TB_VERSION_')) {
     exit;
 }
+
 class StatsModule extends ModuleStats
 {
     const TYPE_GRID = 'Grid';
@@ -113,16 +114,16 @@ class StatsModule extends ModuleStats
         $confs = [
             'CHECKUP_DESCRIPTIONS_LT' => 100,
             'CHECKUP_DESCRIPTIONS_GT' => 400,
-            'CHECKUP_IMAGES_LT'       => 1,
-            'CHECKUP_IMAGES_GT'       => 2,
-            'CHECKUP_SALES_LT'        => 1,
-            'CHECKUP_SALES_GT'        => 2,
-            'CHECKUP_STOCK_LT'        => 1,
-            'CHECKUP_STOCK_GT'        => 3,
+            'CHECKUP_IMAGES_LT' => 1,
+            'CHECKUP_IMAGES_GT' => 2,
+            'CHECKUP_SALES_LT' => 1,
+            'CHECKUP_SALES_GT' => 2,
+            'CHECKUP_STOCK_LT' => 1,
+            'CHECKUP_STOCK_GT' => 3,
         ];
         foreach ($confs as $confname => $confdefault) {
             if (!Configuration::get($confname)) {
-                Configuration::updateValue($confname, (int) $confdefault);
+                Configuration::updateValue($confname, (int)$confdefault);
             }
         }
 
@@ -131,7 +132,7 @@ class StatsModule extends ModuleStats
         Configuration::updateValue('SEK_FILTER_KW', '');
 
         Db::getInstance()->execute('
-		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'sekeyword` (
+		CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'sekeyword` (
 			id_sekeyword INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
 			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -141,7 +142,7 @@ class StatsModule extends ModuleStats
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
 
         Db::getInstance()->execute(
-            'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'pagenotfound` (
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'pagenotfound` (
 			id_pagenotfound INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
 			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -154,7 +155,7 @@ class StatsModule extends ModuleStats
         );
 
         Db::getInstance()->execute('
-		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'statssearch` (
+		CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'statssearch` (
 			id_statssearch INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
 		  	id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
@@ -172,8 +173,8 @@ class StatsModule extends ModuleStats
      */
     public function getStatsModulesList()
     {
-        return array_map(function($module) {
-            return [ 'name' => $module ];
+        return array_map(function ($module) {
+            return ['name' => $module];
         }, $this->modules);
     }
 
@@ -201,7 +202,7 @@ class StatsModule extends ModuleStats
      */
     protected function getSubmoduleInstance($moduleName)
     {
-        require_once(dirname(__FILE__).'/stats/'.$moduleName.'.php');
+        require_once(dirname(__FILE__) . '/stats/' . $moduleName . '.php');
         return new $moduleName();
     }
 
@@ -213,7 +214,7 @@ class StatsModule extends ModuleStats
      */
     protected function engine($type, $params)
     {
-        return call_user_func_array([$this, 'engine'.$type], [$params]);
+        return call_user_func_array([$this, 'engine' . $type], [$params]);
     }
 
     /**
@@ -251,8 +252,8 @@ class StatsModule extends ModuleStats
      */
     public function hookSearch($params)
     {
-        $sql = 'INSERT INTO `'._DB_PREFIX_.'statssearch` (`id_shop`, `id_shop_group`, `keywords`, `results`, `date_add`)
-				VALUES ('.(int) $this->context->shop->id.', '.(int) $this->context->shop->id_shop_group.', \''.pSQL($params['expr']).'\', '.(int) $params['total'].', NOW())';
+        $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'statssearch` (`id_shop`, `id_shop_group`, `keywords`, `results`, `date_add`)
+				VALUES (' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ', \'' . pSQL($params['expr']) . '\', ' . (int)$params['total'] . ', NOW())';
         Db::getInstance()->execute($sql);
     }
 
@@ -281,13 +282,13 @@ class StatsModule extends ModuleStats
         $hookName = Hook::getNameById($hookId);
         $retroName = Hook::getRetroHookName($hookName);
 
-        $methods = [ 'hook' . ucfirst($hookName) ];
+        $methods = ['hook' . ucfirst($hookName)];
         if ($retroName) {
             $methods[] = 'hook' . ucfirst($retroName);
         }
 
         foreach ($this->modules as $moduleName) {
-            if (include_once dirname(__FILE__).'/stats/'.$moduleName.'.php') {
+            if (include_once dirname(__FILE__) . '/stats/' . $moduleName . '.php') {
                 try {
                     $refl = new ReflectionClass($moduleName);
                     foreach ($methods as $methodName) {
@@ -332,9 +333,9 @@ class StatsModule extends ModuleStats
 
             // Unregister module on hook by id
             $result = Db::getInstance()->delete(
-                'hook_module',
-                '`id_module` = '.(int) Module::getModuleIdByName($moduleName).' AND `id_hook` = '.(int) $hookId
-            ) && $result;
+                    'hook_module',
+                    '`id_module` = ' . (int)Module::getModuleIdByName($moduleName) . ' AND `id_hook` = ' . (int)$hookId
+                ) && $result;
 
             // Clean modules position
             $this->cleanPositions($hookId);

@@ -47,75 +47,75 @@ class StatsSales extends StatsModule
     public function hookAdminStatsModules()
     {
         $totals = $this->getTotals();
-        $currency = new Currency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
-        if (($id_export = (int) Tools::getValue('export')) == 1)
+        $currency = new Currency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
+        if (($id_export = (int)Tools::getValue('export')) == 1)
             $this->csvExport(array(
                 'layers' => 2,
-                'type'   => 'line',
-                'option' => '1-'.(int) Tools::getValue('id_country'),
+                'type' => 'line',
+                'option' => '1-' . (int)Tools::getValue('id_country'),
             ));
         elseif ($id_export == 2)
             $this->csvExport(array(
                 'layers' => 0,
-                'type'   => 'line',
-                'option' => '2-'.(int) Tools::getValue('id_country'),
+                'type' => 'line',
+                'option' => '2-' . (int)Tools::getValue('id_country'),
             ));
         elseif ($id_export == 3)
             $this->csvExport(array(
-                'type'   => 'pie',
-                'option' => '3-'.(int) Tools::getValue('id_country'),
+                'type' => 'pie',
+                'option' => '3-' . (int)Tools::getValue('id_country'),
             ));
 
         $this->html = '
 			<div class="panel-heading">
-				'.$this->displayName.'
+				' . $this->displayName . '
 			</div>
-			<h4>'.Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule').'</h4>
+			<h4>' . Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule') . '</h4>
 			<div class="alert alert-warning">
-				<h4>'.Translate::getModuleTranslation('statsmodule', 'About order statuses', 'statsmodule').'</h4>
+				<h4>' . Translate::getModuleTranslation('statsmodule', 'About order statuses', 'statsmodule') . '</h4>
 				<p>
-					'.Translate::getModuleTranslation('statsmodule', 'In your Back Office, you can modify the following order statuses: Awaiting Check Payment, Payment Accepted, Preparation in Progress, Shipping, Delivered, Canceled, Refund, Payment Error, Out of Stock, and Awaiting Bank Wire Payment.', 'statsmodule').'<br />
-					'.Translate::getModuleTranslation('statsmodule', 'These order statuses cannot be removed from the Back Office; however you have the option to add more.', 'statsmodule').'
+					' . Translate::getModuleTranslation('statsmodule', 'In your Back Office, you can modify the following order statuses: Awaiting Check Payment, Payment Accepted, Preparation in Progress, Shipping, Delivered, Canceled, Refund, Payment Error, Out of Stock, and Awaiting Bank Wire Payment.', 'statsmodule') . '<br />
+					' . Translate::getModuleTranslation('statsmodule', 'These order statuses cannot be removed from the Back Office; however you have the option to add more.', 'statsmodule') . '
 				</p>
 			</div>
 			<div class="alert alert-info">
 				<p>'
-            .Translate::getModuleTranslation('statsmodule', 'The following graphs represent the evolution of your shop\'s orders and sales turnover for a selected period.', 'statsmodule').'<br/>'
-            .Translate::getModuleTranslation('statsmodule', 'You should often consult this screen, as it allows you to quickly monitor your shop\'s sustainability. It also allows you to monitor multiple time periods.', 'statsmodule').'<br/>'
-            .Translate::getModuleTranslation('statsmodule', 'Only valid orders are graphically represented.', 'statsmodule')
-            .'</p>
+            . Translate::getModuleTranslation('statsmodule', 'The following graphs represent the evolution of your shop\'s orders and sales turnover for a selected period.', 'statsmodule') . '<br/>'
+            . Translate::getModuleTranslation('statsmodule', 'You should often consult this screen, as it allows you to quickly monitor your shop\'s sustainability. It also allows you to monitor multiple time periods.', 'statsmodule') . '<br/>'
+            . Translate::getModuleTranslation('statsmodule', 'Only valid orders are graphically represented.', 'statsmodule')
+            . '</p>
 			</div>
-			<form action="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'" method="post" class="form-horizontal alert">
+			<form action="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '" method="post" class="form-horizontal alert">
 				<div class="row">
 					<div class="col-lg-4 col-lg-offset-7">
 						<select name="id_country">
-							<option value="0"'.((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '').'>'.Translate::getModuleTranslation('statsmodule', 'All countries', 'statsmodule').'</option>';
+							<option value="0"' . ((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . Translate::getModuleTranslation('statsmodule', 'All countries', 'statsmodule') . '</option>';
         foreach (Country::getCountries($this->context->language->id) as $country)
-            $this->html .= '<option value="'.$country['id_country'].'"'.(($country['id_country'] == Tools::getValue('id_country')) ? ' selected="selected"' : '').'>'.$country['name'].'</option>';
+            $this->html .= '<option value="' . $country['id_country'] . '"' . (($country['id_country'] == Tools::getValue('id_country')) ? ' selected="selected"' : '') . '>' . $country['name'] . '</option>';
         $this->html .= '</select>
 					</div>
 					<div class="col-lg-1">
-						<input type="submit" name="submitCountry" value="'.Translate::getModuleTranslation('statsmodule', 'Filter', 'statsmodule').'" class="btn btn-default pull-right" />
+						<input type="submit" name="submitCountry" value="' . Translate::getModuleTranslation('statsmodule', 'Filter', 'statsmodule') . '" class="btn btn-default pull-right" />
 					</div>
 				</div>
 			</form>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						'.$this->engine($this->type, array(
-                'type'   => 'line',
-                'option' => '1-'.(int) Tools::getValue('id_country'),
+						' . $this->engine($this->type, array(
+                'type' => 'line',
+                'option' => '1-' . (int)Tools::getValue('id_country'),
                 'layers' => 2,
-            )).'
+            )) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.Translate::getModuleTranslation('statsmodule', 'Orders placed:', 'statsmodule').' <span class="totalStats">'.(int) $totals['orderCount'].'</span></li>
-							<li>'.Translate::getModuleTranslation('statsmodule', 'Products bought:', 'statsmodule').' <span class="totalStats">'.(int) $totals['products'].'</span></li>
+							<li>' . Translate::getModuleTranslation('statsmodule', 'Orders placed:', 'statsmodule') . ' <span class="totalStats">' . (int)$totals['orderCount'] . '</span></li>
+							<li>' . Translate::getModuleTranslation('statsmodule', 'Products bought:', 'statsmodule') . ' <span class="totalStats">' . (int)$totals['products'] . '</span></li>
 						</ul>
 						<hr/>
-						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
+						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
+							<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 						</a>
 					</div>
 				</div>
@@ -123,36 +123,36 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						'.$this->engine($this->type, array(
-                'type'   => 'line',
-                'option' => '2-'.(int) Tools::getValue('id_country'),
-            )).'
+						' . $this->engine($this->type, array(
+                'type' => 'line',
+                'option' => '2-' . (int)Tools::getValue('id_country'),
+            )) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>'.Translate::getModuleTranslation('statsmodule', 'Sales:', 'statsmodule').' '.Tools::displayPrice($totals['orderSum'], $currency).'</li>
+							<li>' . Translate::getModuleTranslation('statsmodule', 'Sales:', 'statsmodule') . ' ' . Tools::displayPrice($totals['orderSum'], $currency) . '</li>
 						</ul>
 						<hr/>
-						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=2').'">
-							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
+						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=2') . '">
+							<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 						</a>
 					</div>
 				</div>
 			</div>
 			<div class="alert alert-info">
-				'.Translate::getModuleTranslation('statsmodule', 'You can view the distribution of order statuses below.', 'statsmodule').'
+				' . Translate::getModuleTranslation('statsmodule', 'You can view the distribution of order statuses below.', 'statsmodule') . '
 			</div>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						'.($totals['orderCount'] ? $this->engine($this->type, array(
-                'type'   => 'pie',
-                'option' => '3-'.(int) Tools::getValue('id_country'),
-            )) : Translate::getModuleTranslation('statsmodule', 'No orders for this period.', 'statsmodule')).'
+						' . ($totals['orderCount'] ? $this->engine($this->type, array(
+                'type' => 'pie',
+                'option' => '3-' . (int)Tools::getValue('id_country'),
+            )) : Translate::getModuleTranslation('statsmodule', 'No orders for this period.', 'statsmodule')) . '
 					</div>
 					<div class="col-lg-4">
-						<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=3').'">
-							<i class="icon-cloud-upload"></i> '.Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule').'
+						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=3') . '">
+							<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 						</a>
 					</div>
 				</div>
@@ -164,22 +164,22 @@ class StatsSales extends StatsModule
     private function getTotals()
     {
         $sql = 'SELECT COUNT(o.`id_order`) AS orderCount, SUM(o.`total_paid_real` / o.conversion_rate) AS orderSum
-				FROM `'._DB_PREFIX_.'orders` o
-				'.((int) Tools::getValue('id_country') ? 'LEFT JOIN `'._DB_PREFIX_.'address` a ON o.id_address_delivery = a.id_address' : '').'
+				FROM `' . _DB_PREFIX_ . 'orders` o
+				' . ((int)Tools::getValue('id_country') ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
 				WHERE o.valid = 1
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-					'.((int) Tools::getValue('id_country') ? 'AND a.id_country = '.(int) Tools::getValue('id_country') : '').'
-					AND o.`invoice_date` BETWEEN '.ModuleGraph::getDateBetween();
+					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . ((int)Tools::getValue('id_country') ? 'AND a.id_country = ' . (int)Tools::getValue('id_country') : '') . '
+					AND o.`invoice_date` BETWEEN ' . ModuleGraph::getDateBetween();
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
         $sql = 'SELECT SUM(od.product_quantity) AS products
-				FROM `'._DB_PREFIX_.'orders` o
-				LEFT JOIN `'._DB_PREFIX_.'order_detail` od ON od.`id_order` = o.`id_order`
-				'.((int) Tools::getValue('id_country') ? 'LEFT JOIN `'._DB_PREFIX_.'address` a ON o.id_address_delivery = a.id_address' : '').'
+				FROM `' . _DB_PREFIX_ . 'orders` o
+				LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON od.`id_order` = o.`id_order`
+				' . ((int)Tools::getValue('id_country') ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
 				WHERE o.valid = 1
-					'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-					'.((int) Tools::getValue('id_country') ? 'AND a.id_country = '.(int) Tools::getValue('id_country') : '').'
-					AND o.`invoice_date` BETWEEN '.ModuleGraph::getDateBetween();
+					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . ((int)Tools::getValue('id_country') ? 'AND a.id_country = ' . (int)Tools::getValue('id_country') : '') . '
+					AND o.`invoice_date` BETWEEN ' . ModuleGraph::getDateBetween();
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
         return array_merge($result1, $result2);
@@ -195,7 +195,7 @@ class StatsSales extends StatsModule
                 $this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Products:', 'statsmodule');
                 break;
             case 2:
-                $currency = new Currency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
+                $currency = new Currency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
                 $this->_titles['main'] = sprintf(Translate::getModuleTranslation('statsmodule', 'Sales currency: %s', 'statsmodule'), $currency->iso_code);
                 break;
             case 3:
@@ -211,12 +211,12 @@ class StatsSales extends StatsModule
 
         $this->query = '
 			SELECT o.`invoice_date`, o.`total_paid_real` / o.conversion_rate AS total_paid_real, SUM(od.product_quantity) AS product_quantity
-			FROM `'._DB_PREFIX_.'orders` o
-			LEFT JOIN `'._DB_PREFIX_.'order_detail` od ON od.`id_order` = o.`id_order`
-			'.((int) $this->id_country ? 'LEFT JOIN `'._DB_PREFIX_.'address` a ON o.id_address_delivery = a.id_address' : '').'
+			FROM `' . _DB_PREFIX_ . 'orders` o
+			LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON od.`id_order` = o.`id_order`
+			' . ((int)$this->id_country ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
 			WHERE o.valid = 1
-				'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
-				'.((int) $this->id_country ? 'AND a.id_country = '.(int) $this->id_country : '').'
+				' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+				' . ((int)$this->id_country ? 'AND a.id_country = ' . (int)$this->id_country : '') . '
 				AND o.`invoice_date` BETWEEN ';
         $this->query_group_by = ' GROUP BY o.id_order';
         $this->setDateGraph($layers, true);
@@ -224,20 +224,20 @@ class StatsSales extends StatsModule
 
     protected function setAllTimeValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query.$this->getDate().$this->query_group_by);
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row)
             if ($this->option == 1) {
-                $this->_values[0][(int) substr($row['invoice_date'], 0, 4)] += 1;
-                $this->_values[1][(int) substr($row['invoice_date'], 0, 4)] += $row['product_quantity'];
+                $this->_values[0][(int)substr($row['invoice_date'], 0, 4)] += 1;
+                $this->_values[1][(int)substr($row['invoice_date'], 0, 4)] += $row['product_quantity'];
             } else
-                $this->_values[(int) substr($row['invoice_date'], 0, 4)] += $row['total_paid_real'];
+                $this->_values[(int)substr($row['invoice_date'], 0, 4)] += $row['total_paid_real'];
     }
 
     protected function setYearValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query.$this->getDate().$this->query_group_by);
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
-            $mounth = (int) substr($row['invoice_date'], 5, 2);
+            $mounth = (int)substr($row['invoice_date'], 5, 2);
             if ($this->option == 1) {
                 if (!isset($this->_values[0][$mounth]))
                     $this->_values[0][$mounth] = 0;
@@ -255,44 +255,44 @@ class StatsSales extends StatsModule
 
     protected function setMonthValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query.$this->getDate().$this->query_group_by);
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row)
             if ($this->option == 1) {
-                $this->_values[0][(int) substr($row['invoice_date'], 8, 2)] += 1;
-                $this->_values[1][(int) substr($row['invoice_date'], 8, 2)] += $row['product_quantity'];
+                $this->_values[0][(int)substr($row['invoice_date'], 8, 2)] += 1;
+                $this->_values[1][(int)substr($row['invoice_date'], 8, 2)] += $row['product_quantity'];
             } else
-                $this->_values[(int) substr($row['invoice_date'], 8, 2)] += $row['total_paid_real'];
+                $this->_values[(int)substr($row['invoice_date'], 8, 2)] += $row['total_paid_real'];
     }
 
     protected function setDayValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query.$this->getDate().$this->query_group_by);
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row)
             if ($this->option == 1) {
-                $this->_values[0][(int) substr($row['invoice_date'], 11, 2)] += 1;
-                $this->_values[1][(int) substr($row['invoice_date'], 11, 2)] += $row['product_quantity'];
+                $this->_values[0][(int)substr($row['invoice_date'], 11, 2)] += 1;
+                $this->_values[1][(int)substr($row['invoice_date'], 11, 2)] += $row['product_quantity'];
             } else
-                $this->_values[(int) substr($row['invoice_date'], 11, 2)] += $row['total_paid_real'];
+                $this->_values[(int)substr($row['invoice_date'], 11, 2)] += $row['total_paid_real'];
     }
 
     private function getStatesData()
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 		SELECT osl.`name`, COUNT(oh.`id_order`) AS total
-		FROM `'._DB_PREFIX_.'order_state` os
-		LEFT JOIN `'._DB_PREFIX_.'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = '.(int) $this->getLang().')
-		LEFT JOIN `'._DB_PREFIX_.'order_history` oh ON os.`id_order_state` = oh.`id_order_state`
-		LEFT JOIN `'._DB_PREFIX_.'orders` o ON o.`id_order` = oh.`id_order`
-		'.((int) $this->id_country ? 'LEFT JOIN `'._DB_PREFIX_.'address` a ON o.id_address_delivery = a.id_address' : '').'
+		FROM `' . _DB_PREFIX_ . 'order_state` os
+		LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = ' . (int)$this->getLang() . ')
+		LEFT JOIN `' . _DB_PREFIX_ . 'order_history` oh ON os.`id_order_state` = oh.`id_order_state`
+		LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON o.`id_order` = oh.`id_order`
+		' . ((int)$this->id_country ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
 		WHERE oh.`id_order_history` = (
 			SELECT ios.`id_order_history`
-			FROM `'._DB_PREFIX_.'order_history` ios
+			FROM `' . _DB_PREFIX_ . 'order_history` ios
 			WHERE ios.`id_order` = oh.`id_order`
 			ORDER BY ios.`date_add` DESC, oh.`id_order_history` DESC
 			LIMIT 1
 		)
-		'.((int) $this->id_country ? 'AND a.id_country = '.(int) $this->id_country : '').'
-		AND o.`date_add` BETWEEN '.ModuleGraph::getDateBetween().'
+		' . ((int)$this->id_country ? 'AND a.id_country = ' . (int)$this->id_country : '') . '
+		AND o.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 		GROUP BY oh.`id_order_state`');
         foreach ($result as $row) {
             $this->_values[] = $row['total'];
