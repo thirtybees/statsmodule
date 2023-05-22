@@ -75,38 +75,38 @@ class StatsBestCategories extends StatsModule
         $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty recordset returned', 'statsmodule');
         $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
 
-        $this->columns = array(
-            array(
+        $this->columns = [
+            [
                 'id' => 'name',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
                 'align' => 'left',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalQuantitySold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Total Quantity Sold', 'statsmodule'),
                 'dataIndex' => 'totalQuantitySold',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalPriceSold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Total Price', 'statsmodule'),
                 'dataIndex' => 'totalPriceSold',
                 'align' => 'right',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalWholeSalePriceSold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Total Margin', 'statsmodule'),
                 'dataIndex' => 'totalWholeSalePriceSold',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalPageViewed',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Total Viewed', 'statsmodule'),
                 'dataIndex' => 'totalPageViewed',
                 'align' => 'center',
-            ),
-        );
+            ],
+        ];
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best categories', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best categories to the Stats dashboard.', 'statsmodule');
@@ -121,7 +121,7 @@ class StatsBestCategories extends StatsModule
     {
         $onlyChildren = (int)Tools::getValue('onlyChildren');
 
-        $engine_params = array(
+        $engine_params = [
             'id' => 'id_category',
             'title' => $this->displayName,
             'columns' => $this->columns,
@@ -129,10 +129,10 @@ class StatsBestCategories extends StatsModule
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
             'pagingMessage' => $this->paging_message,
-            'customParams' => array(
+            'customParams' => [
                 'onlyChildren' => $onlyChildren,
-            ),
-        );
+            ],
+        ];
 
         if (Tools::getValue('export')) {
             $this->csvExport($engine_params);
@@ -182,7 +182,7 @@ class StatsBestCategories extends StatsModule
         $id_lang = $this->getLang();
 
         // If a shop is selected, get all children categories for the shop
-        $categories = array();
+        $categories = [];
         if (Shop::getContext() != Shop::CONTEXT_ALL) {
             $sql = 'SELECT c.nleft, c.nright
 					FROM ' . _DB_PREFIX_ . 'category c
@@ -192,7 +192,7 @@ class StatsBestCategories extends StatsModule
 						WHERE s.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . ')
 					)';
             if ($result = Db::getInstance()->executeS($sql)) {
-                $ntree_restriction = array();
+                $ntree_restriction = [];
                 foreach ($result as $row) {
                     $ntree_restriction[] = '(nleft >= ' . $row['nleft'] . ' AND nright <= ' . $row['nright'] . ')';
                 }

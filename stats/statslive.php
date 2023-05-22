@@ -83,14 +83,18 @@ class StatsLive extends StatsModule
         }
         $results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-        return array($results, Db::getInstance()->NumRows());
+        return [$results, Db::getInstance()->NumRows()];
     }
 
     /**
      * Get the number of online visitors
      *
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @return array(array, int) array of online visitors entries, number of online visitors
+=======
+     * @return array (array, int) array of online visitors entries, number of online visitors
+>>>>>>> 09921f0 (Use short array syntax)
      * @throws PrestaShopDatabaseException
 =======
      * @return array (array, int) array of online visitors entries, number of online visitors
@@ -130,7 +134,7 @@ class StatsLive extends StatsModule
 
         $results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-        return array($results, Db::getInstance()->NumRows());
+        return [$results, Db::getInstance()->NumRows()];
     }
 
     /**

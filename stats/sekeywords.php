@@ -93,7 +93,7 @@ class SEKeywords extends StatsModule
         }
 
         if (Tools::getValue('export')) {
-            $this->csvExport(array('type' => 'pie'));
+            $this->csvExport(['type' => 'pie']);
         }
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . ModuleGraph::getDateBetween() . $this->query2);
         $total = count($result);
@@ -193,7 +193,7 @@ class SEKeywords extends StatsModule
             $host =& $row['server'];
             $varname =& $row['getvar'];
             if (strstr($parsed_url['host'], $host)) {
-                $k_array = array();
+                $k_array = [];
                 preg_match('/[^a-zA-Z&]?' . $varname . '=.*\&' . '/U', $parsed_url['query'], $k_array);
 
                 if (empty($k_array[0])) {

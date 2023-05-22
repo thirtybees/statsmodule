@@ -72,44 +72,44 @@ class StatsBestCustomers extends StatsModule
 
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
 
-        $this->columns = array(
-            array(
+        $this->columns = [
+            [
                 'id' => 'lastname',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Last Name', 'statsmodule'),
                 'dataIndex' => 'lastname',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'firstname',
                 'header' => Translate::getModuleTranslation('statsmodule', 'First Name', 'statsmodule'),
                 'dataIndex' => 'firstname',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'email',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Email', 'statsmodule'),
                 'dataIndex' => 'email',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalVisits',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Visits', 'statsmodule'),
                 'dataIndex' => 'totalVisits',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalValidOrders',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Valid orders', 'statsmodule'),
                 'dataIndex' => 'totalValidOrders',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalMoneySpent',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Money spent', 'statsmodule') . ' (' . Tools::safeOutput($currency->iso_code) . ')',
                 'dataIndex' => 'totalMoneySpent',
                 'align' => 'center',
-            ),
-        );
+            ],
+        ];
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best customers', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best customers to the Stats dashboard.', 'statsmodule');
@@ -121,7 +121,7 @@ class StatsBestCustomers extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $engine_params = array(
+        $engine_params = [
             'id' => 'id_customer',
             'title' => $this->displayName,
             'columns' => $this->columns,
@@ -129,7 +129,7 @@ class StatsBestCustomers extends StatsModule
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
             'pagingMessage' => $this->paging_message,
-        );
+        ];
 
         if (Tools::getValue('export')) {
             $this->csvExport($engine_params);

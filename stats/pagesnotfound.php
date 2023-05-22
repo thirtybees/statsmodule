@@ -56,14 +56,14 @@ class PagesNotFound extends StatsModule
             'GROUP BY http_referer, request_uri';
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-        $pages = array();
+        $pages = [];
         foreach ($result as $row) {
             $row['http_referer'] = parse_url($row['http_referer'], PHP_URL_HOST) . parse_url($row['http_referer'], PHP_URL_PATH);
             if (empty($row['http_referer'])) {
                 $row['http_referer'] = '--';
             }
             if (!isset($pages[$row['request_uri']])) {
-                $pages[$row['request_uri']] = array('nb' => 0);
+                $pages[$row['request_uri']] = ['nb' => 0];
             }
             $pages[$row['request_uri']][$row['http_referer']] = $row['nb'];
             $pages[$row['request_uri']]['nb'] += $row['nb'];
@@ -196,7 +196,7 @@ class PagesNotFound extends StatsModule
     {
         $last = $directory[strlen($directory) - 1];
 
-        if (in_array($last, array('/', '\\'))) {
+        if (in_array($last, ['/', '\\'])) {
             $directory[strlen($directory) - 1] = DIRECTORY_SEPARATOR;
             return $directory;
         }

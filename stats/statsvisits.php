@@ -81,20 +81,20 @@ class StatsVisits extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $graph_params = array(
+        $graph_params = [
             'layers' => 2,
             'type' => 'line',
             'option' => 3,
-        );
+        ];
 
         $total_visits = $this->getTotalVisits();
         $total_guests = $this->getTotalGuests();
         if (Tools::getValue('export')) {
-            $this->csvExport(array(
+            $this->csvExport([
                 'layers' => 2,
                 'type' => 'line',
                 'option' => 3
-            ));
+            ]);
         }
         $this->html = '
 		<div class="panel-heading">

@@ -82,34 +82,34 @@ class StatsPersonalInfos extends StatsModule
         if ($has_customers) {
             if (Tools::getValue('export')) {
                 if (Tools::getValue('exportType') == 'gender') {
-                    $this->csvExport(array(
+                    $this->csvExport([
                         'type' => 'pie',
                         'option' => 'gender',
-                    ));
+                    ]);
                 } else {
                     if (Tools::getValue('exportType') == 'age') {
-                        $this->csvExport(array(
+                        $this->csvExport([
                             'type' => 'pie',
                             'option' => 'age',
-                        ));
+                        ]);
                     } else {
                         if (Tools::getValue('exportType') == 'country') {
-                            $this->csvExport(array(
+                            $this->csvExport([
                                 'type' => 'pie',
                                 'option' => 'country',
-                            ));
+                            ]);
                         } else {
                             if (Tools::getValue('exportType') == 'currency') {
-                                $this->csvExport(array(
+                                $this->csvExport([
                                     'type' => 'pie',
                                     'option' => 'currency',
-                                ));
+                                ]);
                             } else {
                                 if (Tools::getValue('exportType') == 'language') {
-                                    $this->csvExport(array(
+                                    $this->csvExport([
                                         'type' => 'pie',
                                         'option' => 'language',
-                                    ));
+                                    ]);
                                 }
                             }
                         }
@@ -121,10 +121,10 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, array(
+							' . $this->engine($this->type, [
                     'type' => 'pie',
                     'option' => 'gender',
-                )) . '
+                ]) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . Translate::getModuleTranslation('statsmodule', 'Gender distribution allows you to determine the percentage of men and women shoppers on your store.', 'statsmodule') . '</p>
@@ -138,10 +138,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, array(
-                    'type' => 'pie',
-                    'option' => 'age',
-                )) . '
+							' . $this->engine($this->type, [ 'type' => 'pie', 'option' => 'age' ]) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . Translate::getModuleTranslation('statsmodule', 'Age ranges allow you to better understand target demographics.', 'statsmodule') . '</p>
@@ -155,10 +152,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, array(
-                    'type' => 'pie',
-                    'option' => 'country',
-                )) . '
+							' . $this->engine($this->type, [ 'type' => 'pie', 'option' => 'country' ]) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . Translate::getModuleTranslation('statsmodule', 'Country distribution allows you to analyze which part of the World your customers are shopping from.', 'statsmodule') . '</p>
@@ -172,10 +166,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, array(
-                    'type' => 'pie',
-                    'option' => 'currency',
-                )) . '
+							' . $this->engine($this->type, ['type' => 'pie', 'option' => 'currency']) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . Translate::getModuleTranslation('statsmodule', 'Currency range allows you to determine which currency your customers are using.', 'statsmodule') . '</p>
@@ -189,10 +180,7 @@ class StatsPersonalInfos extends StatsModule
 				<div class="row row-margin-bottom">
 					<div class="col-lg-12">
 						<div class="col-lg-8">
-							' . $this->engine($this->type, array(
-                    'type' => 'pie',
-                    'option' => 'language',
-                )) . '
+							' . $this->engine($this->type, ['type' => 'pie', 'option' => 'language']) . '
 						</div>
 						<div class="col-lg-4">
 							<p>' . Translate::getModuleTranslation('statsmodule', 'Language distribution allows you to analyze the browsing language used by your customers.', 'statsmodule') . '</p>
@@ -232,11 +220,11 @@ class StatsPersonalInfos extends StatsModule
         switch ($this->option) {
             case 'gender':
                 $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Gender distribution', 'statsmodule');
-                $genders = array(
+                $genders = [
                     0 => Translate::getModuleTranslation('statsmodule', 'Male', 'statsmodule'),
                     1 => Translate::getModuleTranslation('statsmodule', 'Female', 'statsmodule'),
                     2 => Translate::getModuleTranslation('statsmodule', 'Unknown', 'statsmodule'),
-                );
+                ];
 
                 $sql = 'SELECT g.type, c.id_gender, COUNT(c.id_customer) AS total
 						FROM ' . _DB_PREFIX_ . 'customer c
@@ -246,7 +234,7 @@ class StatsPersonalInfos extends StatsModule
 						GROUP BY c.id_gender';
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-                $genders_results = array();
+                $genders_results = [];
                 foreach ($result as $row) {
                     $type = (is_null($row['type'])) ? 2 : $row['type'];
                     if (!isset($genders_results[$type])) {

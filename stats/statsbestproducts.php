@@ -68,62 +68,62 @@ class StatsBestProducts extends StatsModule
         $this->empty_message = Translate::getModuleTranslation('statsmodule', 'An empty record-set was returned.', 'statsmodule');
         $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
 
-        $this->columns = array(
-            array(
+        $this->columns = [
+            [
                 'id' => 'reference',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Reference', 'statsmodule'),
                 'dataIndex' => 'reference',
                 'align' => 'left',
-            ),
-            array(
+            ],
+            [
                 'id' => 'name',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
                 'align' => 'left',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalQuantitySold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
                 'dataIndex' => 'totalQuantitySold',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'avgPriceSold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Price sold', 'statsmodule'),
                 'dataIndex' => 'avgPriceSold',
                 'align' => 'right',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalPriceSold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
                 'dataIndex' => 'totalPriceSold',
                 'align' => 'right',
-            ),
-            array(
+            ],
+            [
                 'id' => 'averageQuantitySold',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold in a day', 'statsmodule'),
                 'dataIndex' => 'averageQuantitySold',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalPageViewed',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Page views', 'statsmodule'),
                 'dataIndex' => 'totalPageViewed',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'quantity',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule'),
                 'dataIndex' => 'quantity',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'active',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Active', 'statsmodule'),
                 'dataIndex' => 'active',
                 'align' => 'center',
-            ),
-        );
+            ],
+        ];
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best-selling products', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best-selling products to the Stats dashboard.', 'statsmodule');
@@ -135,7 +135,7 @@ class StatsBestProducts extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $engine_params = array(
+        $engine_params = [
             'id' => 'id_product',
             'title' => $this->displayName,
             'columns' => $this->columns,
@@ -143,7 +143,7 @@ class StatsBestProducts extends StatsModule
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
             'pagingMessage' => $this->paging_message,
-        );
+        ];
 
         if (Tools::getValue('export')) {
             $this->csvExport($engine_params);

@@ -65,7 +65,7 @@ class StatsEquipment extends StatsModule
 					' . Shop::addSqlRestriction(false, 'c');
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
 
-        $calc_array = array(
+        $calc_array = [
             'jsOK' => 0,
             'jsKO' => 0,
             'javaOK' => 0,
@@ -80,7 +80,7 @@ class StatsEquipment extends StatsModule
             'flashKO' => 0,
             'directorOK' => 0,
             'directorKO' => 0,
-        );
+        ];
         while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
             if (!$row['javascript']) {
                 ++$calc_array['jsKO'];
@@ -99,14 +99,14 @@ class StatsEquipment extends StatsModule
             return false;
         }
 
-        $equip = array(
+        $equip = [
             'Windows Media Player' => $calc_array['wmpOK'] / ($calc_array['wmpOK'] + $calc_array['wmpKO']),
             'Real Player' => $calc_array['realOK'] / ($calc_array['realOK'] + $calc_array['realKO']),
             'Apple Quicktime' => $calc_array['qtOK'] / ($calc_array['qtOK'] + $calc_array['qtKO']),
             'Sun Java' => $calc_array['javaOK'] / ($calc_array['javaOK'] + $calc_array['javaKO']),
             'Adobe Flash' => $calc_array['flashOK'] / ($calc_array['flashOK'] + $calc_array['flashKO']),
             'Adobe Shockwave' => $calc_array['directorOK'] / ($calc_array['directorOK'] + $calc_array['directorKO']),
-        );
+        ];
         arsort($equip);
 
         return $equip;
@@ -120,10 +120,10 @@ class StatsEquipment extends StatsModule
     {
         if (Tools::getValue('export')) {
             if (Tools::getValue('exportType') == 'browser') {
-                $this->csvExport(array('type' => 'pie', 'option' => 'wb'));
+                $this->csvExport(['type' => 'pie', 'option' => 'wb']);
             } else {
                 if (Tools::getValue('exportType') == 'os') {
-                    $this->csvExport(array('type' => 'pie', 'option' => 'os'));
+                    $this->csvExport(['type' => 'pie', 'option' => 'os']);
                 }
             }
         }
@@ -225,7 +225,7 @@ class StatsEquipment extends StatsModule
     protected function getData($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query2);
-        $this->_values = array();
+        $this->_values = [];
         $i = 0;
         foreach ($result as $row) {
             $this->_values[$i] = $row['total'];

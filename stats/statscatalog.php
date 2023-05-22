@@ -137,7 +137,7 @@ class StatsCatalog extends StatsModule
 				GROUP BY p.`id_product`';
         $precalc = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-        $precalc2 = array();
+        $precalc2 = [];
         foreach ($precalc as $array) {
             $precalc2[] = (int)$array['id_product'];
         }
@@ -153,7 +153,10 @@ class StatsCatalog extends StatsModule
 					' . $this->where;
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-        return array('total' => Db::getInstance(_PS_USE_SQL_SLAVE_)->NumRows(), 'result' => $result);
+        return [
+            'total' => Db::getInstance(_PS_USE_SQL_SLAVE_)->NumRows(),
+            'result' => $result
+        ];
     }
 
     /**

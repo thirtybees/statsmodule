@@ -256,11 +256,11 @@ class StatsProduct extends StatsModule
 
         if (Tools::getValue('export')) {
             if (!Tools::getValue('exportType')) {
-                $this->csvExport(array(
+                $this->csvExport([
                     'layers' => 2,
                     'type' => 'line',
                     'option' => '42'
-                ));
+                ]);
             }
         }
 
@@ -281,17 +281,17 @@ class StatsProduct extends StatsModule
         if ($id_product = (int)Tools::getValue('id_product')) {
             if (Tools::getValue('export')) {
                 if (Tools::getValue('exportType') == 1) {
-                    $this->csvExport(array(
+                    $this->csvExport([
                         'layers' => 2,
                         'type' => 'line',
                         'option' => '1-' . $id_product
-                    ));
+                    ]);
                 }
                 elseif (Tools::getValue('exportType') == 2) {
-                    $this->csvExport(array(
+                    $this->csvExport([
                         'type' => 'pie',
                         'option' => '3-' . $id_product
-                    ));
+                    ]);
                 }
             }
             $product = new Product($id_product, false, $this->context->language->id);
@@ -305,11 +305,7 @@ class StatsProduct extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, array(
-                    'layers' => 2,
-                    'type' => 'line',
-                    'option' => '1-' . $id_product
-                )) . '
+						' . $this->engine($this->type, [ 'layers' => 2, 'type' => 'line', 'option' => '1-' . $id_product ]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
@@ -330,7 +326,7 @@ class StatsProduct extends StatsModule
                 if ($hasAttribute) {
                     $this->html .= '
                         <h3 class="space">' . Translate::getModuleTranslation('statsmodule', 'Attribute sales distribution', 'statsmodule') . '</h3>
-                        <center>' . $this->engine($this->type, array('type' => 'pie', 'option' => '3-' . $id_product)) . '</center><br />
+                        <center>' . $this->engine($this->type, ['type' => 'pie', 'option' => '3-' . $id_product]) . '</center><br />
                         <a href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=2"><img src="../img/admin/asterisk.gif" alt=""/>' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '</a>';
                 }
 
@@ -567,14 +563,14 @@ class StatsProduct extends StatsModule
             } else {
                 $product = new Product($this->id_product, false, (int)$this->getLang());
 
-                $comb_array = array();
-                $assoc_names = array();
+                $comb_array = [];
+                $assoc_names = [];
                 $combinations = $product->getAttributeCombinations((int)$this->getLang());
                 foreach ($combinations as $combination) {
-                    $comb_array[$combination['id_product_attribute']][] = array(
+                    $comb_array[$combination['id_product_attribute']][] = [
                         'group' => $combination['group_name'],
                         'attr' => $combination['attribute_name']
-                    );
+                    ];
                 }
                 foreach ($comb_array as $id_product_attribute => $product_attribute) {
                     $list = '';

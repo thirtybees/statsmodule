@@ -119,15 +119,15 @@ class StatsForecast extends StatsModule
             $interval_avg = $interval2 / 7;
         }
 
-        $data_table = array();
+        $data_table = [];
         if ($this->context->cookie->stats_granularity == 10) {
             for ($i = $from; $i <= $to2; $i = strtotime('+1 day', $i)) {
-                $data_table[date('Y-m-d', $i)] = array(
+                $data_table[date('Y-m-d', $i)] = [
                     'fix_date' => date('Y-m-d', $i),
                     'countOrders' => 0,
                     'countProducts' => 0,
                     'totalSales' => 0,
-                );
+                ];
             }
         }
 
@@ -188,7 +188,7 @@ class StatsForecast extends StatsModule
 					</tr>
 				</thead>';
 
-        $visit_array = array();
+        $visit_array = [];
         $sql = 'SELECT ' . $date_from_gadd . ' as fix_date, COUNT(*) as visits
 				FROM ' . _DB_PREFIX_ . 'connections c
 				WHERE c.date_add BETWEEN ' . ModuleGraph::getDateBetween() . '
@@ -626,7 +626,7 @@ class StatsForecast extends StatsModule
     private function getRealCA()
     {
         $employee = $this->context->employee;
-        $ca = array();
+        $ca = [];
 
         $where = $join = '';
         if ((int)$this->context->cookie->stats_id_zone) {
@@ -676,8 +676,8 @@ class StatsForecast extends StatsModule
 						' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
             $ca['langprev'] = Db::getInstance()->getRow($sql);
         } else {
-            $ca['lang'] = array();
-            $ca['langprev'] = array();
+            $ca['lang'] = [];
+            $ca['langprev'] = [];
         }
 
         $sql = 'SELECT reference
@@ -689,7 +689,7 @@ class StatsForecast extends StatsModule
 					AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween();
         $result = Db::getInstance()->executeS($sql);
         if (count($result)) {
-            $references = array();
+            $references = [];
             foreach ($result as $r) {
                 $references[] = $r['reference'];
             }
@@ -703,7 +703,7 @@ class StatsForecast extends StatsModule
 					ORDER BY total DESC';
             $ca['payment'] = Db::getInstance()->executeS($sql);
         } else {
-            $ca['payment'] = array();
+            $ca['payment'] = [];
         }
 
         $sql = 'SELECT z.name, SUM(o.total_paid_tax_excl / o.conversion_rate) AS total, COUNT(*) AS nb

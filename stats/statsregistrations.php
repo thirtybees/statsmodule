@@ -112,10 +112,10 @@ class StatsRegistrations extends StatsModule
         $total_blocked = $this->getBlockedVisitors();
         $total_buyers = $this->getFirstBuyers();
         if (Tools::getValue('export')) {
-            $this->csvExport(array(
+            $this->csvExport([
                 'layers' => 0,
                 'type' => 'line'
-            ));
+            ]);
         }
         $this->html = '
 		<div class="panel-heading">

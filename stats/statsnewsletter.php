@@ -81,7 +81,9 @@ class StatsNewsletter extends StatsModule
         if (Module::isInstalled($this->newsletter_module_name)) {
             $totals = $this->getTotals();
             if (Tools::getValue('export')) {
-                $this->csvExport(array('type' => 'line', 'layers' => 3));
+                {
+                    $this->csvExport(['type' => 'line', 'layers' => 3]);
+                }
             }
             $this->_html = '
 			<div class="panel-heading">
@@ -131,7 +133,11 @@ class StatsNewsletter extends StatsModule
 				   ' . Shop::addSqlRestriction() . '
 					AND `newsletter_date_add` BETWEEN ' . ModuleGraph::getDateBetween();
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
-        return array('customers' => $result1['customers'], 'visitors' => $result2['visitors'], 'both' => $result1['customers'] + $result2['visitors']);
+        return [
+            'customers' => $result1['customers'],
+            'visitors' => $result2['visitors'],
+            'both' => $result1['customers'] + $result2['visitors']
+        ];
     }
 
     /**

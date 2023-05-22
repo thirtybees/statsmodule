@@ -68,68 +68,68 @@ class StatsOrdersProfit extends StatsModule
         $this->empty_message = Translate::getModuleTranslation('statsmodule', 'An empty record-set was returned.', 'statsmodule');
         $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
 
-        $this->columns = array(
-            array(
+        $this->columns = [
+            [
                 'id' => 'number',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Order ID', 'statsmodule'),
                 'dataIndex' => 'number',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'invoice_number',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Invoice Number', 'statsmodule'),
                 'dataIndex' => 'invoice_number',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'invoice_date',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Invoice Date', 'statsmodule'),
                 'dataIndex' => 'invoice_date',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'paid',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Paid', 'statsmodule'),
                 'dataIndex' => 'paid',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'total',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule'),
                 'dataIndex' => 'total',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'shipping',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Shipping', 'statsmodule'),
                 'dataIndex' => 'shipping',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'TaxTotal',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Tax', 'statsmodule'),
                 'dataIndex' => 'TaxTotal',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'cost',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Cost', 'statsmodule'),
                 'dataIndex' => 'cost',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'totalDiscount',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Discount', 'statsmodule'),
                 'dataIndex' => 'totalDiscount',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'profit',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Profit', 'statsmodule'),
                 'dataIndex' => 'profit',
                 'align' => 'center',
-            ),
-        );
+            ],
+        ];
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Orders Profit', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the orders profit to the Stats dashboard..', 'statsmodule');
@@ -141,7 +141,7 @@ class StatsOrdersProfit extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $engine_params = array(
+        $engine_params = [
             'id' => 'id_product',
             'title' => $this->displayName,
             'columns' => $this->columns,
@@ -149,7 +149,7 @@ class StatsOrdersProfit extends StatsModule
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
             'pagingMessage' => $this->paging_message,
-        );
+        ];
 
         if (Tools::getValue('export')) {
             $this->csvExport($engine_params);

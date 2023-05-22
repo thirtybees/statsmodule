@@ -72,24 +72,24 @@ class StatsSales extends StatsModule
         $totals = $this->getTotals();
         $currency = new Currency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
         if (($id_export = (int)Tools::getValue('export')) == 1) {
-            $this->csvExport(array(
+            $this->csvExport([
                 'layers' => 2,
                 'type' => 'line',
                 'option' => '1-' . (int)Tools::getValue('id_country'),
-            ));
+            ]);
         }
         elseif ($id_export == 2) {
-            $this->csvExport(array(
+            $this->csvExport([
                 'layers' => 0,
                 'type' => 'line',
                 'option' => '2-' . (int)Tools::getValue('id_country'),
-            ));
+            ]);
         }
         elseif ($id_export == 3) {
-            $this->csvExport(array(
+            $this->csvExport([
                 'type' => 'pie',
                 'option' => '3-' . (int)Tools::getValue('id_country'),
-            ));
+            ]);
         }
 
         $this->html = '
@@ -129,11 +129,7 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, array(
-                'type' => 'line',
-                'option' => '1-' . (int)Tools::getValue('id_country'),
-                'layers' => 2,
-            )) . '
+						' . $this->engine($this->type, [ 'type' => 'line', 'option' => '1-' . (int)Tools::getValue('id_country'), 'layers' => 2 ]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
@@ -150,10 +146,7 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . $this->engine($this->type, array(
-                'type' => 'line',
-                'option' => '2-' . (int)Tools::getValue('id_country'),
-            )) . '
+						' . $this->engine($this->type, ['type' => 'line', 'option' => '2-' . (int)Tools::getValue('id_country')]) . '
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
@@ -172,10 +165,7 @@ class StatsSales extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
 					<div class="col-lg-8">
-						' . ($totals['orderCount'] ? $this->engine($this->type, array(
-                'type' => 'pie',
-                'option' => '3-' . (int)Tools::getValue('id_country'),
-            )) : Translate::getModuleTranslation('statsmodule', 'No orders for this period.', 'statsmodule')) . '
+						' . ($totals['orderCount'] ? $this->engine($this->type, ['type' => 'pie', 'option' => '3-' . (int)Tools::getValue('id_country') ]) : Translate::getModuleTranslation('statsmodule', 'No orders for this period.', 'statsmodule')) . '
 					</div>
 					<div class="col-lg-4">
 						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=3') . '">

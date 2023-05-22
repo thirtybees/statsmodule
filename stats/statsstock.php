@@ -109,7 +109,7 @@ class StatsStock extends StatsModule
             $this->html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'Your catalog is empty.', 'statsmodule') . '</p>';
         }
         else {
-            $rollup = array('quantity' => 0, 'wholesale_price' => 0, 'stockvalue' => 0);
+            $rollup = ['quantity' => 0, 'wholesale_price' => 0, 'stockvalue' => 0];
             $this->html .= '
 			<table class="table">
 				<thead>

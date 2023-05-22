@@ -61,7 +61,7 @@ class StatsCarrier extends StatsModule
         $states = OrderState::getOrderStates($this->context->language->id);
 
         if (Tools::getValue('export')) {
-            $this->csvExport(array('type' => 'pie', 'option' => Tools::getValue('id_order_state')));
+            $this->csvExport(['type' => 'pie', 'option' => Tools::getValue('id_order_state')]);
         }
         $this->html = '
 			<div class="panel-heading">

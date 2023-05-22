@@ -59,7 +59,7 @@ class StatsOrigin extends StatsModule
 					' . Shop::addSqlRestriction() . '
 					AND date_add BETWEEN ' . $dateBetween;
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
-        $websites = array($directLink => 0);
+        $websites = [$directLink => 0];
         while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
             if (empty($row['http_referer'])) {
                 ++$websites[$directLink];
@@ -87,7 +87,7 @@ class StatsOrigin extends StatsModule
         $websites = $this->getOrigins(ModuleGraph::getDateBetween());
         if (Tools::getValue('export')) {
             if (Tools::getValue('exportType') == 'top') {
-                $this->csvExport(array('type' => 'pie'));
+                $this->csvExport(['type' => 'pie']);
             }
         }
         $this->_html = '<div class="panel-heading">' . Translate::getModuleTranslation('statsmodule', 'Origin', 'statsmodule') . '</div>';

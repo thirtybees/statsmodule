@@ -68,26 +68,26 @@ class StatsBestSuppliers extends StatsModule
         $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty record set returned', 'statsmodule');
         $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
 
-        $this->columns = array(
-            array(
+        $this->columns = [
+            [
                 'id' => 'name',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
                 'dataIndex' => 'name',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'quantity',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
                 'dataIndex' => 'quantity',
                 'align' => 'center',
-            ),
-            array(
+            ],
+            [
                 'id' => 'sales',
                 'header' => Translate::getModuleTranslation('statsmodule', 'Total paid', 'statsmodule'),
                 'dataIndex' => 'sales',
                 'align' => 'center',
-            ),
-        );
+            ],
+        ];
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best suppliers', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best suppliers to the Stats dashboard.', 'statsmodule');
@@ -99,7 +99,7 @@ class StatsBestSuppliers extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $engine_params = array(
+        $engine_params = [
             'id' => 'id_category',
             'title' => $this->displayName,
             'columns' => $this->columns,
@@ -107,7 +107,7 @@ class StatsBestSuppliers extends StatsModule
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
             'pagingMessage' => $this->paging_message,
-        );
+        ];
 
         if (Tools::getValue('export') == 1) {
             $this->csvExport($engine_params);

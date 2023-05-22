@@ -68,7 +68,7 @@ class StatsSearch extends StatsModule
     public function hookAdminStatsModules()
     {
         if (Tools::getValue('export')) {
-            $this->csvExport(array('type' => 'pie'));
+            $this->csvExport(['type' => 'pie']);
         }
 
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . ModuleGraph::getDateBetween() . $this->query_group_by);
