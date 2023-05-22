@@ -67,8 +67,9 @@ class StatsSearch extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport(array('type' => 'pie'));
+        }
 
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . ModuleGraph::getDateBetween() . $this->query_group_by);
         $this->html = '
@@ -87,24 +88,27 @@ class StatsSearch extends StatsModule
 			<tbody>';
 
         foreach ($result as $row) {
-            if (Tools::strlen($row['keywords']) >= Configuration::get('PS_SEARCH_MINWORDLEN'))
+            if (Tools::strlen($row['keywords']) >= Configuration::get('PS_SEARCH_MINWORDLEN')) {
                 $table .= '<tr>
 					<td>' . $row['keywords'] . '</td>
 					<td>' . $row['occurences'] . '</td>
 					<td>' . $row['total'] . '</td>
 				</tr>';
+            }
         }
         $table .= '
 			</tbody>
 		</table>';
 
-        if (count($result))
+        if (count($result)) {
             $this->html .= '<div>' . $this->engine($this->type, ['type' => 'pie']) . '</div>
 							<a class="btn btn-default" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1">
 								<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
 							</a>' . $table;
-        else
+        }
+        else {
             $this->html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'Cannot find any keywords that have been searched for more than once.', 'statsmodule') . '</p>';
+        }
 
         return $this->html;
     }
@@ -121,12 +125,14 @@ class StatsSearch extends StatsModule
         $total_result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         $total = 0;
         $total2 = 0;
-        foreach ($total_result as $total_row)
+        foreach ($total_result as $total_row) {
             $total += $total_row['occurences'];
+        }
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by . ' LIMIT 9');
         foreach ($result as $row) {
-            if (!$row['occurences'])
+            if (!$row['occurences']) {
                 continue;
+            }
             $this->_legend[] = $row['keywords'];
             $this->_values[] = $row['occurences'];
             $total2 += $row['occurences'];

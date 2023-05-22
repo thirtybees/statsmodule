@@ -95,8 +95,9 @@ class StatsEquipment extends StatsModule
             ($row['apple_quicktime']) ? ++$calc_array['qtOK'] : ++$calc_array['qtKO'];
         }
 
-        if (!$calc_array['jsOK'])
+        if (!$calc_array['jsOK']) {
             return false;
+        }
 
         $equip = array(
             'Windows Media Player' => $calc_array['wmpOK'] / ($calc_array['wmpOK'] + $calc_array['wmpKO']),
@@ -117,11 +118,15 @@ class StatsEquipment extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        if (Tools::getValue('export'))
-            if (Tools::getValue('exportType') == 'browser')
+        if (Tools::getValue('export')) {
+            if (Tools::getValue('exportType') == 'browser') {
                 $this->csvExport(array('type' => 'pie', 'option' => 'wb'));
-            else if (Tools::getValue('exportType') == 'os')
-                $this->csvExport(array('type' => 'pie', 'option' => 'os'));
+            } else {
+                if (Tools::getValue('exportType') == 'os') {
+                    $this->csvExport(array('type' => 'pie', 'option' => 'os'));
+                }
+            }
+        }
 
         $equipment = $this->getEquipment();
         $this->html = '
@@ -166,8 +171,9 @@ class StatsEquipment extends StatsModule
         if ($equipment) {
             $this->html .= '<table class="table">
 				<tr><th><span class="title_box  active">' . Translate::getModuleTranslation('statsmodule', 'Plugins', 'statsmodule') . '</th></span><th></th></tr>';
-            foreach ($equipment as $name => $value)
+            foreach ($equipment as $name => $value) {
                 $this->html .= '<tr><td>' . $name . '</td><td>' . number_format(100 * $value, 2) . '%</td></tr>';
+            }
             $this->html .= '</table>';
         }
 

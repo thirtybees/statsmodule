@@ -60,8 +60,9 @@ class StatsCarrier extends StatsModule
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
         $states = OrderState::getOrderStates($this->context->language->id);
 
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport(array('type' => 'pie', 'option' => Tools::getValue('id_order_state')));
+        }
         $this->html = '
 			<div class="panel-heading">
 				' . $this->displayName . '
@@ -71,8 +72,9 @@ class StatsCarrier extends StatsModule
 					<div class="col-lg-5 col-lg-offset-6">
 						<select name="id_order_state">
 							<option value="0"' . ((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . '</option>';
-        foreach ($states as $state)
+        foreach ($states as $state) {
             $this->html .= '<option value="' . $state['id_order_state'] . '"' . (($state['id_order_state'] == Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . $state['name'] . '</option>';
+        }
         $this->html .= '</select>
 					</div>
 					<div class="col-lg-1">
@@ -120,12 +122,13 @@ class StatsCarrier extends StatsModule
     protected function getData($layers)
     {
         $state_query = '';
-        if ((int)$this->option)
+        if ((int)$this->option) {
             $state_query = 'AND (
 				SELECT oh.id_order_state FROM `' . _DB_PREFIX_ . 'order_history` oh
 				WHERE o.id_order = oh.id_order
 				ORDER BY oh.date_add DESC, oh.id_order_history DESC
 				LIMIT 1) = ' . (int)$this->option;
+        }
         $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Percentage of orders listed by carrier.', 'statsmodule');
 
         $sql = 'SELECT c.name, COUNT(DISTINCT o.`id_order`) AS total

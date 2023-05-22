@@ -69,12 +69,14 @@ class SEKeywords extends StatsModule
      */
     public function hookTop($params)
     {
-        if (!isset($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], Tools::getHttpHost(false, false) == 0))
+        if (!isset($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], Tools::getHttpHost(false, false) == 0)) {
             return;
+        }
 
-        if ($keywords = $this->getKeywords($_SERVER['HTTP_REFERER']))
+        if ($keywords = $this->getKeywords($_SERVER['HTTP_REFERER'])) {
             Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'sekeyword` (`keyword`, `date_add`, `id_shop`, `id_shop_group`)
 										VALUES (\'' . pSQL(Tools::strtolower(trim($keywords))) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')');
+        }
     }
 
     /**
@@ -90,8 +92,9 @@ class SEKeywords extends StatsModule
             Tools::redirectAdmin('index.php?tab=AdminStats&token=' . Tools::getValue('token') . '&module=');
         }
 
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport(array('type' => 'pie'));
+        }
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . ModuleGraph::getDateBetween() . $this->query2);
         $total = count($result);
         $this->html = '
@@ -157,8 +160,9 @@ class SEKeywords extends StatsModule
             $this->html .= '<div>' . $this->engine($this->type, ['type' => 'pie']) . '</div>
 			<a class="btn btn-default" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=language"><<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '</a>
 			' . $form . '<br/>' . $table;
-        } else
+        } else {
             $this->html .= $form . '<p><strong>' . Translate::getModuleTranslation('statsmodule', 'No keywords', 'statsmodule') . '</strong></p>';
+        }
 
         return $this->html;
     }
@@ -171,15 +175,18 @@ class SEKeywords extends StatsModule
      */
     public function getKeywords($url)
     {
-        if (!Validate::isAbsoluteUrl($url))
+        if (!Validate::isAbsoluteUrl($url)) {
             return false;
+        }
 
         $parsed_url = parse_url($url);
-        if (!isset($parsed_url['query']) && isset($parsed_url['fragment']))
+        if (!isset($parsed_url['query']) && isset($parsed_url['fragment'])) {
             $parsed_url['query'] = $parsed_url['fragment'];
+        }
 
-        if (!isset($parsed_url['query']))
+        if (!isset($parsed_url['query'])) {
             return false;
+        }
 
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('SELECT `server`, `getvar` FROM `' . _DB_PREFIX_ . 'search_engine`');
         foreach ($result as $row) {
@@ -189,14 +196,17 @@ class SEKeywords extends StatsModule
                 $k_array = array();
                 preg_match('/[^a-zA-Z&]?' . $varname . '=.*\&' . '/U', $parsed_url['query'], $k_array);
 
-                if (!isset($k_array[0]) || empty($k_array[0]))
+                if (!isset($k_array[0]) || empty($k_array[0])) {
                     preg_match('/[^a-zA-Z&]?' . $varname . '=.*$' . '/', $parsed_url['query'], $k_array);
+                }
 
-                if (!isset($k_array[0]) || empty($k_array[0]))
+                if (!isset($k_array[0]) || empty($k_array[0])) {
                     return false;
+                }
 
-                if ($k_array[0][0] == '&' && Tools::strlen($k_array[0]) == 1)
+                if ($k_array[0][0] == '&' && Tools::strlen($k_array[0]) == 1) {
                     return false;
+                }
 
                 return urldecode(str_replace('+', ' ', ltrim(Tools::substr(rtrim($k_array[0], '&'), Tools::strlen($varname) + 1), '=')));
             }
@@ -217,8 +227,9 @@ class SEKeywords extends StatsModule
         $total_result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query2);
         $total = 0;
         $total2 = 0;
-        foreach ($total_result as $total_row)
+        foreach ($total_result as $total_row) {
             $total += $total_row['occurences'];
+        }
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query2 . ' LIMIT 9');
         foreach ($result as $row) {
             $this->_legend[] = $row['keyword'];

@@ -145,8 +145,9 @@ class StatsBestProducts extends StatsModule
             'pagingMessage' => $this->paging_message,
         );
 
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport($engine_params);
+        }
 
         return '<div class="panel-heading">' . $this->displayName . '</div>
 		' . $this->engine($this->type, $engine_params) . '
@@ -196,12 +197,14 @@ class StatsBestProducts extends StatsModule
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
-            if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
+            if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
                 $this->query .= ' ' . $this->_direction;
+            }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit))
+        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
             $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
+        }
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {

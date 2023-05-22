@@ -85,12 +85,15 @@ class StatsForecast extends StatsModule
 
         $db = Db::getInstance();
 
-        if (!isset($this->context->cookie->stats_granularity))
+        if (!isset($this->context->cookie->stats_granularity)) {
             $this->context->cookie->stats_granularity = 10;
-        if (Tools::isSubmit('submitIdZone'))
+        }
+        if (Tools::isSubmit('submitIdZone')) {
             $this->context->cookie->stats_id_zone = (int)Tools::getValue('stats_id_zone');
-        if (Tools::isSubmit('submitGranularity'))
+        }
+        if (Tools::isSubmit('submitGranularity')) {
             $this->context->cookie->stats_granularity = Tools::getValue('stats_granularity');
+        }
 
         $currency = $this->context->currency;
         $employee = $this->context->employee;
@@ -102,24 +105,30 @@ class StatsForecast extends StatsModule
         $interval2 = ($to2 - $from) / 60 / 60 / 24;
         $prop30 = $interval / $interval2;
 
-        if ($this->context->cookie->stats_granularity == 7)
+        if ($this->context->cookie->stats_granularity == 7) {
             $interval_avg = $interval2 / 30;
-        if ($this->context->cookie->stats_granularity == 4)
+        }
+        if ($this->context->cookie->stats_granularity == 4) {
             $interval_avg = $interval2 / 365;
-        if ($this->context->cookie->stats_granularity == 10)
+        }
+        if ($this->context->cookie->stats_granularity == 10) {
             $interval_avg = $interval2;
-        if ($this->context->cookie->stats_granularity == 42)
+        }
+        if ($this->context->cookie->stats_granularity == 42) {
             $interval_avg = $interval2 / 7;
+        }
 
         $data_table = array();
-        if ($this->context->cookie->stats_granularity == 10)
-            for ($i = $from; $i <= $to2; $i = strtotime('+1 day', $i))
+        if ($this->context->cookie->stats_granularity == 10) {
+            for ($i = $from; $i <= $to2; $i = strtotime('+1 day', $i)) {
                 $data_table[date('Y-m-d', $i)] = array(
                     'fix_date' => date('Y-m-d', $i),
                     'countOrders' => 0,
                     'countProducts' => 0,
                     'totalSales' => 0,
                 );
+            }
+        }
 
         $date_from_gadd = ($this->context->cookie->stats_granularity != 42
             ? 'LEFT(date_add, ' . (int)$this->context->cookie->stats_granularity . ')'
@@ -140,8 +149,9 @@ class StatsForecast extends StatsModule
 		AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '
 		' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
 		GROUP BY ' . $date_from_ginvoice);
-        while ($row = $db->nextRow($result))
+        while ($row = $db->nextRow($result)) {
             $data_table[$row['fix_date']] = $row;
+        }
 
         $this->html .= '<div>
 			<div class="panel-heading"><i class="icon-dashboard"></i> ' . $this->displayName . '</div>
@@ -184,8 +194,9 @@ class StatsForecast extends StatsModule
 				' . Shop::addSqlRestriction(false, 'c') . '
 				GROUP BY ' . $date_from_gadd;
         $visits = Db::getInstance()->query($sql);
-        while ($row = $db->nextRow($visits))
+        while ($row = $db->nextRow($visits)) {
             $visit_array[$row['fix_date']] = $row['visits'];
+        }
 
         foreach ($data_table as $row) {
             $visits_today = (int)(isset($visit_array[$row['fix_date']]) ? $visit_array[$row['fix_date']] : 0);
@@ -409,8 +420,9 @@ class StatsForecast extends StatsModule
 							<input type="hidden" name="submitIdZone" value="1" />
 							<select name="stats_id_zone" onchange="this.form.submit();">
 								<option value="0">' . Translate::getModuleTranslation('statsmodule', '-- No filter --', 'statsmodule') . '</option>';
-        foreach (Zone::getZones() as $zone)
+        foreach (Zone::getZones() as $zone) {
             $this->html .= '<option value="' . (int)$zone['id_zone'] . '" ' . ($this->context->cookie->stats_id_zone == $zone['id_zone'] ? 'selected="selected"' : '') . '>' . $zone['name'] . '</option>';
+        }
         $this->html .= '
 							</select>
 						</div>
@@ -426,7 +438,7 @@ class StatsForecast extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-        foreach ($ca['payment'] as $payment)
+        foreach ($ca['payment'] as $payment) {
             $this->html .= '
 						<tr>
 							<td class="text-center">' . $payment['payment_method'] . '</td>
@@ -434,6 +446,7 @@ class StatsForecast extends StatsModule
 							<td class="text-right">' . Tools::displayPrice($payment['total'], $currency) . '</td>
 							<td class="text-right">' . Tools::displayPrice($payment['total'] / (int)$payment['nb'], $currency) . '</td>
 						</tr>';
+        }
         $this->html .= '
 					</tbody>
 				</table>
@@ -449,8 +462,9 @@ class StatsForecast extends StatsModule
 							<input type="hidden" name="submitIdZone" value="1" />
 							<select name="stats_id_zone" onchange="this.form.submit();">
 								<option value="0">' . Translate::getModuleTranslation('statsmodule', '-- No filter --', 'statsmodule') . '</option>';
-        foreach (Zone::getZones() as $zone)
+        foreach (Zone::getZones() as $zone) {
             $this->html .= '<option value="' . (int)$zone['id_zone'] . '" ' . ($this->context->cookie->stats_id_zone == $zone['id_zone'] ? 'selected="selected"' : '') . '>' . $zone['name'] . '</option>';
+        }
         $this->html .= '
 							</select>
 						</div>
@@ -468,7 +482,7 @@ class StatsForecast extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-        foreach ($ca['cat'] as $catrow)
+        foreach ($ca['cat'] as $catrow) {
             $this->html .= '
 						<tr>
 							<td class="text-center">' . (empty($catrow['name']) ? Translate::getModuleTranslation('statsmodule', 'Unknown', 'statsmodule') : $catrow['name']) . '</td>
@@ -478,6 +492,7 @@ class StatsForecast extends StatsModule
 							<td class="text-center">' . ((int)$ca['ventil']['total'] ? number_format((100 * $catrow['orderSum'] / $ca['ventil']['total']), 1, '.', ' ') : '0') . '%</td>
 							<td class="text-right">' . Tools::displayPrice($catrow['priveAvg'], $currency) . '</td>
 						</tr>';
+        }
         $this->html .= '
 					</tbody>
 				</table>
@@ -522,7 +537,7 @@ class StatsForecast extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-        foreach ($ca['zones'] as $zone)
+        foreach ($ca['zones'] as $zone) {
             $this->html .= '
 					<tr>
 						<td class="text-center">' . (isset($zone['name']) ? $zone['name'] : Translate::getModuleTranslation('statsmodule', 'Undefined', 'statsmodule')) . '</td>
@@ -531,6 +546,7 @@ class StatsForecast extends StatsModule
 						<td class="text-center">' . ($ca['ventil']['nb'] ? number_format((100 * $zone['nb'] / $ca['ventil']['nb']), 1, '.', ' ') : '0') . '%</td>
 						<td class="text-center">' . ((int)$ca['ventil']['total'] ? number_format((100 * $zone['total'] / $ca['ventil']['total']), 1, '.', ' ') : '0') . '%</td>
 					</tr>';
+        }
         $this->html .= '
 					</tbody>
 				</table>
@@ -546,8 +562,9 @@ class StatsForecast extends StatsModule
 							<input type="hidden" name="submitIdZone" value="1" />
 							<select name="stats_id_zone" onchange="this.form.submit();">
 								<option value="0">' . Translate::getModuleTranslation('statsmodule', '-- No filter --', 'statsmodule') . '</option>';
-        foreach (Zone::getZones() as $zone)
+        foreach (Zone::getZones() as $zone) {
             $this->html .= '<option value="' . (int)$zone['id_zone'] . '" ' . ($this->context->cookie->stats_id_zone == $zone['id_zone'] ? 'selected="selected"' : '') . '>' . $zone['name'] . '</option>';
+        }
         $this->html .= '
 							</select>
 						</div>
@@ -564,7 +581,7 @@ class StatsForecast extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-        foreach ($ca['currencies'] as $currency_row)
+        foreach ($ca['currencies'] as $currency_row) {
             $this->html .= '
 						<tr>
 							<td class="text-center">' . $currency_row['name'] . '</td>
@@ -573,6 +590,7 @@ class StatsForecast extends StatsModule
 							<td class="text-center">' . ($ca['ventil']['nb'] ? number_format((100 * $currency_row['nb'] / $ca['ventil']['nb']), 1, '.', ' ') : '0') . '%</td>
 							<td class="text-center">' . ((int)$ca['ventil']['total'] ? number_format((100 * $currency_row['total'] / $ca['ventil']['total']), 1, '.', ' ') : '0') . '%</td>
 						</tr>';
+        }
         $this->html .= '
 					</tbody>
 				</table>
@@ -588,13 +606,14 @@ class StatsForecast extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-        foreach ($ca['attributes'] as $attribut)
+        foreach ($ca['attributes'] as $attribut) {
             $this->html .= '
 						<tr>
 							<td class="text-center">' . $attribut['gname'] . '</td>
 							<td class="text-center">' . $attribut['aname'] . '</td>
 							<td class="text-center">' . (int)($attribut['total']) . '</td>
 						</tr>';
+        }
         $this->html .= '
 					</tbody>
 				</table>
@@ -674,8 +693,9 @@ class StatsForecast extends StatsModule
         $result = Db::getInstance()->executeS($sql);
         if (count($result)) {
             $references = array();
-            foreach ($result as $r)
+            foreach ($result as $r) {
                 $references[] = $r['reference'];
+            }
             $sql = 'SELECT op.payment_method, SUM(op.amount / op.conversion_rate) AS total, COUNT(DISTINCT op.order_reference) AS nb
 					FROM `' . _DB_PREFIX_ . 'order_payment` op
 					WHERE op.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
@@ -685,8 +705,9 @@ class StatsForecast extends StatsModule
 					GROUP BY op.payment_method
 					ORDER BY total DESC';
             $ca['payment'] = Db::getInstance()->executeS($sql);
-        } else
+        } else {
             $ca['payment'] = array();
+        }
 
         $sql = 'SELECT z.name, SUM(o.total_paid_tax_excl / o.conversion_rate) AS total, COUNT(*) AS nb
 				FROM `' . _DB_PREFIX_ . 'orders` o
@@ -744,8 +765,9 @@ class StatsForecast extends StatsModule
  */
 function statsforecast_sort($a, $b)
 {
-    if ($a['orderSum'] == $b['orderSum'])
+    if ($a['orderSum'] == $b['orderSum']) {
         return 0;
+    }
 
     return ($a['orderSum'] > $b['orderSum']) ? -1 : 1;
 }

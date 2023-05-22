@@ -138,8 +138,9 @@ class StatsCatalog extends StatsModule
         $precalc = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
         $precalc2 = array();
-        foreach ($precalc as $array)
+        foreach ($precalc as $array) {
             $precalc2[] = (int)$array['id_product'];
+        }
 
         $sql = 'SELECT p.id_product, pl.name, pl.link_rewrite
 				FROM `' . _DB_PREFIX_ . 'product` p
@@ -186,8 +187,9 @@ class StatsCatalog extends StatsModule
         $total_page_viewed = $this->getTotalPageViewed();
         $average_viewed = $total ? ($total_page_viewed / $total) : 0;
         $conversion = number_format((float)($total_page_viewed ? ($total_bought / $total_page_viewed) : 0), 2, '.', '');
-        if ($conversion_reverse = number_format((float)($total_bought ? ($total_page_viewed / $total_bought) : 0), 2, '.', ''))
+        if ($conversion_reverse = number_format((float)($total_bought ? ($total_page_viewed / $total_bought) : 0), 2, '.', '')) {
             $conversion .= sprintf(Translate::getModuleTranslation('statsmodule', '(1 purchase / %d visits)', 'statsmodule'), $conversion_reverse);
+        }
 
         $total_nv = $total - $this->getTotalProductViewed();
 
@@ -204,10 +206,11 @@ class StatsCatalog extends StatsModule
 					<div class="col-lg-6">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
 							<option value="0">' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . '</option>';
-        foreach ($categories as $category)
+        foreach ($categories as $category) {
             $html .= '<option value="' . $category['id_category'] . '"' . ($id_category == $category['id_category'] ? ' selected="selected"' : '') . '>' .
                 $category['name'] . '
 							</option>';
+        }
         $html .= '
 						</select>
 					</div>
@@ -244,7 +247,7 @@ class StatsCatalog extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-            foreach ($products_nb as $product)
+            foreach ($products_nb as $product) {
                 $html .= '
 					<tr' . ($irow++ % 2 ? ' class="alt_row"' : '') . '>
 						<td>' . $product['id_product'] . '</td>
@@ -267,6 +270,7 @@ class StatsCatalog extends StatsModule
 							</div>
 						</td>
 					</tr>';
+            }
             $html .= '
 					</tbody>
 				</table>';

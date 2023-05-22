@@ -80,32 +80,42 @@ class StatsPersonalInfos extends StatsModule
 			</div>';
         $has_customers = (bool)Db::getInstance()->getValue('SELECT id_customer FROM ' . _DB_PREFIX_ . 'customer');
         if ($has_customers) {
-            if (Tools::getValue('export'))
-                if (Tools::getValue('exportType') == 'gender')
+            if (Tools::getValue('export')) {
+                if (Tools::getValue('exportType') == 'gender') {
                     $this->csvExport(array(
                         'type' => 'pie',
                         'option' => 'gender',
                     ));
-                else if (Tools::getValue('exportType') == 'age')
-                    $this->csvExport(array(
-                        'type' => 'pie',
-                        'option' => 'age',
-                    ));
-                else if (Tools::getValue('exportType') == 'country')
-                    $this->csvExport(array(
-                        'type' => 'pie',
-                        'option' => 'country',
-                    ));
-                else if (Tools::getValue('exportType') == 'currency')
-                    $this->csvExport(array(
-                        'type' => 'pie',
-                        'option' => 'currency',
-                    ));
-                else if (Tools::getValue('exportType') == 'language')
-                    $this->csvExport(array(
-                        'type' => 'pie',
-                        'option' => 'language',
-                    ));
+                } else {
+                    if (Tools::getValue('exportType') == 'age') {
+                        $this->csvExport(array(
+                            'type' => 'pie',
+                            'option' => 'age',
+                        ));
+                    } else {
+                        if (Tools::getValue('exportType') == 'country') {
+                            $this->csvExport(array(
+                                'type' => 'pie',
+                                'option' => 'country',
+                            ));
+                        } else {
+                            if (Tools::getValue('exportType') == 'currency') {
+                                $this->csvExport(array(
+                                    'type' => 'pie',
+                                    'option' => 'currency',
+                                ));
+                            } else {
+                                if (Tools::getValue('exportType') == 'language') {
+                                    $this->csvExport(array(
+                                        'type' => 'pie',
+                                        'option' => 'language',
+                                    ));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             $this->html .= '
 				<div class="row row-margin-bottom">
@@ -193,8 +203,9 @@ class StatsPersonalInfos extends StatsModule
 						</div>
 					</div>
 				</div>';
-        } else
+        } else {
             $this->html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'No customers have registered yet.', 'statsmodule') . '</p>';
+        }
 
         return $this->html;
     }
@@ -238,8 +249,9 @@ class StatsPersonalInfos extends StatsModule
                 $genders_results = array();
                 foreach ($result as $row) {
                     $type = (is_null($row['type'])) ? 2 : $row['type'];
-                    if (!isset($genders_results[$type]))
+                    if (!isset($genders_results[$type])) {
                         $genders_results[$type] = 0;
+                    }
                     $genders_results[$type] += $row['total'];
                 }
 

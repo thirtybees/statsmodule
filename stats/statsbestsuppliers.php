@@ -109,8 +109,9 @@ class StatsBestSuppliers extends StatsModule
             'pagingMessage' => $this->paging_message,
         );
 
-        if (Tools::getValue('export') == 1)
+        if (Tools::getValue('export') == 1) {
             $this->csvExport($engine_params);
+        }
         $this->html = '
 			<div class="panel-heading">
 				' . $this->displayName . '
@@ -162,12 +163,14 @@ class StatsBestSuppliers extends StatsModule
 				GROUP BY p.id_supplier';
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `' . $this->_sort . '`';
-            if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
+            if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
                 $this->query .= ' ' . $this->_direction;
+            }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit))
+        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
             $this->query .= ' LIMIT ' . $this->_start . ', ' . ($this->_limit);
+        }
         $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
     }
 }

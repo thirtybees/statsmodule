@@ -80,8 +80,9 @@ class StatsNewsletter extends StatsModule
     {
         if (Module::isInstalled($this->newsletter_module_name)) {
             $totals = $this->getTotals();
-            if (Tools::getValue('export'))
+            if (Tools::getValue('export')) {
                 $this->csvExport(array('type' => 'line', 'layers' => 3));
+            }
             $this->_html = '
 			<div class="panel-heading">
 				' . $this->displayName . '
@@ -104,8 +105,9 @@ class StatsNewsletter extends StatsModule
 					</div>
 				</div>
 			</div>';
-        } else
+        } else {
             $this->_html = '<p>' . Translate::getModuleTranslation('statsmodule', 'The "' . $this->newsletter_module_human_readable_name . '" module must be installed.', 'statsmodule') . '</p>';
+        }
 
         return $this->_html;
     }
@@ -169,13 +171,17 @@ class StatsNewsletter extends StatsModule
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
-        foreach ($result1 as $row)
+        foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 0, 4)] += 1;
-        if ($result2)
-            foreach ($result2 as $row)
+        }
+        if ($result2) {
+            foreach ($result2 as $row) {
                 $this->_values[1][(int)substr($row['newsletter_date_add'], 0, 4)] += 1;
-        foreach ($this->_values[2] as $key => $zerofill)
+            }
+        }
+        foreach ($this->_values[2] as $key => $zerofill) {
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
+        }
     }
 
     /**
@@ -188,13 +194,17 @@ class StatsNewsletter extends StatsModule
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
-        foreach ($result1 as $row)
+        foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 5, 2)] += 1;
-        if ($result2)
-            foreach ($result2 as $row)
+        }
+        if ($result2) {
+            foreach ($result2 as $row) {
                 $this->_values[1][(int)substr($row['newsletter_date_add'], 5, 2)] += 1;
-        foreach ($this->_values[2] as $key => $zerofill)
+            }
+        }
+        foreach ($this->_values[2] as $key => $zerofill) {
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
+        }
     }
 
     /**
@@ -207,13 +217,17 @@ class StatsNewsletter extends StatsModule
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
-        foreach ($result1 as $row)
+        foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 8, 2)] += 1;
-        if ($result2)
-            foreach ($result2 as $row)
+        }
+        if ($result2) {
+            foreach ($result2 as $row) {
                 $this->_values[1][(int)substr($row['newsletter_date_add'], 8, 2)] += 1;
-        foreach ($this->_values[2] as $key => $zerofill)
+            }
+        }
+        foreach ($this->_values[2] as $key => $zerofill) {
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
+        }
     }
 
     /**
@@ -226,13 +240,17 @@ class StatsNewsletter extends StatsModule
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
-        foreach ($result1 as $row)
+        foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 11, 2)] += 1;
-        if ($result2)
-            foreach ($result2 as $row)
+        }
+        if ($result2) {
+            foreach ($result2 as $row) {
                 $this->_values[1][(int)substr($row['newsletter_date_add'], 11, 2)] += 1;
-        foreach ($this->_values[2] as $key => $zerofill)
+            }
+        }
+        foreach ($this->_values[2] as $key => $zerofill) {
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
+        }
     }
 }
 

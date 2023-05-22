@@ -23,8 +23,9 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
-if (!defined('_TB_VERSION_'))
+if (!defined('_TB_VERSION_')) {
     exit;
+}
 
 class StatsOrigin extends StatsModule
 {
@@ -60,14 +61,17 @@ class StatsOrigin extends StatsModule
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
         $websites = array($directLink => 0);
         while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
-            if (!isset($row['http_referer']) || empty($row['http_referer']))
+            if (!isset($row['http_referer']) || empty($row['http_referer'])) {
                 ++$websites[$directLink];
+            }
             else {
                 $website = preg_replace('/^www./', '', parse_url($row['http_referer'], PHP_URL_HOST));
-                if (!isset($websites[$website]))
+                if (!isset($websites[$website])) {
                     $websites[$website] = 1;
-                else
+                }
+                else {
                     ++$websites[$website];
+                }
             }
         }
         arsort($websites);
@@ -81,9 +85,11 @@ class StatsOrigin extends StatsModule
     public function hookAdminStatsModules()
     {
         $websites = $this->getOrigins(ModuleGraph::getDateBetween());
-        if (Tools::getValue('export'))
-            if (Tools::getValue('exportType') == 'top')
+        if (Tools::getValue('export')) {
+            if (Tools::getValue('exportType') == 'top') {
                 $this->csvExport(array('type' => 'pie'));
+            }
+        }
         $this->_html = '<div class="panel-heading">' . Translate::getModuleTranslation('statsmodule', 'Origin', 'statsmodule') . '</div>';
         if (count($websites)) {
             $this->_html .= '
@@ -123,16 +129,18 @@ class StatsOrigin extends StatsModule
 					</tr>
 				</thead>
 				<tbody>';
-            foreach ($websites as $website => $total)
+            foreach ($websites as $website => $total) {
                 $this->_html .= '
 					<tr>
 						<td>' . (!strstr($website, ' ') ? '<a href="' . Tools::getProtocol() . $website . '">' : '') . $website . (!strstr($website, ' ') ? '</a>' : '') . '</td><td>' . $total . '</td>
 					</tr>';
+            }
             $this->_html .= '
 				</tbody>
 			</table>';
-        } else
+        } else {
             $this->_html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'Direct links only', 'statsmodule') . '</p>';
+        }
         return $this->_html;
     }
 
@@ -150,8 +158,9 @@ class StatsOrigin extends StatsModule
         $total2 = 0;
         $i = 0;
         foreach ($websites as $website => $totalRow) {
-            if (!$totalRow)
+            if (!$totalRow) {
                 continue;
+            }
             $total += $totalRow;
             if ($i++ < 9) {
                 $this->_legend[] = $website;

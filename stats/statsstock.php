@@ -50,8 +50,9 @@ class StatsStock extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        if (Tools::isSubmit('submitCategory'))
+        if (Tools::isSubmit('submitCategory')) {
             $this->context->cookie->statsstock_id_category = Tools::getValue('statsstock_id_category');
+        }
 
         $ru = AdminController::$currentIndex . '&module=statsstock&token=' . Tools::getValue('token');
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
@@ -75,8 +76,9 @@ class StatsStock extends StatsModule
 				' . $filter;
         $products = Db::getInstance()->executeS($sql);
 
-        foreach ($products as $key => $p)
+        foreach ($products as $key => $p) {
             $products[$key]['stockvalue'] = $p['wholesale_price'] * $p['quantity'];
+        }
 
         $this->html .= '
 		<script type="text/javascript">$(\'#calendar\').slideToggle();</script>
@@ -90,11 +92,12 @@ class StatsStock extends StatsModule
 				<div class="col-lg-6">
 					<select name="statsstock_id_category" onchange="this.form.submit();">
 						<option value="0">- ' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . ' -</option>';
-        foreach (Category::getSimpleCategories($this->context->language->id) as $category)
+        foreach (Category::getSimpleCategories($this->context->language->id) as $category) {
             $this->html .= '<option value="' . (int)$category['id_category'] . '" ' .
                 ($this->context->cookie->statsstock_id_category == $category['id_category'] ? 'selected="selected"' : '') . '>' .
                 $category['name'] . '
 					</option>';
+        }
         $this->html .= '
 					</select>
 					<input type="hidden" name="submitCategory" value="1" />
@@ -102,8 +105,9 @@ class StatsStock extends StatsModule
 			</div>
 		</form>';
 
-        if (!count($products))
+        if (!count($products)) {
             $this->html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'Your catalog is empty.', 'statsmodule') . '</p>';
+        }
         else {
             $rollup = array('quantity' => 0, 'wholesale_price' => 0, 'stockvalue' => 0);
             $this->html .= '

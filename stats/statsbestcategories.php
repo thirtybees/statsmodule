@@ -134,8 +134,9 @@ class StatsBestCategories extends StatsModule
             ),
         );
 
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport($engine_params);
+        }
 
         $this->html = '
 			<div class="panel-heading">
@@ -192,16 +193,18 @@ class StatsBestCategories extends StatsModule
 					)';
             if ($result = Db::getInstance()->executeS($sql)) {
                 $ntree_restriction = array();
-                foreach ($result as $row)
+                foreach ($result as $row) {
                     $ntree_restriction[] = '(nleft >= ' . $row['nleft'] . ' AND nright <= ' . $row['nright'] . ')';
+                }
 
                 if ($ntree_restriction) {
                     $sql = 'SELECT id_category
 							FROM ' . _DB_PREFIX_ . 'category
 							WHERE ' . implode(' OR ', $ntree_restriction);
                     if ($result = Db::getInstance()->executeS($sql)) {
-                        foreach ($result as $row)
+                        foreach ($result as $row) {
                             $categories[] = $row['id_category'];
+                        }
                     }
                 }
             }
@@ -271,12 +274,14 @@ class StatsBestCategories extends StatsModule
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
-            if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
+            if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
                 $this->query .= ' ' . $this->_direction;
+            }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit))
+        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
             $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
+        }
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {

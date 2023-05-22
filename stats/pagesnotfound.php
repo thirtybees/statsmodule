@@ -59,10 +59,12 @@ class PagesNotFound extends StatsModule
         $pages = array();
         foreach ($result as $row) {
             $row['http_referer'] = parse_url($row['http_referer'], PHP_URL_HOST) . parse_url($row['http_referer'], PHP_URL_PATH);
-            if (!isset($row['http_referer']) || empty($row['http_referer']))
+            if (!isset($row['http_referer']) || empty($row['http_referer'])) {
                 $row['http_referer'] = '--';
-            if (!isset($pages[$row['request_uri']]))
+            }
+            if (!isset($pages[$row['request_uri']])) {
                 $pages[$row['request_uri']] = array('nb' => 0);
+            }
             $pages[$row['request_uri']][$row['http_referer']] = $row['nb'];
             $pages[$row['request_uri']]['nb'] += $row['nb'];
         }
@@ -81,12 +83,14 @@ class PagesNotFound extends StatsModule
         if (Tools::isSubmit('submitTruncatePNF')) {
             Db::getInstance()->execute('TRUNCATE `' . _DB_PREFIX_ . 'pagenotfound`');
             $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been emptied.', 'statsmodule') . '</div>';
-        } else if (Tools::isSubmit('submitDeletePNF')) {
-            Db::getInstance()->execute(
-                'DELETE FROM `' . _DB_PREFIX_ . 'pagenotfound`
+        } else {
+            if (Tools::isSubmit('submitDeletePNF')) {
+                Db::getInstance()->execute(
+                    'DELETE FROM `' . _DB_PREFIX_ . 'pagenotfound`
 				WHERE date_add BETWEEN ' . ModuleGraph::getDateBetween()
-            );
-            $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been deleted.', 'statsmodule') . '</div>';
+                );
+                $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'The "pages not found" cache has been deleted.', 'statsmodule') . '</div>';
+            }
         }
 
         $this->html .= '
@@ -106,8 +110,9 @@ class PagesNotFound extends StatsModule
             sprintf(Translate::getModuleTranslation('statsmodule', 'A user requesting a page which doesn\'t exist will be redirected to the following page: %s. This module logs access to this page.', 'statsmodule'), __PS_BASE_URI__ . '404.php') . '
 				</p>
 			</div>';
-        if (!file_exists($this->_normalizeDirectory(_PS_ROOT_DIR_) . '.htaccess'))
+        if (!file_exists($this->_normalizeDirectory(_PS_ROOT_DIR_) . '.htaccess')) {
             $this->html .= '<div class="alert alert-warning">' . Translate::getModuleTranslation('statsmodule', 'You must use a .htaccess file to redirect 404 errors to the "404.php" page.', 'statsmodule') . '</div>';
+        }
 
         $pages = $this->getPages();
         if (count($pages)) {
@@ -121,22 +126,26 @@ class PagesNotFound extends StatsModule
 					</tr>
 				</thead>
 				<tbody>';
-            foreach ($pages as $ru => $hrs)
-                foreach ($hrs as $hr => $counter)
-                    if ($hr != 'nb')
+            foreach ($pages as $ru => $hrs) {
+                foreach ($hrs as $hr => $counter) {
+                    if ($hr != 'nb') {
                         $this->html .= '
 						<tr>
 							<td><a href="' . $ru . '-admin404">' . wordwrap($ru, 30, '<br />', true) . '</a></td>
 							<td><a href="' . Tools::getProtocol() . $hr . '">' . wordwrap($hr, 40, '<br />', true) . '</a></td>
 							<td>' . $counter . '</td>
 						</tr>';
+                    }
+                }
+            }
             $this->html .= '
 				</tbody>
 			</table>';
-        } else
+        } else {
             $this->html .= '<div class="alert alert-warning"> ' . Translate::getModuleTranslation('statsmodule', 'No "page not found" issue registered for now.', 'statsmodule') . '</div>';
+        }
 
-        if (count($pages))
+        if (count($pages)) {
             $this->html .= '
 				<h4>' . Translate::getModuleTranslation('statsmodule', 'Empty database', 'statsmodule') . '</h4>
 				<form action="' . Tools::htmlEntitiesUtf8($_SERVER['REQUEST_URI']) . '" method="post">
@@ -147,6 +156,7 @@ class PagesNotFound extends StatsModule
 						<i class="icon-remove"></i> ' . Translate::getModuleTranslation('statsmodule', 'Empty ALL "pages not found" notices', 'statsmodule') . '
 					</button>
 				</form>';
+        }
 
         return $this->html;
     }
@@ -204,8 +214,9 @@ class PagesNotFound extends StatsModule
  */
 function pnfSort($a, $b)
 {
-    if ($a['nb'] == $b['nb'])
+    if ($a['nb'] == $b['nb']) {
         return 0;
+    }
 
     return ($a['nb'] > $b['nb']) ? -1 : 1;
 }

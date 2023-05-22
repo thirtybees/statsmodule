@@ -52,8 +52,9 @@ class StatsLive extends StatsModule
      */
     private function getCustomersOnline()
     {
-        if ($maintenance_ips = Configuration::get('PS_MAINTENANCE_IP'))
+        if ($maintenance_ips = Configuration::get('PS_MAINTENANCE_IP')) {
             $maintenance_ips = implode(',', array_map('ip2long', array_map('trim', explode(',', $maintenance_ips))));
+        }
 
         if (Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
             $sql = 'SELECT u.id_customer, u.firstname, u.lastname, pt.name AS page
@@ -98,8 +99,9 @@ class StatsLive extends StatsModule
      */
     private function getVisitorsOnline()
     {
-        if ($maintenance_ips = Configuration::get('PS_MAINTENANCE_IP'))
+        if ($maintenance_ips = Configuration::get('PS_MAINTENANCE_IP')) {
             $maintenance_ips = implode(',', array_map('ip2long', array_filter(array_map('trim', explode(',', $maintenance_ips)))));
+        }
 
         if (Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
             $sql = 'SELECT c.id_guest, c.ip_address, c.date_add, c.http_referer, pt.name AS page
@@ -144,11 +146,12 @@ class StatsLive extends StatsModule
         $this->html .= '<script type="text/javascript">
 			$("#calendar").remove();
 		</script>';
-        if (!Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS'))
+        if (!Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
             $this->html .= '
 				<div class="alert alert-info">' .
                 Translate::getModuleTranslation('statsmodule', 'You must activate the "Save page views for each customer" option in the "Data mining for statistics" (StatsData) module in order to see the pages that your visitors are currently viewing.', 'statsmodule') . '
 				</div>';
+        }
         $this->html .= '
 			<h4> ' . Translate::getModuleTranslation('statsmodule', 'Current online customers', 'statsmodule') . '</h4>';
         if ($total_customers) {
@@ -163,7 +166,7 @@ class StatsLive extends StatsModule
 					</tr>
 				</thead>
 				<tbody>';
-            foreach ($customers as $customer)
+            foreach ($customers as $customer) {
                 $this->html .= '
 					<tr' . ($irow++ % 2 ? ' class="alt_row"' : '') . '>
 						<td class="center">' . $customer['id_customer'] . '</td>
@@ -176,11 +179,13 @@ class StatsLive extends StatsModule
 							</a>
 						</td>
 					</tr>';
+            }
             $this->html .= '
 				</tbody>
 			</table>';
-        } else
+        } else {
             $this->html .= '<p class="alert alert-warning">' . Translate::getModuleTranslation('statsmodule', 'There are no active customers online right now.', 'statsmodule') . '</p>';
+        }
         $this->html .= '
 			<h4> ' . Translate::getModuleTranslation('statsmodule', 'Current online visitors', 'statsmodule') . '</h4>';
         if ($total_visitors) {
@@ -197,7 +202,7 @@ class StatsLive extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-            foreach ($visitors as $visitor)
+            foreach ($visitors as $visitor) {
                 $this->html .= '<tr' . ($irow++ % 2 ? ' class="alt_row"' : '') . '>
 						<td class="center">' . $visitor['id_guest'] . '</td>
 						<td class="center">' . long2ip($visitor['ip_address']) . '</td>
@@ -205,12 +210,14 @@ class StatsLive extends StatsModule
 						<td class="center">' . (isset($visitor['page']) ? $visitor['page'] : Translate::getModuleTranslation('statsmodule', 'Undefined', 'statsmodule')) . '</td>
 						<td class="center">' . (empty($visitor['http_referer']) ? Translate::getModuleTranslation('statsmodule', 'None', 'statsmodule') : parse_url($visitor['http_referer'], PHP_URL_HOST)) . '</td>
 					</tr>';
+            }
             $this->html .= '
 					</tbody>
 				</table>
 			</div>';
-        } else
+        } else {
             $this->html .= '<p class="alert alert-warning">' . Translate::getModuleTranslation('statsmodule', 'There are no visitors online.', 'statsmodule') . '</p>';
+        }
         $this->html .= '
 			<h4>' . Translate::getModuleTranslation('statsmodule', 'Notice', 'statsmodule') . '</h4>
 			<p class="alert alert-info">' . Translate::getModuleTranslation('statsmodule', 'Maintenance IPs are excluded from the online visitors.', 'statsmodule') . '</p>

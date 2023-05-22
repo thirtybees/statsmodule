@@ -111,11 +111,12 @@ class StatsRegistrations extends StatsModule
         $total_registrations = $this->getTotalRegistrations();
         $total_blocked = $this->getBlockedVisitors();
         $total_buyers = $this->getFirstBuyers();
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport(array(
                 'layers' => 0,
                 'type' => 'line'
             ));
+        }
         $this->html = '
 		<div class="panel-heading">
 			' . $this->displayName . '
@@ -189,8 +190,9 @@ class StatsRegistrations extends StatsModule
     protected function setAllTimeValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
-        foreach ($result as $row)
+        foreach ($result as $row) {
             $this->_values[(int)Tools::substr($row['date_add'], 0, 4)]++;
+        }
     }
 
     /**
@@ -204,8 +206,9 @@ class StatsRegistrations extends StatsModule
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
         foreach ($result as $row) {
             $mounth = (int)substr($row['date_add'], 5, 2);
-            if (!isset($this->_values[$mounth]))
+            if (!isset($this->_values[$mounth])) {
                 $this->_values[$mounth] = 0;
+            }
             $this->_values[$mounth]++;
         }
     }
@@ -219,8 +222,9 @@ class StatsRegistrations extends StatsModule
     protected function setMonthValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
-        foreach ($result as $row)
+        foreach ($result as $row) {
             $this->_values[(int)Tools::substr($row['date_add'], 8, 2)]++;
+        }
     }
 
     /**
@@ -232,7 +236,8 @@ class StatsRegistrations extends StatsModule
     protected function setDayValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
-        foreach ($result as $row)
+        foreach ($result as $row) {
             $this->_values[(int)Tools::substr($row['date_add'], 11, 2)]++;
+        }
     }
 }

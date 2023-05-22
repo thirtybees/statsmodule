@@ -254,13 +254,15 @@ class StatsProduct extends StatsModule
         $id_category = (int)Tools::getValue('id_category');
         $currency = Context::getContext()->currency;
 
-        if (Tools::getValue('export'))
-            if (!Tools::getValue('exportType'))
+        if (Tools::getValue('export')) {
+            if (!Tools::getValue('exportType')) {
                 $this->csvExport(array(
                     'layers' => 2,
                     'type' => 'line',
                     'option' => '42'
                 ));
+            }
+        }
 
         $this->html = '
 			<div class="panel-heading">
@@ -278,17 +280,19 @@ class StatsProduct extends StatsModule
 			</div>';
         if ($id_product = (int)Tools::getValue('id_product')) {
             if (Tools::getValue('export')) {
-                if (Tools::getValue('exportType') == 1)
+                if (Tools::getValue('exportType') == 1) {
                     $this->csvExport(array(
                         'layers' => 2,
                         'type' => 'line',
                         'option' => '1-' . $id_product
                     ));
-                elseif (Tools::getValue('exportType') == 2)
+                }
+                elseif (Tools::getValue('exportType') == 2) {
                     $this->csvExport(array(
                         'type' => 'pie',
                         'option' => '3-' . $id_product
                     ));
+                }
             }
             $product = new Product($id_product, false, $this->context->language->id);
             $totalBought = $this->getTotalBought($product->id);
@@ -402,13 +406,14 @@ class StatsProduct extends StatsModule
 							</thead>
 						<tbody>';
                     $token_products = Tools::getAdminToken('AdminProducts' . (int)Tab::getIdFromClassName('AdminProducts') . (int)$this->context->employee->id);
-                    foreach ($cross_selling as $selling)
+                    foreach ($cross_selling as $selling) {
                         $this->html .= '
 							<tr>
 								<td><a href="?tab=AdminProducts&id_product=' . (int)$selling['id_product'] . '&addproduct&token=' . $token_products . '">' . $selling['pname'] . '</a></td>
 								<td class="text-center">' . (int)$selling['pqty'] . '</td>
 								<td class="text-right">' . Tools::displayprice($selling['pprice'], $currency) . '</td>
 							</tr>';
+                    }
                     $this->html .= '
 							</tbody>
 						</table>
@@ -428,8 +433,9 @@ class StatsProduct extends StatsModule
 					<div class="col-lg-3">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
 							<option value="0">' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . '</option>';
-            foreach ($categories as $category)
+            foreach ($categories as $category) {
                 $this->html .= '<option value="' . $category['id_category'] . '"' . ($id_category == $category['id_category'] ? ' selected="selected"' : '') . '>' . $category['name'] . '</option>';
+            }
             $this->html .= '
 						</select>
 					</div>
@@ -452,7 +458,7 @@ class StatsProduct extends StatsModule
 				</thead>
 				<tbody>';
 
-            foreach ($this->getProducts($this->context->language->id) as $product)
+            foreach ($this->getProducts($this->context->language->id) as $product) {
                 $this->html .= '
 				<tr>
 					<td>' . $product['reference'] . '</td>
@@ -461,6 +467,7 @@ class StatsProduct extends StatsModule
 					</td>
 					<td>' . $product['quantity'] . '</td>
 				</tr>';
+            }
 
             $this->html .= '
 				</tbody>
@@ -483,10 +490,12 @@ class StatsProduct extends StatsModule
     public function setOption($option, $layers = 1)
     {
         $options = explode('-', $option);
-        if (count($options) === 2)
+        if (count($options) === 2) {
             list($this->option, $this->id_product) = $options;
-        else
+        }
+        else {
             $this->option = $option;
+        }
         $date_between = $this->getDate();
         switch ($this->option) {
             case 1:
@@ -552,31 +561,35 @@ class StatsProduct extends StatsModule
                 $this->_values[2][] = $product['quantity'];
                 $this->_legend[] = $product['id_product'];
             }
-        } else if ($this->option != 3)
-            $this->setDateGraph($layers, true);
-        else {
-            $product = new Product($this->id_product, false, (int)$this->getLang());
+        } else {
+            if ($this->option != 3) {
+                $this->setDateGraph($layers, true);
+            } else {
+                $product = new Product($this->id_product, false, (int)$this->getLang());
 
-            $comb_array = array();
-            $assoc_names = array();
-            $combinations = $product->getAttributeCombinations((int)$this->getLang());
-            foreach ($combinations as $combination)
-                $comb_array[$combination['id_product_attribute']][] = array(
-                    'group' => $combination['group_name'],
-                    'attr' => $combination['attribute_name']
-                );
-            foreach ($comb_array as $id_product_attribute => $product_attribute) {
-                $list = '';
-                foreach ($product_attribute as $attribute)
-                    $list .= trim($attribute['group']) . ' - ' . trim($attribute['attr']) . ', ';
-                $list = rtrim($list, ', ');
-                $assoc_names[$id_product_attribute] = $list;
-            }
+                $comb_array = array();
+                $assoc_names = array();
+                $combinations = $product->getAttributeCombinations((int)$this->getLang());
+                foreach ($combinations as $combination) {
+                    $comb_array[$combination['id_product_attribute']][] = array(
+                        'group' => $combination['group_name'],
+                        'attr' => $combination['attribute_name']
+                    );
+                }
+                foreach ($comb_array as $id_product_attribute => $product_attribute) {
+                    $list = '';
+                    foreach ($product_attribute as $attribute) {
+                        $list .= trim($attribute['group']) . ' - ' . trim($attribute['attr']) . ', ';
+                    }
+                    $list = rtrim($list, ', ');
+                    $assoc_names[$id_product_attribute] = $list;
+                }
 
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
-            foreach ($result as $row) {
-                $this->_values[] = $row['total'];
-                $this->_legend[] = @$assoc_names[$row['product_attribute_id']];
+                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+                foreach ($result as $row) {
+                    $this->_values[] = $row['total'];
+                    $this->_legend[] = @$assoc_names[$row['product_attribute_id']];
+                }
             }
         }
     }
@@ -591,8 +604,9 @@ class StatsProduct extends StatsModule
     {
         for ($i = 0; $i < $layers; $i++) {
             $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
-            foreach ($result as $row)
+            foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 0, 4)] += $row['total'];
+            }
         }
     }
 
@@ -606,8 +620,9 @@ class StatsProduct extends StatsModule
     {
         for ($i = 0; $i < $layers; $i++) {
             $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
-            foreach ($result as $row)
+            foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 5, 2)] += $row['total'];
+            }
         }
     }
 
@@ -621,8 +636,9 @@ class StatsProduct extends StatsModule
     {
         for ($i = 0; $i < $layers; $i++) {
             $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
-            foreach ($result as $row)
+            foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 8, 2)] += $row['total'];
+            }
         }
     }
 
@@ -636,8 +652,9 @@ class StatsProduct extends StatsModule
     {
         for ($i = 0; $i < $layers; $i++) {
             $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
-            foreach ($result as $row)
+            foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 11, 2)] += $row['total'];
+            }
         }
     }
 }

@@ -67,23 +67,26 @@ class StatsSales extends StatsModule
     {
         $totals = $this->getTotals();
         $currency = new Currency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
-        if (($id_export = (int)Tools::getValue('export')) == 1)
+        if (($id_export = (int)Tools::getValue('export')) == 1) {
             $this->csvExport(array(
                 'layers' => 2,
                 'type' => 'line',
                 'option' => '1-' . (int)Tools::getValue('id_country'),
             ));
-        elseif ($id_export == 2)
+        }
+        elseif ($id_export == 2) {
             $this->csvExport(array(
                 'layers' => 0,
                 'type' => 'line',
                 'option' => '2-' . (int)Tools::getValue('id_country'),
             ));
-        elseif ($id_export == 3)
+        }
+        elseif ($id_export == 3) {
             $this->csvExport(array(
                 'type' => 'pie',
                 'option' => '3-' . (int)Tools::getValue('id_country'),
             ));
+        }
 
         $this->html = '
 			<div class="panel-heading">
@@ -109,8 +112,9 @@ class StatsSales extends StatsModule
 					<div class="col-lg-4 col-lg-offset-7">
 						<select name="id_country">
 							<option value="0"' . ((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . Translate::getModuleTranslation('statsmodule', 'All countries', 'statsmodule') . '</option>';
-        foreach (Country::getCountries($this->context->language->id) as $country)
+        foreach (Country::getCountries($this->context->language->id) as $country) {
             $this->html .= '<option value="' . $country['id_country'] . '"' . (($country['id_country'] == Tools::getValue('id_country')) ? ' selected="selected"' : '') . '>' . $country['name'] . '</option>';
+        }
         $this->html .= '</select>
 					</div>
 					<div class="col-lg-1">
@@ -241,8 +245,9 @@ class StatsSales extends StatsModule
      */
     protected function getData($layers)
     {
-        if ($this->option == 3)
+        if ($this->option == 3) {
             return $this->getStatesData();
+        }
 
         $this->query = '
 			SELECT o.`invoice_date`, o.`total_paid_real` / o.conversion_rate AS total_paid_real, SUM(od.product_quantity) AS product_quantity
@@ -266,12 +271,14 @@ class StatsSales extends StatsModule
     protected function setAllTimeValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
-        foreach ($result as $row)
+        foreach ($result as $row) {
             if ($this->option == 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 0, 4)] += 1;
                 $this->_values[1][(int)substr($row['invoice_date'], 0, 4)] += $row['product_quantity'];
-            } else
+            } else {
                 $this->_values[(int)substr($row['invoice_date'], 0, 4)] += $row['total_paid_real'];
+            }
+        }
     }
 
     /**
@@ -286,15 +293,18 @@ class StatsSales extends StatsModule
         foreach ($result as $row) {
             $mounth = (int)substr($row['invoice_date'], 5, 2);
             if ($this->option == 1) {
-                if (!isset($this->_values[0][$mounth]))
+                if (!isset($this->_values[0][$mounth])) {
                     $this->_values[0][$mounth] = 0;
-                if (!isset($this->_values[1][$mounth]))
+                }
+                if (!isset($this->_values[1][$mounth])) {
                     $this->_values[1][$mounth] = 0;
+                }
                 $this->_values[0][$mounth] += 1;
                 $this->_values[1][$mounth] += $row['product_quantity'];
             } else {
-                if (!isset($this->_values[$mounth]))
+                if (!isset($this->_values[$mounth])) {
                     $this->_values[$mounth] = 0;
+                }
                 $this->_values[$mounth] += $row['total_paid_real'];
             }
         }
@@ -309,12 +319,14 @@ class StatsSales extends StatsModule
     protected function setMonthValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
-        foreach ($result as $row)
+        foreach ($result as $row) {
             if ($this->option == 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 8, 2)] += 1;
                 $this->_values[1][(int)substr($row['invoice_date'], 8, 2)] += $row['product_quantity'];
-            } else
+            } else {
                 $this->_values[(int)substr($row['invoice_date'], 8, 2)] += $row['total_paid_real'];
+            }
+        }
     }
 
     /**
@@ -326,12 +338,14 @@ class StatsSales extends StatsModule
     protected function setDayValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
-        foreach ($result as $row)
+        foreach ($result as $row) {
             if ($this->option == 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 11, 2)] += 1;
                 $this->_values[1][(int)substr($row['invoice_date'], 11, 2)] += $row['product_quantity'];
-            } else
+            } else {
                 $this->_values[(int)substr($row['invoice_date'], 11, 2)] += $row['total_paid_real'];
+            }
+        }
     }
 
     /**

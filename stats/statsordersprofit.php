@@ -151,8 +151,9 @@ class StatsOrdersProfit extends StatsModule
             'pagingMessage' => $this->paging_message,
         );
 
-        if (Tools::getValue('export'))
+        if (Tools::getValue('export')) {
             $this->csvExport($engine_params);
+        }
 
         return '<div class="panel-heading">' . $this->displayName . '</div>
 		' . $this->engine($this->type, $engine_params) . '
@@ -196,8 +197,9 @@ class StatsOrdersProfit extends StatsModule
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
-            if (isset($this->_direction) && Validate::isSortDirection($this->_direction))
+            if (isset($this->_direction) && Validate::isSortDirection($this->_direction)) {
                 $this->query .= ' ' . $this->_direction;
+            }
         }
 
 
