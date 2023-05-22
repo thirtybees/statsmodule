@@ -61,7 +61,7 @@ class StatsOrigin extends StatsModule
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
         $websites = array($directLink => 0);
         while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
-            if (!isset($row['http_referer']) || empty($row['http_referer'])) {
+            if (empty($row['http_referer'])) {
                 ++$websites[$directLink];
             }
             else {

@@ -171,7 +171,7 @@ class StatsCatalog extends StatsModule
             $this->where = ' AND cp.`id_category` = ' . $id_category;
         }
 
-        $result1 = $this->getQuery1(true);
+        $result1 = $this->getQuery1();
         $total = $result1['total'];
         $average_price = $result1['average_price'];
         $total_pictures = $result1['images'];

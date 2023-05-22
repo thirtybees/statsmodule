@@ -59,7 +59,7 @@ class PagesNotFound extends StatsModule
         $pages = array();
         foreach ($result as $row) {
             $row['http_referer'] = parse_url($row['http_referer'], PHP_URL_HOST) . parse_url($row['http_referer'], PHP_URL_PATH);
-            if (!isset($row['http_referer']) || empty($row['http_referer'])) {
+            if (empty($row['http_referer'])) {
                 $row['http_referer'] = '--';
             }
             if (!isset($pages[$row['request_uri']])) {

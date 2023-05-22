@@ -62,11 +62,6 @@ class StatsGroups extends StatsModule
         $currency = $this->context->currency;
         $employee = $this->context->employee;
 
-        $dateFromGinvoice = ($this->context->cookie->stats_granularity != 42
-            ? 'LEFT(invoice_date, ' . (int)$this->context->cookie->stats_granularity . ')'
-            : 'IFNULL(MAKEDATE(YEAR(invoice_date),DAYOFYEAR(invoice_date)-WEEKDAY(invoice_date)), CONCAT(YEAR(invoice_date),"-01-01*"))'
-        );
-
         $this->html .= '<div>
             <div class="panel-heading"><i class="icon-dashboard"></i> ' . $this->displayName . '</div>
             <div class="alert alert-info">' . Translate::getModuleTranslation('statsmodule', 'The listed amounts do not include tax.', 'statsmodule') . '</div>';

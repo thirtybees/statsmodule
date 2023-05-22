@@ -196,11 +196,11 @@ class SEKeywords extends StatsModule
                 $k_array = array();
                 preg_match('/[^a-zA-Z&]?' . $varname . '=.*\&' . '/U', $parsed_url['query'], $k_array);
 
-                if (!isset($k_array[0]) || empty($k_array[0])) {
+                if (empty($k_array[0])) {
                     preg_match('/[^a-zA-Z&]?' . $varname . '=.*$' . '/', $parsed_url['query'], $k_array);
                 }
 
-                if (!isset($k_array[0]) || empty($k_array[0])) {
+                if (empty($k_array[0])) {
                     return false;
                 }
 

@@ -104,6 +104,7 @@ class StatsForecast extends StatsModule
         $interval = ($to - $from) / 60 / 60 / 24;
         $interval2 = ($to2 - $from) / 60 / 60 / 24;
         $prop30 = $interval / $interval2;
+        $interval_avg = $interval2;
 
         if ($this->context->cookie->stats_granularity == 7) {
             $interval_avg = $interval2 / 30;
@@ -401,10 +402,6 @@ class StatsForecast extends StatsModule
 			<p>' . Translate::getModuleTranslation('statsmodule', 'On average, each registered visitor places an order for this amount:', 'statsmodule') . ' <b>' . Tools::displayPrice($ca['ventil']['total'] / max(1, $customers), $currency) . '</b>.</p>
 		</div>';
 
-        $from = strtotime($employee->stats_date_from . ' 00:00:00');
-        $to = strtotime($employee->stats_date_to . ' 23:59:59');
-        $interval = ($to - $from) / 60 / 60 / 24;
-
         $this->html .= '
 			<div class="row row-margin-bottom">
 				<h4><i class="icon-money"></i> ' . Translate::getModuleTranslation('statsmodule', 'Payment distribution', 'statsmodule') . '</h4>
@@ -689,7 +686,7 @@ class StatsForecast extends StatsModule
 					WHERE o.valid
 					' . $where . '
 					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
-					AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '';
+					AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween();
         $result = Db::getInstance()->executeS($sql);
         if (count($result)) {
             $references = array();
