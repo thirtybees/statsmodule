@@ -66,7 +66,12 @@ class PagesNotFound extends StatsModule
             $pages[$row['request_uri']][$row['http_referer']] = $row['nb'];
             $pages[$row['request_uri']]['nb'] += $row['nb'];
         }
-        uasort($pages, 'pnfSort');
+        uasort($pages, function ($a, $b) {
+            if ($a['nb'] == $b['nb']) {
+                return 0;
+            }
+            return ($a['nb'] > $b['nb']) ? -1 : 1;
+        });
 
         return $pages;
     }
@@ -178,19 +183,4 @@ class PagesNotFound extends StatsModule
         $directory .= DIRECTORY_SEPARATOR;
         return $directory;
     }
-}
-
-/**
- * @param array $a
- * @param array $b
- *
- * @return int
- */
-function pnfSort($a, $b)
-{
-    if ($a['nb'] == $b['nb']) {
-        return 0;
-    }
-
-    return ($a['nb'] > $b['nb']) ? -1 : 1;
 }

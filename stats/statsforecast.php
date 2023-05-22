@@ -646,7 +646,13 @@ class StatsForecast extends StatsModule
 					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
 				GROUP BY product_shop.id_category_default';
         $ca['cat'] = Db::getInstance()->executeS($sql);
-        uasort($ca['cat'], 'statsforecast_sort');
+        uasort($ca['cat'], function($a, $b) {
+            if ($a['orderSum'] == $b['orderSum']) {
+                return 0;
+            }
+
+            return ($a['orderSum'] > $b['orderSum']) ? -1 : 1;
+        });
 
         $lang_values = '';
         $sql = 'SELECT DISTINCT l.id_lang, l.iso_code
@@ -751,19 +757,4 @@ class StatsForecast extends StatsModule
 
         return $ca;
     }
-}
-
-/**
- * @param array $a
- * @param array $b
- *
- * @return int
- */
-function statsforecast_sort($a, $b)
-{
-    if ($a['orderSum'] == $b['orderSum']) {
-        return 0;
-    }
-
-    return ($a['orderSum'] > $b['orderSum']) ? -1 : 1;
 }
