@@ -29,6 +29,9 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsGroups extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
 
     public function __construct()
@@ -40,6 +43,10 @@ class StatsGroups extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'This is the main module for the Stats by Group. It displays a summary of all your group statistics.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (!isset($this->context->cookie->stats_granularity)) {

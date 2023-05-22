@@ -29,8 +29,17 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsSearch extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
+    /**
+     * @var string
+     */
     protected $query_group_by = '';
 
     public function __construct()
@@ -52,6 +61,10 @@ class StatsSearch extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab to the Stats dashboard, showing which keywords have been searched by your store\'s visitors.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (Tools::getValue('export'))
@@ -96,6 +109,12 @@ class StatsSearch extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Top 10 keywords', 'statsmodule');

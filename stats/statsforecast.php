@@ -29,14 +29,41 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsForecast extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var int
+     */
     protected $t1 = 0;
+    /**
+     * @var int
+     */
     protected $t2 = 0;
+    /**
+     * @var int
+     */
     protected $t3 = 0;
+    /**
+     * @var int
+     */
     protected $t4 = 0;
+    /**
+     * @var int
+     */
     protected $t5 = 0;
+    /**
+     * @var int
+     */
     protected $t6 = 0;
+    /**
+     * @var int
+     */
     protected $t7 = 0;
+    /**
+     * @var int
+     */
     protected $t8 = 0;
 
     public function __construct()
@@ -48,6 +75,10 @@ class StatsForecast extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'This is the main module for the Stats dashboard. It displays a summary of all your current statistics.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $ru = AdminController::$currentIndex . '&module=statsforecast&token=' . Tools::getValue('token');
@@ -572,6 +603,10 @@ class StatsForecast extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @return array
+     * @throws PrestaShopException
+     */
     private function getRealCA()
     {
         $employee = $this->context->employee;
@@ -701,6 +736,12 @@ class StatsForecast extends StatsModule
     }
 }
 
+/**
+ * @param array $a
+ * @param array $b
+ *
+ * @return int
+ */
 function statsforecast_sort($a, $b)
 {
     if ($a['orderSum'] == $b['orderSum'])

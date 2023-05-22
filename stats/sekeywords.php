@@ -29,8 +29,17 @@ if (!defined('_TB_VERSION_')) {
 
 class SEKeywords extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
+    /**
+     * @var string
+     */
     protected $query2 = '';
 
     public function __construct()
@@ -52,6 +61,12 @@ class SEKeywords extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Displays which keywords have led visitors to your website.', 'statsmodule');
     }
 
+    /**
+     * @param array $params
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function hookTop($params)
     {
         if (!isset($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], Tools::getHttpHost(false, false) == 0))
@@ -62,6 +77,11 @@ class SEKeywords extends StatsModule
 										VALUES (\'' . pSQL(Tools::strtolower(trim($keywords))) . '\', NOW(), ' . (int)$this->context->shop->id . ', ' . (int)$this->context->shop->id_shop_group . ')');
     }
 
+    /**
+     * @return string
+     *
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (Tools::isSubmit('submitSEK')) {
@@ -143,6 +163,12 @@ class SEKeywords extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param string $url
+     *
+     * @return false|string
+     * @throws PrestaShopException
+     */
     public function getKeywords($url)
     {
         if (!Validate::isAbsoluteUrl($url))
@@ -179,6 +205,12 @@ class SEKeywords extends StatsModule
         return false;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Top 10 keywords', 'statsmodule');

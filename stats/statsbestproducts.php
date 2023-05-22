@@ -29,12 +29,33 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestProducts extends StatsModule
 {
+    /**
+     * @var null
+     */
     protected $html = null;
+    /**
+     * @var null
+     */
     protected $query = null;
+    /**
+     * @var array[]|null
+     */
     protected $columns = null;
+    /**
+     * @var string|null
+     */
     protected $default_sort_column = null;
+    /**
+     * @var string|null
+     */
     protected $default_sort_direction = null;
+    /**
+     * @var string|null
+     */
     protected $empty_message = null;
+    /**
+     * @var string|null
+     */
     protected $paging_message = null;
 
     public function __construct()
@@ -108,6 +129,10 @@ class StatsBestProducts extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best-selling products to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $engine_params = array(
@@ -130,6 +155,12 @@ class StatsBestProducts extends StatsModule
 		</a>';
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function getData($layers = null)
     {
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));

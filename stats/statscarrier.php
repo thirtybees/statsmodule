@@ -29,7 +29,13 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsCarrier extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $option = '';
 
     public function __construct()
@@ -40,6 +46,10 @@ class StatsCarrier extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a graph displaying each carriers\' distribution to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $sql = 'SELECT COUNT(o.`id_order`) AS total
@@ -90,11 +100,23 @@ class StatsCarrier extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param int $option
+     * @param int $layers
+     *
+     * @return void
+     */
     public function setOption($option, $layers = 1)
     {
         $this->option = (int)$option;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $state_query = '';

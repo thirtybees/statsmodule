@@ -34,11 +34,15 @@ if (!defined('_TB_VERSION_')) {
  */
 class StatsCheckUp extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
 
     /**
      * StatsCheckUp constructor.
      *
+     * @throws PrestaShopException
      * @since 1.0.0
      */
     public function __construct()
@@ -53,6 +57,7 @@ class StatsCheckUp extends StatsModule
     /**
      * @return string
      *
+     * @throws PrestaShopException
      * @since 1.0.0
      */
     public function hookAdminStatsModules()

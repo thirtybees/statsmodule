@@ -29,13 +29,34 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsNewsletter extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $_html = '';
+    /**
+     * @var string
+     */
     protected $_query = '';
+    /**
+     * @var string
+     */
     protected $_query2 = '';
+    /**
+     * @var string
+     */
     protected $_option = '';
 
+    /**
+     * @var string
+     */
     protected $table_name;
+    /**
+     * @var string
+     */
     protected $newsletter_module_name;
+    /**
+     * @var string
+     */
     protected $newsletter_module_human_readable_name;
 
     public function __construct()
@@ -51,6 +72,10 @@ class StatsNewsletter extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab with a graph showing newsletter registrations to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (Module::isInstalled($this->newsletter_module_name)) {
@@ -85,6 +110,10 @@ class StatsNewsletter extends StatsModule
         return $this->_html;
     }
 
+    /**
+     * @return array
+     * @throws PrestaShopException
+     */
     private function getTotals()
     {
         $sql = 'SELECT COUNT(*) AS customers
@@ -103,6 +132,12 @@ class StatsNewsletter extends StatsModule
         return array('customers' => $result1['customers'], 'visitors' => $result2['visitors'], 'both' => $result1['customers'] + $result2['visitors']);
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Newsletter statistics', 'statsmodule');
@@ -124,6 +159,12 @@ class StatsNewsletter extends StatsModule
         $this->setDateGraph($layers, true);
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setAllTimeValues($layers)
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
@@ -137,6 +178,12 @@ class StatsNewsletter extends StatsModule
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setYearValues($layers)
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
@@ -150,6 +197,12 @@ class StatsNewsletter extends StatsModule
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setMonthValues($layers)
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
@@ -163,6 +216,12 @@ class StatsNewsletter extends StatsModule
             $this->_values[2][$key] = $this->_values[0][$key] + $this->_values[1][$key];
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setDayValues($layers)
     {
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());

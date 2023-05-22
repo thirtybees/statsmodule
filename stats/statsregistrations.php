@@ -29,7 +29,13 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsRegistrations extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
 
     public function __construct()
@@ -43,6 +49,7 @@ class StatsRegistrations extends StatsModule
 
     /**
      * @return int Get total of registration in date range
+     * @throws PrestaShopException
      */
     public function getTotalRegistrations()
     {
@@ -57,6 +64,7 @@ class StatsRegistrations extends StatsModule
 
     /**
      * @return int Get total of blocked visitors during registration process
+     * @throws PrestaShopException
      */
     public function getBlockedVisitors()
     {
@@ -75,6 +83,10 @@ class StatsRegistrations extends StatsModule
         return $result['blocked'];
     }
 
+    /**
+     * @return mixed
+     * @throws PrestaShopException
+     */
     public function getFirstBuyers()
     {
         $sql = 'SELECT COUNT(DISTINCT o.`id_customer`) as buyers
@@ -90,6 +102,10 @@ class StatsRegistrations extends StatsModule
         return $result['buyers'];
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $total_registrations = $this->getTotalRegistrations();
@@ -146,6 +162,12 @@ class StatsRegistrations extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $this->query = '
@@ -158,6 +180,12 @@ class StatsRegistrations extends StatsModule
         $this->setDateGraph($layers, true);
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setAllTimeValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
@@ -165,6 +193,12 @@ class StatsRegistrations extends StatsModule
             $this->_values[(int)Tools::substr($row['date_add'], 0, 4)]++;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setYearValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
@@ -176,6 +210,12 @@ class StatsRegistrations extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setMonthValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
@@ -183,6 +223,12 @@ class StatsRegistrations extends StatsModule
             $this->_values[(int)Tools::substr($row['date_add'], 8, 2)]++;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setDayValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());

@@ -29,8 +29,17 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsEquipment extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
+    /**
+     * @var string
+     */
     protected $query2 = '';
 
     public function __construct()
@@ -43,7 +52,9 @@ class StatsEquipment extends StatsModule
     }
 
     /**
-     * @return array Get list of browser "plugins" (javascript, media player, etc.)
+     * @return array|false
+     *
+     * @throws PrestaShopException
      */
     private function getEquipment()
     {
@@ -100,6 +111,10 @@ class StatsEquipment extends StatsModule
         return $equip;
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (Tools::getValue('export'))
@@ -159,6 +174,13 @@ class StatsEquipment extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param string $option
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function setOption($option, $layers = 1)
     {
         switch ($option) {
@@ -188,6 +210,12 @@ class StatsEquipment extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query2);

@@ -29,12 +29,35 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestCustomers extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html;
+
+    /**
+     * @var string
+     */
     protected $query;
+
+    /**
+     * @var array
+     */
     protected $columns;
+    /**
+     * @var string
+     */
     protected $default_sort_column;
+    /**
+     * @var string
+     */
     protected $default_sort_direction;
+    /**
+     * @var string
+     */
     protected $empty_message;
+    /**
+     * @var string
+     */
     protected $paging_message;
 
     public function __construct()
@@ -92,6 +115,10 @@ class StatsBestCustomers extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best customers to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $engine_params = array(
@@ -133,6 +160,12 @@ class StatsBestCustomers extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function getData($layers = null)
     {
         $this->query = '

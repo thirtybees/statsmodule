@@ -29,10 +29,25 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsProduct extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
+    /**
+     * @var int
+     */
     protected $option = 0;
+    /**
+     * @var int
+     */
     protected $id_product = 0;
+    /**
+     * @var bool
+     */
     protected $packTracking = false;
 
     /**
@@ -55,7 +70,6 @@ class StatsProduct extends StatsModule
      * @param int $productId
      *
      * @return int
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function getTotalBought($productId)
@@ -78,7 +92,6 @@ class StatsProduct extends StatsModule
      * @param int $productId
      *
      * @return int
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function getTotalBoughtAsPartOfPack($productId)
@@ -100,10 +113,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $id_product
+     * @param int $id_product
      *
      * @return float
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function getTotalSales($id_product)
@@ -121,10 +133,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $id_product
+     * @param int $id_product
      *
      * @return int|mixed
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function getTotalViewed($id_product)
@@ -146,10 +157,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $id_lang
+     * @param int $id_lang
      *
-     * @return array|bool|PDOStatement|null
-     * @throws PrestaShopDatabaseException
+     * @return array
      * @throws PrestaShopException
      */
     private function getProducts($id_lang)
@@ -171,7 +181,6 @@ class StatsProduct extends StatsModule
      * @param int $productId
      *
      * @return array
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     private function getSales($productId)
@@ -203,11 +212,10 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $id_product
-     * @param $id_lang
+     * @param int $id_product
+     * @param int $id_lang
      *
-     * @return array|bool|PDOStatement|null
-     * @throws PrestaShopDatabaseException
+     * @return array
      * @throws PrestaShopException
      */
     private function getCrossSales($id_product, $id_lang)
@@ -238,7 +246,6 @@ class StatsProduct extends StatsModule
      * Hook
      *
      * @return string
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function hookAdminStatsModules()
@@ -467,11 +474,10 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $option
-     * @param $layers
+     * @param int $option
+     * @param int $layers
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function setOption($option, $layers = 1)
@@ -531,10 +537,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $layers
+     * @param int $layers
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     protected function getData($layers)
@@ -577,10 +582,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $layers
+     * @param int $layers
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     protected function setAllTimeValues($layers)
@@ -593,10 +597,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $layers
+     * @param int $layers
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     protected function setYearValues($layers)
@@ -609,10 +612,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $layers
+     * @param int $layers
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     protected function setMonthValues($layers)
@@ -625,10 +627,9 @@ class StatsProduct extends StatsModule
     }
 
     /**
-     * @param $layers
+     * @param int $layers
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     protected function setDayValues($layers)

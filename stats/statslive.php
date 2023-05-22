@@ -29,6 +29,9 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsLive extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
 
     public function __construct()
@@ -43,7 +46,9 @@ class StatsLive extends StatsModule
     /**
      * Get the number of online customers
      *
-     * @return array(array, int) array of online customers entries, number of online customers
+     * @return array (array, int) array of online customers entries, number of online customers
+     *
+     * @throws PrestaShopException
      */
     private function getCustomersOnline()
     {
@@ -83,7 +88,13 @@ class StatsLive extends StatsModule
     /**
      * Get the number of online visitors
      *
+<<<<<<< HEAD
      * @return array(array, int) array of online visitors entries, number of online visitors
+     * @throws PrestaShopDatabaseException
+=======
+     * @return array (array, int) array of online visitors entries, number of online visitors
+>>>>>>> 33b2647 (phpdocs)
+     * @throws PrestaShopException
      */
     private function getVisitorsOnline()
     {
@@ -120,6 +131,10 @@ class StatsLive extends StatsModule
         return array($results, Db::getInstance()->NumRows());
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         list($customers, $total_customers) = $this->getCustomersOnline();

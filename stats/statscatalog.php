@@ -29,7 +29,13 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsCatalog extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $join = '';
+    /**
+     * @var string
+     */
     protected $where = '';
 
     public function __construct()
@@ -41,6 +47,10 @@ class StatsCatalog extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab containing general statistics about your catalog to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return array|false
+     * @throws PrestaShopException
+     */
     public function getQuery1()
     {
         $sql = 'SELECT COUNT(DISTINCT p.`id_product`) AS total, SUM(product_shop.`price`) / COUNT(product_shop.`price`) AS average_price, COUNT(DISTINCT i.`id_image`) AS images
@@ -54,6 +64,10 @@ class StatsCatalog extends StatsModule
         return DB::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
     }
 
+    /**
+     * @return false|mixed
+     * @throws PrestaShopException
+     */
     public function getTotalPageViewed()
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
@@ -68,6 +82,10 @@ class StatsCatalog extends StatsModule
 		' . $this->where);
     }
 
+    /**
+     * @return false|mixed
+     * @throws PrestaShopException
+     */
     public function getTotalProductViewed()
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
@@ -83,6 +101,10 @@ class StatsCatalog extends StatsModule
 		' . $this->where);
     }
 
+    /**
+     * @return false|mixed
+     * @throws PrestaShopException
+     */
     public function getTotalBought()
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
@@ -95,6 +117,12 @@ class StatsCatalog extends StatsModule
 		' . $this->where);
     }
 
+    /**
+     * @param int $id_lang
+     *
+     * @return array
+     * @throws PrestaShopException
+     */
     public function getProductsNB($id_lang)
     {
         $sql = 'SELECT p.`id_product`
@@ -127,6 +155,10 @@ class StatsCatalog extends StatsModule
         return array('total' => Db::getInstance(_PS_USE_SQL_SLAVE_)->NumRows(), 'result' => $result);
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $categories = Category::getCategories($this->context->language->id, true, false);
@@ -243,6 +275,12 @@ class StatsCatalog extends StatsModule
         return $html;
     }
 
+    /**
+     * @param string $label
+     * @param string $data
+     *
+     * @return string
+     */
     private function returnLine($label, $data)
     {
         return $label . $data;

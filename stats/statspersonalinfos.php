@@ -29,7 +29,14 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsPersonalInfos extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+
+    /**
+     * @var string
+     */
     protected $option;
 
     public function __construct()
@@ -41,6 +48,10 @@ class StatsPersonalInfos extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds information about your registered customers (such as gender and age) to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $this->html = '
@@ -188,11 +199,23 @@ class StatsPersonalInfos extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param string $option
+     * @param int $layers
+     *
+     * @return void
+     */
     public function setOption($option, $layers = 1)
     {
         $this->option = $option;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         switch ($this->option) {

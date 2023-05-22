@@ -28,6 +28,9 @@ if (!defined('_TB_VERSION_'))
 
 class StatsOrigin extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $_html;
 
     public function __construct()
@@ -39,6 +42,13 @@ class StatsOrigin extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a graph displaying the websites your visitors came from to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @param string $dateBetween
+     *
+     * @return int[]
+     *
+     * @throws PrestaShopException
+     */
     private function getOrigins($dateBetween)
     {
         $directLink = Translate::getModuleTranslation('statsmodule', 'Direct link', 'statsmodule');
@@ -64,6 +74,10 @@ class StatsOrigin extends StatsModule
         return $websites;
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $websites = $this->getOrigins(ModuleGraph::getDateBetween());
@@ -122,6 +136,12 @@ class StatsOrigin extends StatsModule
         return $this->_html;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Top ten referral websites', 'statsmodule');

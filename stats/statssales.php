@@ -29,10 +29,25 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsSales extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
+    /**
+     * @var string
+     */
     protected $query_group_by = '';
+    /**
+     * @var string
+     */
     protected $option = '';
+    /**
+     * @var string
+     */
     protected $id_country = '';
 
     public function __construct()
@@ -44,6 +59,10 @@ class StatsSales extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds graphics presenting the evolution of sales and orders to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $totals = $this->getTotals();
@@ -161,6 +180,10 @@ class StatsSales extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @return array|false
+     * @throws PrestaShopException
+     */
     private function getTotals()
     {
         $sql = 'SELECT COUNT(o.`id_order`) AS orderCount, SUM(o.`total_paid_real` / o.conversion_rate) AS orderSum
@@ -185,6 +208,13 @@ class StatsSales extends StatsModule
         return array_merge($result1, $result2);
     }
 
+    /**
+     * @param string $options
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function setOption($options, $layers = 1)
     {
         list($this->option, $this->id_country) = explode('-', $options);
@@ -204,6 +234,11 @@ class StatsSales extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @throws PrestaShopException
+     */
     protected function getData($layers)
     {
         if ($this->option == 3)
@@ -222,6 +257,12 @@ class StatsSales extends StatsModule
         $this->setDateGraph($layers, true);
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setAllTimeValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
@@ -233,6 +274,12 @@ class StatsSales extends StatsModule
                 $this->_values[(int)substr($row['invoice_date'], 0, 4)] += $row['total_paid_real'];
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setYearValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
@@ -253,6 +300,12 @@ class StatsSales extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setMonthValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
@@ -264,6 +317,12 @@ class StatsSales extends StatsModule
                 $this->_values[(int)substr($row['invoice_date'], 8, 2)] += $row['total_paid_real'];
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setDayValues($layers)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
@@ -275,6 +334,10 @@ class StatsSales extends StatsModule
                 $this->_values[(int)substr($row['invoice_date'], 11, 2)] += $row['total_paid_real'];
     }
 
+    /**
+     * @return void
+     * @throws PrestaShopException
+     */
     private function getStatesData()
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('

@@ -29,12 +29,33 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestManufacturers extends StatsModule
 {
+    /**
+     * @var null
+     */
     protected $html = null;
+    /**
+     * @var null
+     */
     protected $query = null;
+    /**
+     * @var array[]|null
+     */
     protected $columns = null;
+    /**
+     * @var string|null
+     */
     protected $default_sort_column = null;
+    /**
+     * @var string|null
+     */
     protected $default_sort_direction = null;
+    /**
+     * @var string|null
+     */
     protected $empty_message = null;
+    /**
+     * @var string|null
+     */
     protected $paging_message = null;
 
     public function __construct()
@@ -71,6 +92,10 @@ class StatsBestManufacturers extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best manufacturers to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $engine_params = array(
@@ -98,6 +123,7 @@ class StatsBestManufacturers extends StatsModule
 
     /**
      * @return int Get total of distinct manufacturers
+     * @throws PrestaShopException
      */
     public function getTotalCount()
     {
@@ -113,6 +139,12 @@ class StatsBestManufacturers extends StatsModule
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function getData($layers = null)
     {
         $this->_totalCount = $this->getTotalCount();

@@ -70,7 +70,6 @@ class StatsModule extends ModuleStats
     ];
 
     /**
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function __construct()
@@ -182,7 +181,7 @@ class StatsModule extends ModuleStats
      * @param string $moduleName
      * @param bool $hook
      *
-     * @return StatsModule|mixed
+     * @return StatsModule|string
      * @throws PrestaShopException
      */
     public function executeStatsInstance($moduleName, $hook = false)
@@ -227,7 +226,8 @@ class StatsModule extends ModuleStats
     }
 
     /**
-     * @return mixed
+     * @return string
+     *
      * @throws PrestaShopException
      */
     public function hookAdminStatsModules()
@@ -247,7 +247,6 @@ class StatsModule extends ModuleStats
      * @param array $params
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function hookSearch($params)
@@ -316,7 +315,6 @@ class StatsModule extends ModuleStats
      *
      * @return bool result
      *
-     * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      * @since   1.0.0
      * @version 1.0.0 Initial version

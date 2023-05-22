@@ -30,12 +30,39 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestCategories extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html;
+
+    /**
+     * @var string
+     */
     protected $query;
+
+    /**
+     * @var array[]
+     */
     protected $columns;
+
+    /**
+     * @var string
+     */
     protected $default_sort_column;
+
+    /**
+     * @var string
+     */
     protected $default_sort_direction;
+
+    /**
+     * @var string
+     */
     protected $empty_message;
+
+    /**
+     * @var string
+     */
     protected $paging_message;
 
     public function __construct()
@@ -85,6 +112,11 @@ class StatsBestCategories extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best categories to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     *
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $onlyChildren = (int)Tools::getValue('onlyChildren');
@@ -136,6 +168,12 @@ class StatsBestCategories extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function getData($layers = null)
     {
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));

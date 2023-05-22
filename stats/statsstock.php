@@ -29,6 +29,9 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsStock extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
 
     public function __construct()
@@ -40,6 +43,11 @@ class StatsStock extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab showing the quantity of available products for sale to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return string
+     *
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (Tools::isSubmit('submitCategory'))

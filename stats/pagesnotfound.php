@@ -29,6 +29,9 @@ if (!defined('_TB_VERSION_')) {
 
 class PagesNotFound extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
 
     public function __construct()
@@ -40,6 +43,10 @@ class PagesNotFound extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab to the Stats dashboard, showing the pages requested by your visitors that have not been found.', 'statsmodule');
     }
 
+    /**
+     * @return array
+     * @throws PrestaShopException
+     */
     private function getPages()
     {
         $sql = 'SELECT http_referer, request_uri, COUNT(*) AS nb
@@ -64,6 +71,11 @@ class PagesNotFound extends StatsModule
         return $pages;
     }
 
+    /**
+     * @return string
+     *
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         if (Tools::isSubmit('submitTruncatePNF')) {
@@ -139,6 +151,12 @@ class PagesNotFound extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function hookTop($params)
     {
         if (!Validate::isUrl($request_uri = $_SERVER['REQUEST_URI'])
@@ -159,6 +177,11 @@ class PagesNotFound extends StatsModule
         }
     }
 
+    /**
+     * @param string $directory
+     *
+     * @return string
+     */
     private function _normalizeDirectory($directory)
     {
         $last = $directory[strlen($directory) - 1];
@@ -173,6 +196,12 @@ class PagesNotFound extends StatsModule
     }
 }
 
+/**
+ * @param array $a
+ * @param array $b
+ *
+ * @return int
+ */
 function pnfSort($a, $b)
 {
     if ($a['nb'] == $b['nb'])

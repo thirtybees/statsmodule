@@ -29,7 +29,13 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsVisits extends StatsModule
 {
+    /**
+     * @var string
+     */
     protected $html = '';
+    /**
+     * @var string
+     */
     protected $query = '';
 
     public function __construct()
@@ -41,6 +47,10 @@ class StatsVisits extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds statistics about your visits and visitors to the Stats dashboard.', 'statsmodule');
     }
 
+    /**
+     * @return false|mixed
+     * @throws PrestaShopException
+     */
     public function getTotalVisits()
     {
         $sql = 'SELECT COUNT(c.`id_connections`)
@@ -51,6 +61,10 @@ class StatsVisits extends StatsModule
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
+    /**
+     * @return false|mixed
+     * @throws PrestaShopException
+     */
     public function getTotalGuests()
     {
         $sql = 'SELECT COUNT(DISTINCT c.`id_guest`)
@@ -61,6 +75,10 @@ class StatsVisits extends StatsModule
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
+    /**
+     * @return string
+     * @throws PrestaShopException
+     */
     public function hookAdminStatsModules()
     {
         $graph_params = array(
@@ -120,6 +138,13 @@ class StatsVisits extends StatsModule
         return $this->html;
     }
 
+    /**
+     * @param int $option
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     public function setOption($option, $layers = 1)
     {
         switch ($option) {
@@ -142,11 +167,22 @@ class StatsVisits extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     */
     protected function getData($layers)
     {
         $this->setDateGraph($layers, true);
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setAllTimeValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
@@ -156,6 +192,12 @@ class StatsVisits extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setYearValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
@@ -165,6 +207,12 @@ class StatsVisits extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setMonthValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
@@ -174,6 +222,12 @@ class StatsVisits extends StatsModule
         }
     }
 
+    /**
+     * @param int $layers
+     *
+     * @return void
+     * @throws PrestaShopException
+     */
     protected function setDayValues($layers)
     {
         for ($i = 0; $i < $layers; $i++) {
