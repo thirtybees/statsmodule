@@ -47,7 +47,7 @@ class StatsVisits extends StatsModule
     }
 
     /**
-     * @return false|mixed
+     * @return int
      * @throws PrestaShopException
      */
     public function getTotalVisits()
@@ -57,11 +57,11 @@ class StatsVisits extends StatsModule
 				WHERE c.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 					' . Shop::addSqlRestriction(false, 'c');
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
     /**
-     * @return false|mixed
+     * @return int
      * @throws PrestaShopException
      */
     public function getTotalGuests()
@@ -71,7 +71,7 @@ class StatsVisits extends StatsModule
 				WHERE c.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 					' . Shop::addSqlRestriction(false, 'c');
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
     /**

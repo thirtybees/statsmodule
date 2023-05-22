@@ -64,12 +64,12 @@ class StatsCatalog extends StatsModule
     }
 
     /**
-     * @return false|mixed
+     * @return int
      * @throws PrestaShopException
      */
     public function getTotalPageViewed()
     {
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
 		SELECT SUM(pv.`counter`)
 		FROM `' . _DB_PREFIX_ . 'product` p
 		' . Shop::addSqlAssociation('product', 'p') . '
@@ -82,12 +82,12 @@ class StatsCatalog extends StatsModule
     }
 
     /**
-     * @return false|mixed
+     * @return int
      * @throws PrestaShopException
      */
     public function getTotalProductViewed()
     {
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
 		SELECT COUNT(DISTINCT pa.`id_object`)
 		FROM `' . _DB_PREFIX_ . 'page_viewed` pv
 		LEFT JOIN `' . _DB_PREFIX_ . 'page` pa ON pv.`id_page` = pa.`id_page`
@@ -101,12 +101,12 @@ class StatsCatalog extends StatsModule
     }
 
     /**
-     * @return false|mixed
+     * @return int
      * @throws PrestaShopException
      */
     public function getTotalBought()
     {
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
 		SELECT SUM(od.`product_quantity`)
 		FROM `' . _DB_PREFIX_ . 'orders` o
 		LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON o.`id_order` = od.`id_order`

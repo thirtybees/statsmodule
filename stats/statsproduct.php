@@ -134,7 +134,7 @@ class StatsProduct extends StatsModule
     /**
      * @param int $id_product
      *
-     * @return int|mixed
+     * @return int
      * @throws PrestaShopException
      */
     public function getTotalViewed($id_product)
@@ -150,9 +150,7 @@ class StatsProduct extends StatsModule
 					AND p.`id_object` = ' . (int)$id_product . '
 					AND dr.`time_start` BETWEEN ' . $date_between . '
 					AND dr.`time_end` BETWEEN ' . $date_between;
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
-
-        return isset($result['total']) ? $result['total'] : 0;
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
     /**
