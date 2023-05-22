@@ -23,30 +23,21 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
-if (!defined('_TB_VERSION_'))
+if (!defined('_TB_VERSION_')) {
     exit;
+}
 
-class StatsLive extends Module
+class StatsLive extends StatsModule
 {
     protected $html = '';
 
     public function __construct()
     {
-        $this->name = 'statslive';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Visitors online', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of customers and visitors who are currently online to the Stats dashboard.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return parent::install() && $this->registerHook('AdminStatsModules');
     }
 
     /**
@@ -129,7 +120,7 @@ class StatsLive extends Module
         return array($results, Db::getInstance()->NumRows());
     }
 
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         list($customers, $total_customers) = $this->getCustomersOnline();
         list($visitors, $total_visitors) = $this->getVisitorsOnline();

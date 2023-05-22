@@ -29,7 +29,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsNewsletter extends StatsModule
 {
-    protected $type = 'Graph';
     protected $_html = '';
     protected $_query = '';
     protected $_query2 = '';
@@ -41,28 +40,18 @@ class StatsNewsletter extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statsnewsletter';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
+        parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->table_name = _DB_PREFIX_.'newsletter';
         $this->newsletter_module_name = 'blocknewsletter';
         $this->newsletter_module_human_readable_name = 'Newsletter block';
 
-        parent::__construct();
-
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Newsletter', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab with a graph showing newsletter registrations to the Stats dashboard.', 'statsmodule');
     }
 
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         if (Module::isInstalled($this->newsletter_module_name)) {
             $totals = $this->getTotals();

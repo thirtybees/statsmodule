@@ -29,28 +29,17 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsEquipment extends StatsModule
 {
-    protected $type = 'Graph';
     protected $html = '';
     protected $query = '';
     protected $query2 = '';
 
     public function __construct()
     {
-        $this->name = 'statsequipment';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Browsers and operating systems', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab containing graphs about web browser and operating system usage to the Stats dashboard.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     /**
@@ -111,7 +100,7 @@ class StatsEquipment extends StatsModule
         return $equip;
     }
 
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         if (Tools::getValue('export'))
             if (Tools::getValue('exportType') == 'browser')

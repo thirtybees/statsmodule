@@ -27,32 +27,17 @@ if (!defined('_TB_VERSION_')) {
     exit;
 }
 
-class StatsGroups extends Module
+class StatsGroups extends StatsModule
 {
     protected $html = '';
 
     public function __construct()
     {
-        $this->name = 'statsgroups';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Stats by Groups', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'This is the main module for the Stats by Group. It displays a summary of all your group statistics.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function getContent()
-    {
-        Tools::redirectAdmin('index.php?controller=AdminStats&module=statsgroups&token='.Tools::getAdminTokenLite('AdminStats'));
     }
 
     public function hookAdminStatsModules()

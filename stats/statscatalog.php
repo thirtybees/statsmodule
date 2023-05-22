@@ -34,21 +34,11 @@ class StatsCatalog extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statscatalog';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Catalog statistics', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab containing general statistics about your catalog to the Stats dashboard.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     public function getQuery1()
@@ -137,7 +127,7 @@ class StatsCatalog extends StatsModule
         return array('total' => Db::getInstance(_PS_USE_SQL_SLAVE_)->NumRows(), 'result' => $result);
     }
 
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         $categories = Category::getCategories($this->context->language->id, true, false);
         $product_token = Tools::getAdminToken('AdminProducts'.(int) Tab::getIdFromClassName('AdminProducts').(int) $this->context->employee->id);

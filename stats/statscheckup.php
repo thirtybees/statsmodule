@@ -43,44 +43,11 @@ class StatsCheckUp extends StatsModule
      */
     public function __construct()
     {
-        $this->name = 'statscheckup';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Catalog evaluation', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a quick evaluation of your catalog quality to the Stats dashboard.', 'statsmodule');
-    }
-
-    /**
-     * Install this module
-     *
-     * @return bool Indicates whether this module has been installed correctly
-     *
-     * @since 1.0.0
-     */
-    public function install()
-    {
-        $confs = [
-            'CHECKUP_DESCRIPTIONS_LT' => 100,
-            'CHECKUP_DESCRIPTIONS_GT' => 400,
-            'CHECKUP_IMAGES_LT'       => 1,
-            'CHECKUP_IMAGES_GT'       => 2,
-            'CHECKUP_SALES_LT'        => 1,
-            'CHECKUP_SALES_GT'        => 2,
-            'CHECKUP_STOCK_LT'        => 1,
-            'CHECKUP_STOCK_GT'        => 3,
-        ];
-        foreach ($confs as $confname => $confdefault) {
-            if (!Configuration::get($confname)) {
-                Configuration::updateValue($confname, (int) $confdefault);
-            }
-        }
-
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     /**

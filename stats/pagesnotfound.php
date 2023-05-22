@@ -33,41 +33,11 @@ class PagesNotFound extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'pagesnotfound';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Pages not found', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab to the Stats dashboard, showing the pages requested by your visitors that have not been found.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        if (!parent::install() || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules')) {
-            return false;
-        }
-
-        return Db::getInstance()->execute(
-            'CREATE TABLE `'._DB_PREFIX_.'pagenotfound` (
-			id_pagenotfound INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			request_uri VARCHAR(256) NOT NULL,
-			http_referer VARCHAR(256) NOT NULL,
-			date_add DATETIME NOT NULL,
-			PRIMARY KEY(id_pagenotfound),
-			INDEX (`date_add`)
-		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;'
-        );
-    }
-
-    public function uninstall()
-    {
-        return (parent::uninstall() && Db::getInstance()->execute('DROP TABLE `'._DB_PREFIX_.'pagenotfound`'));
     }
 
     private function getPages()

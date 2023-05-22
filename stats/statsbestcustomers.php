@@ -29,7 +29,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestCustomers extends StatsModule
 {
-    protected $type = 'Grid';
     protected $html;
     protected $query;
     protected $columns;
@@ -40,13 +39,8 @@ class StatsBestCustomers extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statsbestcustomers';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRID;
 
         $this->default_sort_column = 'totalMoneySpent';
         $this->default_sort_direction = 'DESC';
@@ -98,12 +92,7 @@ class StatsBestCustomers extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best customers to the Stats dashboard.', 'statsmodule');
     }
 
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         $engine_params = array(
             'id'                   => 'id_customer',

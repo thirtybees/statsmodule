@@ -29,27 +29,16 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsPersonalInfos extends StatsModule
 {
-    protected $type = 'Graph';
     protected $html = '';
     protected $option;
 
     public function __construct()
     {
-        $this->name = 'statspersonalinfos';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Registered customer information', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds information about your registered customers (such as gender and age) to the Stats dashboard.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     public function hookAdminStatsModules()

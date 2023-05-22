@@ -28,26 +28,15 @@ if (!defined('_TB_VERSION_'))
 
 class StatsOrigin extends StatsModule
 {
-    protected $type = 'Graph';
     protected $_html;
 
     public function __construct()
     {
-        $this->name = 'statsorigin';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Visitors origin', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a graph displaying the websites your visitors came from to the Stats dashboard.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     private function getOrigins($dateBetween)

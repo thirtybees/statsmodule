@@ -29,7 +29,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestSuppliers extends StatsModule
 {
-    protected $type = 'Grid';
     protected $html = null;
     protected $query = null;
     protected $columns = null;
@@ -40,13 +39,8 @@ class StatsBestSuppliers extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statsbestsuppliers';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRID;
 
         $this->default_sort_column = 'sales';
         $this->default_sort_direction = 'DESC';
@@ -78,12 +72,7 @@ class StatsBestSuppliers extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best suppliers to the Stats dashboard.', 'statsmodule');
     }
 
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         $engine_params = array(
             'id'                   => 'id_category',

@@ -27,7 +27,7 @@ if (!defined('_TB_VERSION_')) {
     exit;
 }
 
-class StatsForecast extends Module
+class StatsForecast extends StatsModule
 {
     protected $html = '';
     protected $t1 = 0;
@@ -41,26 +41,11 @@ class StatsForecast extends Module
 
     public function __construct()
     {
-        $this->name = 'statsforecast';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Stats Dashboard', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'This is the main module for the Stats dashboard. It displays a summary of all your current statistics.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function getContent()
-    {
-        Tools::redirectAdmin('index.php?controller=AdminStats&module=statsforecast&token='.Tools::getAdminTokenLite('AdminStats'));
     }
 
     public function hookAdminStatsModules()

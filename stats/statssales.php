@@ -29,7 +29,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsSales extends StatsModule
 {
-    protected $type = 'Graph';
     protected $html = '';
     protected $query = '';
     protected $query_group_by = '';
@@ -38,21 +37,11 @@ class StatsSales extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statssales';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Sales and orders', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds graphics presenting the evolution of sales and orders to the Stats dashboard.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     public function hookAdminStatsModules()

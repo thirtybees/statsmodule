@@ -29,7 +29,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsOrdersProfit extends StatsModule
 {
-    protected $type = 'Grid';
     protected $html = null;
     protected $query = null;
     protected $columns = null;
@@ -40,13 +39,8 @@ class StatsOrdersProfit extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statsordersprofit';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRID;
 
         $this->default_sort_column = 'date_add';
         $this->default_sort_direction = 'ASC';
@@ -120,12 +114,7 @@ class StatsOrdersProfit extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the orders profit to the Stats dashboard..', 'statsmodule');
     }
 
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         $engine_params = array(
             'id'                   => 'id_product',

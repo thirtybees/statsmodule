@@ -29,30 +29,16 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsRegistrations extends StatsModule
 {
-	private  $type = 'Graph';
 	protected $html = '';
 	protected $query = '';
 
 	public function __construct()
 	{
-		$this->name = 'statsregistrations';
-		$this->tab = 'analytics_stats';
-		$this->version = '2.0.0';
-		$this->author = 'thirty bees';
-		$this->need_instance = 0;
-
 		parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
 		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Customer accounts', 'statsmodule');
 		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds a registration progress tab to the Stats dashboard.', 'statsmodule');
-	}
-
-	/**
-	 * Called during module installation
-	 */
-	public function install()
-	{
-		return (parent::install() && $this->registerHook('AdminStatsModules'));
 	}
 
 	/**

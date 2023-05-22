@@ -29,7 +29,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsProduct extends StatsModule
 {
-    protected $type = 'Graph';
     protected $html = '';
     protected $query = '';
     protected $option = 0;
@@ -41,27 +40,13 @@ class StatsProduct extends StatsModule
      */
     public function __construct()
     {
-        $this->name = 'statsproduct';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Product details', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds detailed statistics for each product to the Stats dashboard.', 'statsmodule');
 
         $this->packTracking = class_exists('OrderDetailPack');
-    }
-
-    /**
-     * @return bool
-     * @throws PrestaShopException
-     */
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
     }
 
     /**

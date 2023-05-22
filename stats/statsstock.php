@@ -33,21 +33,11 @@ class StatsStock extends StatsModule
 
 	public function __construct()
 	{
-		$this->name = 'statsstock';
-		$this->tab = 'analytics_stats';
-		$this->version = '2.0.0';
-		$this->author = 'thirty bees';
-		$this->need_instance = 0;
-
 		parent::__construct();
+        $this->type = static::TYPE_CUSTOM;
 
 		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Available quantities', 'statsmodule');
 		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab showing the quantity of available products for sale to the Stats dashboard.', 'statsmodule');
-	}
-
-	public function install()
-	{
-		return parent::install() && $this->registerHook('AdminStatsModules');
 	}
 
 	public function hookAdminStatsModules()

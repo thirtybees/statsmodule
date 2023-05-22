@@ -29,20 +29,14 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsSearch extends StatsModule
 {
-	protected $type = 'Graph';
 	protected $html = '';
 	protected $query = '';
 	protected $query_group_by = '';
 
 	public function __construct()
 	{
-		$this->name = 'statssearch';
-		$this->tab = 'analytics_stats';
-		$this->version = '2.0.0';
-		$this->author = 'thirty bees';
-		$this->need_instance = 0;
-
 		parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
 		$this->query = 'SELECT `keywords`, COUNT(TRIM(`keywords`)) as occurences, MAX(results) as total
 				FROM `'._DB_PREFIX_.'statssearch`
@@ -56,41 +50,6 @@ class StatsSearch extends StatsModule
 
 		$this->displayName = Translate::getModuleTranslation('statsmodule', 'Shop search', 'statsmodule');
 		$this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab to the Stats dashboard, showing which keywords have been searched by your store\'s visitors.', 'statsmodule');
-	}
-
-	public function install()
-	{
-		if (!parent::install() || !$this->registerHook('search') || !$this->registerHook('AdminStatsModules'))
-			return false;
-
-		return Db::getInstance()->execute('
-		CREATE TABLE `'._DB_PREFIX_.'statssearch` (
-			id_statssearch INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-		  	id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			keywords VARCHAR(255) NOT NULL,
-			results INT(6) NOT NULL DEFAULT 0,
-			date_add DATETIME NOT NULL,
-			PRIMARY KEY(id_statssearch)
-		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');
-	}
-
-	public function uninstall()
-	{
-		if (!parent::uninstall())
-			return false;
-
-		return (Db::getInstance()->execute('DROP TABLE `'._DB_PREFIX_.'statssearch`'));
-	}
-
-	/**
-	 * Insert keywords in statssearch table when a search is launched on FO
-	 */
-	public function hookSearch($params)
-	{
-		$sql = 'INSERT INTO `'._DB_PREFIX_.'statssearch` (`id_shop`, `id_shop_group`, `keywords`, `results`, `date_add`)
-				VALUES ('.(int)$this->context->shop->id.', '.(int)$this->context->shop->id_shop_group.', \''.pSQL($params['expr']).'\', '.(int)$params['total'].', NOW())';
-		Db::getInstance()->execute($sql);
 	}
 
 	public function hookAdminStatsModules()

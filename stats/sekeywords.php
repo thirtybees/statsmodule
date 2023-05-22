@@ -29,20 +29,14 @@ if (!defined('_TB_VERSION_')) {
 
 class SEKeywords extends StatsModule
 {
-    protected $type = 'Graph';
     protected $html = '';
     protected $query = '';
     protected $query2 = '';
 
     public function __construct()
     {
-        $this->name = 'sekeywords';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRAPH;
 
         $this->query = 'SELECT `keyword`, COUNT(TRIM(`keyword`)) AS occurences
 				FROM `'._DB_PREFIX_.'sekeyword`
@@ -56,32 +50,6 @@ class SEKeywords extends StatsModule
 
         $this->displayName = Translate::getModuleTranslation('statsmodule', 'Search engine keywords', 'statsmodule');
         $this->description = Translate::getModuleTranslation('statsmodule', 'Displays which keywords have led visitors to your website.', 'statsmodule');
-    }
-
-    public function install()
-    {
-        if (!parent::install() || !$this->registerHook('top') || !$this->registerHook('AdminStatsModules'))
-            return false;
-        Configuration::updateValue('SEK_MIN_OCCURENCES', 1);
-        Configuration::updateValue('SEK_FILTER_KW', '');
-
-        return Db::getInstance()->execute('
-		CREATE TABLE `'._DB_PREFIX_.'sekeyword` (
-			id_sekeyword INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			keyword VARCHAR(256) NOT NULL,
-			date_add DATETIME NOT NULL,
-			PRIMARY KEY(id_sekeyword)
-		) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');
-    }
-
-    public function uninstall()
-    {
-        if (!parent::uninstall())
-            return false;
-
-        return (Db::getInstance()->execute('DROP TABLE `'._DB_PREFIX_.'sekeyword`'));
     }
 
     public function hookTop($params)

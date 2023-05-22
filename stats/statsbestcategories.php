@@ -30,7 +30,6 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestCategories extends StatsModule
 {
-    protected $type = 'Grid';
     protected $html;
     protected $query;
     protected $columns;
@@ -41,13 +40,8 @@ class StatsBestCategories extends StatsModule
 
     public function __construct()
     {
-        $this->name = 'statsbestcategories';
-        $this->tab = 'analytics_stats';
-        $this->version = '2.0.0';
-        $this->author = 'thirty bees';
-        $this->need_instance = 0;
-
         parent::__construct();
+        $this->type = static::TYPE_GRID;
 
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
@@ -91,12 +85,7 @@ class StatsBestCategories extends StatsModule
         $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best categories to the Stats dashboard.', 'statsmodule');
     }
 
-    public function install()
-    {
-        return (parent::install() && $this->registerHook('AdminStatsModules'));
-    }
-
-    public function hookAdminStatsModules($params)
+    public function hookAdminStatsModules()
     {
         $onlyChildren = (int) Tools::getValue('onlyChildren');
 
@@ -273,10 +262,5 @@ class StatsBestCategories extends StatsModule
 
         $this->_values = $values;
         $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
-    }
-
-    public function render()
-    {
-        return parent::render();
     }
 }
