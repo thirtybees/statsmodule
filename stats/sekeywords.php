@@ -57,8 +57,7 @@ class SEKeywords extends StatsModule
 				HAVING occurences > ' . (int)Configuration::get('SEK_MIN_OCCURENCES') . '
 				ORDER BY occurences DESC';
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Search engine keywords', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Displays which keywords have led visitors to your website.', 'statsmodule');
+        $this->displayName = $this->l('Search engine keywords');
     }
 
     /**
@@ -101,33 +100,33 @@ class SEKeywords extends StatsModule
 		<div class="panel-heading">'
             . $this->displayName . '
 		</div>
-		<h4>' . Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule') . '</h4>
+		<h4>' . $this->l('Guide') . '</h4>
 		<div class="alert alert-warning">
-			<h4>' . Translate::getModuleTranslation('statsmodule', 'Identify external search engine keywords', 'statsmodule') . '</h4>
+			<h4>' . $this->l('Identify external search engine keywords') . '</h4>
 			<p>'
-            . Translate::getModuleTranslation('statsmodule', 'This is one of the most common ways of finding a website through a search engine.', 'statsmodule') . '&nbsp;' .
-            Translate::getModuleTranslation('statsmodule', 'Identifying the most popular keywords entered by your new visitors allows you to see the products you should put in front if you want to achieve better visibility in search engines.', 'statsmodule') . '
+            . $this->l('This is one of the most common ways of finding a website through a search engine.') . '&nbsp;' .
+            $this->l('Identifying the most popular keywords entered by your new visitors allows you to see the products you should put in front if you want to achieve better visibility in search engines.') . '
 			</p>
 			<p>&nbsp;</p>
-			<h4>' . Translate::getModuleTranslation('statsmodule', 'How does it work?', 'statsmodule') . '</h4>
+			<h4>' . $this->l('How does it work?') . '</h4>
 			<p>'
-            . Translate::getModuleTranslation('statsmodule', 'When a visitor comes to your website, the web server notes the URL of the site he/she comes from. This module then parses the URL, and if it finds a reference to a known search engine, it finds the keywords in it.', 'statsmodule') . '<br>' .
-            Translate::getModuleTranslation('statsmodule', 'This module can recognize all the search engines listed in PrestaShop\'s Stats/Search Engine page -- and you can add more!', 'statsmodule') . '<br>' .
-            Translate::getModuleTranslation('statsmodule', 'IMPORTANT NOTE: in September 2013, Google chose to encrypt its searches queries using SSL. This means all the referer-based tools in the World (including this one) cannot identify Google keywords anymore.', 'statsmodule') . '
+            . $this->l('When a visitor comes to your website, the web server notes the URL of the site he/she comes from. This module then parses the URL, and if it finds a reference to a known search engine, it finds the keywords in it.') . '<br>' .
+            $this->l('This module can recognize all the search engines listed in PrestaShop\'s Stats/Search Engine page -- and you can add more!') . '<br>' .
+            $this->l('IMPORTANT NOTE: in September 2013, Google chose to encrypt its searches queries using SSL. This means all the referer-based tools in the World (including this one) cannot identify Google keywords anymore.') . '
 			</p>
 		</div>
-		<p>' . ($total == 1 ? sprintf(Translate::getModuleTranslation('statsmodule', '%d keyword matches your query.', 'statsmodule'), $total) : sprintf(Translate::getModuleTranslation('statsmodule', '%d keywords match your query.', 'statsmodule'), $total)) . '</p>';
+		<p>' . ($total == 1 ? sprintf($this->l('%d keyword matches your query.'), $total) : sprintf($this->l('%d keywords match your query.'), $total)) . '</p>';
 
         $form = '
 		<form action="' . Tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']) . '" method="post" class="form-horizontal">
 			<div class="row row-margin-bottom">
-				<label class="control-label col-lg-3">' . Translate::getModuleTranslation('statsmodule', 'Filter by keyword', 'statsmodule') . '</label>
+				<label class="control-label col-lg-3">' . $this->l('Filter by keyword') . '</label>
 				<div class="col-lg-9">
 					<input type="text" name="SEK_FILTER_KW" value="' . Tools::htmlentitiesUTF8(Configuration::get('SEK_FILTER_KW')) . '" />
 				</div>
 			</div>
 			<div class="row row-margin-bottom">
-				<label class="control-label col-lg-3">' . Translate::getModuleTranslation('statsmodule', 'And min occurrences', 'statsmodule') . '</label>
+				<label class="control-label col-lg-3">' . $this->l('And min occurrences') . '</label>
 				<div class="col-lg-9">
 					<input type="text" name="SEK_MIN_OCCURENCES" value="' . (int)Configuration::get('SEK_MIN_OCCURENCES') . '" />
 				</div>
@@ -135,7 +134,7 @@ class SEKeywords extends StatsModule
 			<div class="row row-margin-bottom">
 				<div class="col-lg-9 col-lg-offset-3">
 					<button type="submit" class="btn btn-default" name="submitSEK">
-						<i class="icon-ok"></i> ' . Translate::getModuleTranslation('statsmodule', 'Apply', 'statsmodule') . '
+						<i class="icon-ok"></i> ' . $this->l('Apply') . '
 					</button>
 				</div>
 			</div>
@@ -146,8 +145,8 @@ class SEKeywords extends StatsModule
 			<table class="table">
 				<thead>
 					<tr>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Keywords', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Occurrences', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Keywords') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Occurrences') . '</span></th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -158,10 +157,10 @@ class SEKeywords extends StatsModule
             }
             $table .= '</tbody></table>';
             $this->html .= '<div>' . $this->engine($this->type, ['type' => 'pie']) . '</div>
-			<a class="btn btn-default" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=language"><<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '</a>
+			<a class="btn btn-default" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=language"><<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '</a>
 			' . $form . '<br/>' . $table;
         } else {
-            $this->html .= $form . '<p><strong>' . Translate::getModuleTranslation('statsmodule', 'No keywords', 'statsmodule') . '</strong></p>';
+            $this->html .= $form . '<p><strong>' . $this->l('No keywords') . '</strong></p>';
         }
 
         return $this->html;
@@ -223,7 +222,7 @@ class SEKeywords extends StatsModule
      */
     protected function getData($layers)
     {
-        $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Top 10 keywords', 'statsmodule');
+        $this->_titles['main'] = $this->l('Top 10 keywords');
         $total_result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query2);
         $total = 0;
         $total2 = 0;
@@ -237,7 +236,7 @@ class SEKeywords extends StatsModule
             $total2 += $row['occurences'];
         }
         if ($total >= $total2) {
-            $this->_legend[] = Translate::getModuleTranslation('statsmodule', 'Others', 'statsmodule');
+            $this->_legend[] = $this->l('Others');
             $this->_values[] = $total - $total2;
         }
     }

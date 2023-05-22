@@ -65,68 +65,67 @@ class StatsBestProducts extends StatsModule
 
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'An empty record-set was returned.', 'statsmodule');
-        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
+        $this->empty_message = $this->l('An empty record-set was returned.');
+        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
 
         $this->columns = [
             [
                 'id' => 'reference',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Reference', 'statsmodule'),
+                'header' => $this->l('Reference'),
                 'dataIndex' => 'reference',
                 'align' => 'left',
             ],
             [
                 'id' => 'name',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
+                'header' => $this->l('Name'),
                 'dataIndex' => 'name',
                 'align' => 'left',
             ],
             [
                 'id' => 'totalQuantitySold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
+                'header' => $this->l('Quantity sold'),
                 'dataIndex' => 'totalQuantitySold',
                 'align' => 'center',
             ],
             [
                 'id' => 'avgPriceSold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Price sold', 'statsmodule'),
+                'header' => $this->l('Price sold'),
                 'dataIndex' => 'avgPriceSold',
                 'align' => 'right',
             ],
             [
                 'id' => 'totalPriceSold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
+                'header' => $this->l('Sales'),
                 'dataIndex' => 'totalPriceSold',
                 'align' => 'right',
             ],
             [
                 'id' => 'averageQuantitySold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold in a day', 'statsmodule'),
+                'header' => $this->l('Quantity sold in a day'),
                 'dataIndex' => 'averageQuantitySold',
                 'align' => 'center',
             ],
             [
                 'id' => 'totalPageViewed',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Page views', 'statsmodule'),
+                'header' => $this->l('Page views'),
                 'dataIndex' => 'totalPageViewed',
                 'align' => 'center',
             ],
             [
                 'id' => 'quantity',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule'),
+                'header' => $this->l('Available quantity for sale'),
                 'dataIndex' => 'quantity',
                 'align' => 'center',
             ],
             [
                 'id' => 'active',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Active', 'statsmodule'),
+                'header' => $this->l('Active'),
                 'dataIndex' => 'active',
                 'align' => 'center',
             ],
         ];
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best-selling products', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best-selling products to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Best-selling products');
     }
 
     /**
@@ -152,7 +151,7 @@ class StatsBestProducts extends StatsModule
         return '<div class="panel-heading">' . $this->displayName . '</div>
 		' . $this->engine($this->type, $engine_params) . '
 		<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
-			<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+			<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 		</a>';
     }
 

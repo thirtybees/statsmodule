@@ -65,74 +65,73 @@ class StatsOrdersProfit extends StatsModule
 
         $this->default_sort_column = 'date_add';
         $this->default_sort_direction = 'ASC';
-        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'An empty record-set was returned.', 'statsmodule');
-        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
+        $this->empty_message = $this->l('An empty record-set was returned.');
+        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
 
         $this->columns = [
             [
                 'id' => 'number',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Order ID', 'statsmodule'),
+                'header' => $this->l('Order ID'),
                 'dataIndex' => 'number',
                 'align' => 'center',
             ],
             [
                 'id' => 'invoice_number',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Invoice Number', 'statsmodule'),
+                'header' => $this->l('Invoice Number'),
                 'dataIndex' => 'invoice_number',
                 'align' => 'center',
             ],
             [
                 'id' => 'invoice_date',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Invoice Date', 'statsmodule'),
+                'header' => $this->l('Invoice Date'),
                 'dataIndex' => 'invoice_date',
                 'align' => 'center',
             ],
             [
                 'id' => 'paid',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Paid', 'statsmodule'),
+                'header' => $this->l('Paid'),
                 'dataIndex' => 'paid',
                 'align' => 'center',
             ],
             [
                 'id' => 'total',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule'),
+                'header' => $this->l('Total'),
                 'dataIndex' => 'total',
                 'align' => 'center',
             ],
             [
                 'id' => 'shipping',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Shipping', 'statsmodule'),
+                'header' => $this->l('Shipping'),
                 'dataIndex' => 'shipping',
                 'align' => 'center',
             ],
             [
                 'id' => 'TaxTotal',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Tax', 'statsmodule'),
+                'header' => $this->l('Tax'),
                 'dataIndex' => 'TaxTotal',
                 'align' => 'center',
             ],
             [
                 'id' => 'cost',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Cost', 'statsmodule'),
+                'header' => $this->l('Cost'),
                 'dataIndex' => 'cost',
                 'align' => 'center',
             ],
             [
                 'id' => 'totalDiscount',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Discount', 'statsmodule'),
+                'header' => $this->l('Discount'),
                 'dataIndex' => 'totalDiscount',
                 'align' => 'center',
             ],
             [
                 'id' => 'profit',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Profit', 'statsmodule'),
+                'header' => $this->l('Profit'),
                 'dataIndex' => 'profit',
                 'align' => 'center',
             ],
         ];
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Orders Profit', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the orders profit to the Stats dashboard..', 'statsmodule');
+        $this->displayName = $this->l('Orders Profit');
     }
 
     /**
@@ -158,7 +157,7 @@ class StatsOrdersProfit extends StatsModule
         return '<div class="panel-heading">' . $this->displayName . '</div>
 		' . $this->engine($this->type, $engine_params) . '
 		<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
-			<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+			<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 		</a>';
     }
 

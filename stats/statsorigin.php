@@ -39,8 +39,7 @@ class StatsOrigin extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_GRAPH;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Visitors origin', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a graph displaying the websites your visitors came from to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Visitors origin');
     }
 
     /**
@@ -52,7 +51,7 @@ class StatsOrigin extends StatsModule
      */
     private function getOrigins($dateBetween)
     {
-        $directLink = Translate::getModuleTranslation('statsmodule', 'Direct link', 'statsmodule');
+        $directLink = $this->l('Direct link');
         $sql = 'SELECT http_referer
 				FROM ' . _DB_PREFIX_ . 'connections
 				WHERE 1
@@ -90,23 +89,23 @@ class StatsOrigin extends StatsModule
                 $this->csvExport(['type' => 'pie']);
             }
         }
-        $this->_html = '<div class="panel-heading">' . Translate::getModuleTranslation('statsmodule', 'Origin', 'statsmodule') . '</div>';
+        $this->_html = '<div class="panel-heading">' . $this->l('Origin') . '</div>';
         if (count($websites)) {
             $this->_html .= '
 			<div class="alert alert-info">
-				' . Translate::getModuleTranslation('statsmodule', 'In the tab, we break down the 10 most popular referral websites that bring customers to your online store.', 'statsmodule') . '
+				' . $this->l('In the tab, we break down the 10 most popular referral websites that bring customers to your online store.') . '
 			</div>
-			<h4>' . Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule') . '</h4>
+			<h4>' . $this->l('Guide') . '</h4>
 			<div class="alert alert-warning">
-				<h4>' . Translate::getModuleTranslation('statsmodule', 'What is a referral website?', 'statsmodule') . '</h4>
+				<h4>' . $this->l('What is a referral website?') . '</h4>
 				<p>
-					' . Translate::getModuleTranslation('statsmodule', 'The referrer is the URL of the previous webpage from which a link was followed by the visitor.', 'statsmodule') . '<br />
-					' . Translate::getModuleTranslation('statsmodule', 'A referrer also enables you to know which keywords visitors use in search engines when browsing for your online store.', 'statsmodule') . '<br /><br />
-					' . Translate::getModuleTranslation('statsmodule', 'A referrer can be:', 'statsmodule') . '
+					' . $this->l('The referrer is the URL of the previous webpage from which a link was followed by the visitor.') . '<br />
+					' . $this->l('A referrer also enables you to know which keywords visitors use in search engines when browsing for your online store.') . '<br /><br />
+					' . $this->l('A referrer can be:') . '
 				</p>
 				<ul>
-					<li>' . Translate::getModuleTranslation('statsmodule', 'Someone who posts a link to your shop.', 'statsmodule') . '</li>
-					<li>' . Translate::getModuleTranslation('statsmodule', 'A partner who has agreed to a link exchange in order to attract new customers.', 'statsmodule') . '</li>
+					<li>' . $this->l('Someone who posts a link to your shop.') . '</li>
+					<li>' . $this->l('A partner who has agreed to a link exchange in order to attract new customers.') . '</li>
 				</ul>
 			</div>
 			<div class="row row-margin-bottom">
@@ -116,7 +115,7 @@ class StatsOrigin extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<a href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=top') . '" class="btn btn-default">
-							<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+							<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 						</a>
 					</div>
 				</div>
@@ -124,8 +123,8 @@ class StatsOrigin extends StatsModule
 			<table class="table">
 				<thead>
 					<tr>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Origin', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Total', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Origin') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Total') . '</span></th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -139,7 +138,7 @@ class StatsOrigin extends StatsModule
 				</tbody>
 			</table>';
         } else {
-            $this->_html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'Direct links only', 'statsmodule') . '</p>';
+            $this->_html .= '<p>' . $this->l('Direct links only') . '</p>';
         }
         return $this->_html;
     }
@@ -152,7 +151,7 @@ class StatsOrigin extends StatsModule
      */
     protected function getData($layers)
     {
-        $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Top ten referral websites', 'statsmodule');
+        $this->_titles['main'] = $this->l('Top ten referral websites');
         $websites = $this->getOrigins($this->getDate());
         $total = 0;
         $total2 = 0;
@@ -169,7 +168,7 @@ class StatsOrigin extends StatsModule
             }
         }
         if ($total != $total2) {
-            $this->_legend[] = Translate::getModuleTranslation('statsmodule', 'Others', 'statsmodule');
+            $this->_legend[] = $this->l('Others');
             $this->_values[] = $total - $total2;
         }
     }

@@ -65,32 +65,31 @@ class StatsBestSuppliers extends StatsModule
 
         $this->default_sort_column = 'sales';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty record set returned', 'statsmodule');
-        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
+        $this->empty_message = $this->l('Empty record set returned');
+        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
 
         $this->columns = [
             [
                 'id' => 'name',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
+                'header' => $this->l('Name'),
                 'dataIndex' => 'name',
                 'align' => 'center',
             ],
             [
                 'id' => 'quantity',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Quantity sold', 'statsmodule'),
+                'header' => $this->l('Quantity sold'),
                 'dataIndex' => 'quantity',
                 'align' => 'center',
             ],
             [
                 'id' => 'sales',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total paid', 'statsmodule'),
+                'header' => $this->l('Total paid'),
                 'dataIndex' => 'sales',
                 'align' => 'center',
             ],
         ];
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best suppliers', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best suppliers to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Best suppliers');
     }
 
     /**
@@ -118,7 +117,7 @@ class StatsBestSuppliers extends StatsModule
 			</div>
 			' . $this->engine($this->type, $engine_params) . '
 			<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
-				<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+				<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 			</a>';
         return $this->html;
     }

@@ -42,8 +42,7 @@ class StatsCarrier extends StatsModule
     {
         parent::__construct();
         $this->type = static::TYPE_GRAPH;
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Carrier distribution', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a graph displaying each carriers\' distribution to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Carrier distribution');
     }
 
     /**
@@ -71,20 +70,20 @@ class StatsCarrier extends StatsModule
 				<div class="row">
 					<div class="col-lg-5 col-lg-offset-6">
 						<select name="id_order_state">
-							<option value="0"' . ((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . '</option>';
+							<option value="0"' . ((!Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . $this->l('All') . '</option>';
         foreach ($states as $state) {
             $this->html .= '<option value="' . $state['id_order_state'] . '"' . (($state['id_order_state'] == Tools::getValue('id_order_state')) ? ' selected="selected"' : '') . '>' . $state['name'] . '</option>';
         }
         $this->html .= '</select>
 					</div>
 					<div class="col-lg-1">
-						<input type="submit" name="submitState" value="' . Translate::getModuleTranslation('statsmodule', 'Filter', 'statsmodule') . '" class="btn btn-default pull-right" />
+						<input type="submit" name="submitState" value="' . $this->l('Filter') . '" class="btn btn-default pull-right" />
 					</div>
 				</div>
 			</form>
 
 			<div class="alert alert-info">
-				' . Translate::getModuleTranslation('statsmodule', 'This graph represents the carrier distribution for your orders. You can also narrow the focus of the graph to display distribution for a particular order status.', 'statsmodule') . '
+				' . $this->l('This graph represents the carrier distribution for your orders. You can also narrow the focus of the graph to display distribution for a particular order status.') . '
 			</div>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
@@ -93,8 +92,8 @@ class StatsCarrier extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<a href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=language') . '" class="btn btn-default">
-							<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
-						</a>' : Translate::getModuleTranslation('statsmodule', 'No valid orders have been received for this period.', 'statsmodule')) . '
+							<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
+						</a>' : $this->l('No valid orders have been received for this period.')) . '
 					</div>
 				</div>
 			</div>';
@@ -129,7 +128,7 @@ class StatsCarrier extends StatsModule
 				ORDER BY oh.date_add DESC, oh.id_order_history DESC
 				LIMIT 1) = ' . (int)$this->option;
         }
-        $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Percentage of orders listed by carrier.', 'statsmodule');
+        $this->_titles['main'] = $this->l('Percentage of orders listed by carrier.');
 
         $sql = 'SELECT c.name, COUNT(DISTINCT o.`id_order`) AS total
 				FROM `' . _DB_PREFIX_ . 'carrier` c

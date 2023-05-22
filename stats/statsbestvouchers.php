@@ -74,38 +74,37 @@ class StatsBestVouchers extends StatsModule
 
         $this->default_sort_column = 'ca';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty recordset returned.', 'statsmodule');
-        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
+        $this->empty_message = $this->l('Empty recordset returned.');
+        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
 
         $this->columns = [
             [
                 'id' => 'code',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Code', 'statsmodule'),
+                'header' => $this->l('Code'),
                 'dataIndex' => 'code',
                 'align' => 'left',
             ],
             [
                 'id' => 'name',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
+                'header' => $this->l('Name'),
                 'dataIndex' => 'name',
                 'align' => 'left',
             ],
             [
                 'id' => 'ca',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'),
+                'header' => $this->l('Sales'),
                 'dataIndex' => 'ca',
                 'align' => 'right',
             ],
             [
                 'id' => 'total',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total used', 'statsmodule'),
+                'header' => $this->l('Total used'),
                 'dataIndex' => 'total',
                 'align' => 'center',
             ],
         ];
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best vouchers', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best vouchers to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Best vouchers');
     }
 
     /**
@@ -134,7 +133,7 @@ class StatsBestVouchers extends StatsModule
 			</div>
 			' . $this->engine($this->type, $engine_params) . '
 			<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
-				<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+				<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 			</a>';
 
         return $this->html;

@@ -39,8 +39,7 @@ class StatsGroups extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_CUSTOM;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Stats by Groups', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'This is the main module for the Stats by Group. It displays a summary of all your group statistics.', 'statsmodule');
+        $this->displayName = $this->l('Stats by Groups');
     }
 
     /**
@@ -64,7 +63,7 @@ class StatsGroups extends StatsModule
 
         $this->html .= '<div>
             <div class="panel-heading"><i class="icon-dashboard"></i> ' . $this->displayName . '</div>
-            <div class="alert alert-info">' . Translate::getModuleTranslation('statsmodule', 'The listed amounts do not include tax.', 'statsmodule') . '</div>';
+            <div class="alert alert-info">' . $this->l('The listed amounts do not include tax.') . '</div>';
 
         $resultSql = 'SELECT COUNT(*) as countOrders,
             SUM((SELECT SUM(od.product_quantity) FROM ' . _DB_PREFIX_ . 'order_detail od WHERE o.id_order = od.id_order)) as countProducts,
@@ -75,17 +74,17 @@ class StatsGroups extends StatsModule
             ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
 
         if ($newResult = Db::getInstance()->getRow($resultSql)) {
-            $this->html .= '<div>' . Translate::getModuleTranslation('statsmodule', 'Placed orders', 'statsmodule') . ': ' . $newResult['countOrders'] . ' | ' . Translate::getModuleTranslation('statsmodule', 'Bought items', 'statsmodule') . ': ' . $newResult['countProducts'] . ' | ' . Translate::getModuleTranslation('statsmodule', 'Revenue', 'statsmodule') . ': ' . Tools::displayPrice($newResult['totalSales'], $currency) . '</div><br /><br />';
+            $this->html .= '<div>' . $this->l('Placed orders') . ': ' . $newResult['countOrders'] . ' | ' . $this->l('Bought items') . ': ' . $newResult['countProducts'] . ' | ' . $this->l('Revenue') . ': ' . Tools::displayPrice($newResult['totalSales'], $currency) . '</div><br /><br />';
 
             $this->html .= '<table class="table">
                 <thead>
                   <tr>
-                    <th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule') . '</span></th>
-                    <th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Group', 'statsmodule') . '</span></th>
-                    <th class="text-right"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Revenue', 'statsmodule') . '</span></th>
-                    <th class="text-right"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Average cart value', 'statsmodule') . '</span></th>
-                    <th class="text-center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Placed orders', 'statsmodule') . '</span></th>
-                    <th class="text-center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Members per group', 'statsmodule') . '</span></th>
+                    <th><span class="title_box active">' . $this->l('ID') . '</span></th>
+                    <th><span class="title_box active">' . $this->l('Group') . '</span></th>
+                    <th class="text-right"><span class="title_box active">' . $this->l('Revenue') . '</span></th>
+                    <th class="text-right"><span class="title_box active">' . $this->l('Average cart value') . '</span></th>
+                    <th class="text-center"><span class="title_box active">' . $this->l('Placed orders') . '</span></th>
+                    <th class="text-center"><span class="title_box active">' . $this->l('Members per group') . '</span></th>
                   </tr>
                 </thead>
                 <tbody>';

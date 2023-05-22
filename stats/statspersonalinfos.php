@@ -44,8 +44,7 @@ class StatsPersonalInfos extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_GRAPH;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Registered customer information', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds information about your registered customers (such as gender and age) to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Registered customer information');
     }
 
     /**
@@ -58,23 +57,23 @@ class StatsPersonalInfos extends StatsModule
 			<div class="panel-heading">
 				' . $this->displayName . '
 			</div>
-			<h4>' . Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule') . '</h4>
+			<h4>' . $this->l('Guide') . '</h4>
 			<div class="alert alert-warning">
-				<h4>' . Translate::getModuleTranslation('statsmodule', 'Target your audience', 'statsmodule') . '</h4>
+				<h4>' . $this->l('Target your audience') . '</h4>
 				<p>' .
-            Translate::getModuleTranslation('statsmodule', 'In order for each message to have an impact, you need to know who it is being addressed to. ', 'statsmodule') .
+            $this->l('In order for each message to have an impact, you need to know who it is being addressed to. ') .
             '<br>' .
-            Translate::getModuleTranslation('statsmodule', 'Defining your target audience is essential when choosing the right tools to win them over.', 'statsmodule') .
+            $this->l('Defining your target audience is essential when choosing the right tools to win them over.') .
             '<br>' .
-            Translate::getModuleTranslation('statsmodule', 'It is best to limit an action to a group -- or to groups -- of clients.', 'statsmodule') .
+            $this->l('It is best to limit an action to a group -- or to groups -- of clients.') .
             '<br>' .
-            Translate::getModuleTranslation('statsmodule', 'Storing registered customer information allows you to accurately define customer profiles so you can adapt your special deals and promotions.', 'statsmodule') . '
+            $this->l('Storing registered customer information allows you to accurately define customer profiles so you can adapt your special deals and promotions.') . '
 				</p>
 				<div>
-					' . Translate::getModuleTranslation('statsmodule', 'You can increase your sales by:', 'statsmodule') . '
+					' . $this->l('You can increase your sales by:') . '
 					<ul>
-						<li class="bullet">' . Translate::getModuleTranslation('statsmodule', 'Launching targeted advertisement campaigns.', 'statsmodule') . '</li>
-						<li class="bullet">' . Translate::getModuleTranslation('statsmodule', 'Contacting a group of clients by email or newsletter.', 'statsmodule') . '</li>
+						<li class="bullet">' . $this->l('Launching targeted advertisement campaigns.') . '</li>
+						<li class="bullet">' . $this->l('Contacting a group of clients by email or newsletter.') . '</li>
 					</ul>
 				</div>
 			</div>';
@@ -127,10 +126,10 @@ class StatsPersonalInfos extends StatsModule
                 ]) . '
 						</div>
 						<div class="col-lg-4">
-							<p>' . Translate::getModuleTranslation('statsmodule', 'Gender distribution allows you to determine the percentage of men and women shoppers on your store.', 'statsmodule') . '</p>
+							<p>' . $this->l('Gender distribution allows you to determine the percentage of men and women shoppers on your store.') . '</p>
 							<hr/>
 							<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=gender') . '">
-								<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 							</a>
 						</div>
 					</div>
@@ -141,10 +140,10 @@ class StatsPersonalInfos extends StatsModule
 							' . $this->engine($this->type, [ 'type' => 'pie', 'option' => 'age' ]) . '
 						</div>
 						<div class="col-lg-4">
-							<p>' . Translate::getModuleTranslation('statsmodule', 'Age ranges allow you to better understand target demographics.', 'statsmodule') . '</p>
+							<p>' . $this->l('Age ranges allow you to better understand target demographics.') . '</p>
 							<hr/>
 							<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=age') . '">
-								<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 							</a>
 						</div>
 					</div>
@@ -155,10 +154,10 @@ class StatsPersonalInfos extends StatsModule
 							' . $this->engine($this->type, [ 'type' => 'pie', 'option' => 'country' ]) . '
 						</div>
 						<div class="col-lg-4">
-							<p>' . Translate::getModuleTranslation('statsmodule', 'Country distribution allows you to analyze which part of the World your customers are shopping from.', 'statsmodule') . '</p>
+							<p>' . $this->l('Country distribution allows you to analyze which part of the World your customers are shopping from.') . '</p>
 							<hr/>
 							<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=country') . '">
-								<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 							</a>
 						</div>
 					</div>
@@ -169,10 +168,10 @@ class StatsPersonalInfos extends StatsModule
 							' . $this->engine($this->type, ['type' => 'pie', 'option' => 'currency']) . '
 						</div>
 						<div class="col-lg-4">
-							<p>' . Translate::getModuleTranslation('statsmodule', 'Currency range allows you to determine which currency your customers are using.', 'statsmodule') . '</p>
+							<p>' . $this->l('Currency range allows you to determine which currency your customers are using.') . '</p>
 							<hr/>
 							<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=currency') . '">
-								<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 							</a>
 						</div>
 					</div>
@@ -183,16 +182,16 @@ class StatsPersonalInfos extends StatsModule
 							' . $this->engine($this->type, ['type' => 'pie', 'option' => 'language']) . '
 						</div>
 						<div class="col-lg-4">
-							<p>' . Translate::getModuleTranslation('statsmodule', 'Language distribution allows you to analyze the browsing language used by your customers.', 'statsmodule') . '</p>
+							<p>' . $this->l('Language distribution allows you to analyze the browsing language used by your customers.') . '</p>
 							<hr/>
 							<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=language') . '">
-								<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 							</a>
 						</div>
 					</div>
 				</div>';
         } else {
-            $this->html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'No customers have registered yet.', 'statsmodule') . '</p>';
+            $this->html .= '<p>' . $this->l('No customers have registered yet.') . '</p>';
         }
 
         return $this->html;
@@ -219,11 +218,11 @@ class StatsPersonalInfos extends StatsModule
     {
         switch ($this->option) {
             case 'gender':
-                $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Gender distribution', 'statsmodule');
+                $this->_titles['main'] = $this->l('Gender distribution');
                 $genders = [
-                    0 => Translate::getModuleTranslation('statsmodule', 'Male', 'statsmodule'),
-                    1 => Translate::getModuleTranslation('statsmodule', 'Female', 'statsmodule'),
-                    2 => Translate::getModuleTranslation('statsmodule', 'Unknown', 'statsmodule'),
+                    0 => $this->l('Male'),
+                    1 => $this->l('Female'),
+                    2 => $this->l('Unknown'),
                 ];
 
                 $sql = 'SELECT g.type, c.id_gender, COUNT(c.id_customer) AS total
@@ -250,7 +249,7 @@ class StatsPersonalInfos extends StatsModule
                 break;
 
             case 'age':
-                $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Age range', 'statsmodule');
+                $this->_titles['main'] = $this->l('Age range');
 
                 // 0 - 18 years
                 $sql = 'SELECT COUNT(`id_customer`) AS total
@@ -261,7 +260,7 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', '0-18', 'statsmodule');
+                    $this->_legend[] = $this->l('0-18');
                 }
 
                 // 18 - 24 years
@@ -274,7 +273,7 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', '18-24', 'statsmodule');
+                    $this->_legend[] = $this->l('18-24');
                 }
 
                 // 25 - 34 years
@@ -287,7 +286,7 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', '25-34', 'statsmodule');
+                    $this->_legend[] = $this->l('25-34');
                 }
 
                 // 35 - 49 years
@@ -300,7 +299,7 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', '35-49', 'statsmodule');
+                    $this->_legend[] = $this->l('35-49');
                 }
 
                 // 50 - 59 years
@@ -313,7 +312,7 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', '50-59', 'statsmodule');
+                    $this->_legend[] = $this->l('50-59');
                 }
 
                 // More than 60 years
@@ -325,7 +324,7 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', '60+', 'statsmodule');
+                    $this->_legend[] = $this->l('60+');
                 }
 
                 // Total unknown
@@ -336,12 +335,12 @@ class StatsPersonalInfos extends StatsModule
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
-                    $this->_legend[] = Translate::getModuleTranslation('statsmodule', 'Unknown', 'statsmodule');
+                    $this->_legend[] = $this->l('Unknown');
                 }
                 break;
 
             case 'country':
-                $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Country distribution', 'statsmodule');
+                $this->_titles['main'] = $this->l('Country distribution');
                 $sql = 'SELECT cl.`name`, COUNT(c.`id_country`) AS total
 						FROM `' . _DB_PREFIX_ . 'address` a
 						LEFT JOIN `' . _DB_PREFIX_ . 'customer` cu ON cu.id_customer = a.id_customer
@@ -358,7 +357,7 @@ class StatsPersonalInfos extends StatsModule
                 break;
 
             case 'currency':
-                $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Currency distribution', 'statsmodule');
+                $this->_titles['main'] = $this->l('Currency distribution');
                 $sql = 'SELECT c.`name`, COUNT(c.`id_currency`) AS total
 						FROM `' . _DB_PREFIX_ . 'orders` o
 						LEFT JOIN `' . _DB_PREFIX_ . 'currency` c ON o.`id_currency` = c.`id_currency`
@@ -373,7 +372,7 @@ class StatsPersonalInfos extends StatsModule
                 break;
 
             case 'language':
-                $this->_titles['main'] = Translate::getModuleTranslation('statsmodule', 'Language distribution', 'statsmodule');
+                $this->_titles['main'] = $this->l('Language distribution');
                 $sql = 'SELECT c.`name`, COUNT(c.`id_lang`) AS total
 						FROM `' . _DB_PREFIX_ . 'orders` o
 						LEFT JOIN `' . _DB_PREFIX_ . 'lang` c ON o.`id_lang` = c.`id_lang`

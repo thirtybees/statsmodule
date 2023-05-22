@@ -72,44 +72,43 @@ class StatsBestCategories extends StatsModule
 
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = Translate::getModuleTranslation('statsmodule', 'Empty recordset returned', 'statsmodule');
-        $this->paging_message = sprintf(Translate::getModuleTranslation('statsmodule', 'Displaying %1$s of %2$s', 'statsmodule'), '{0} - {1}', '{2}');
+        $this->empty_message = $this->l('Empty recordset returned');
+        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
 
         $this->columns = [
             [
                 'id' => 'name',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule'),
+                'header' => $this->l('Name'),
                 'dataIndex' => 'name',
                 'align' => 'left',
             ],
             [
                 'id' => 'totalQuantitySold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total Quantity Sold', 'statsmodule'),
+                'header' => $this->l('Total Quantity Sold'),
                 'dataIndex' => 'totalQuantitySold',
                 'align' => 'center',
             ],
             [
                 'id' => 'totalPriceSold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total Price', 'statsmodule'),
+                'header' => $this->l('Total Price'),
                 'dataIndex' => 'totalPriceSold',
                 'align' => 'right',
             ],
             [
                 'id' => 'totalWholeSalePriceSold',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total Margin', 'statsmodule'),
+                'header' => $this->l('Total Margin'),
                 'dataIndex' => 'totalWholeSalePriceSold',
                 'align' => 'center',
             ],
             [
                 'id' => 'totalPageViewed',
-                'header' => Translate::getModuleTranslation('statsmodule', 'Total Viewed', 'statsmodule'),
+                'header' => $this->l('Total Viewed'),
                 'dataIndex' => 'totalPageViewed',
                 'align' => 'center',
             ],
         ];
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Best categories', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of the best categories to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Best categories');
     }
 
     /**
@@ -146,14 +145,14 @@ class StatsBestCategories extends StatsModule
             <div class="row form-horizontal">
                 <div class="col-md-3">
                     <a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
-                        <i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+                        <i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
                     </a>
                 </div>
                 <div class="col-md-9">
                     <div class="checkbox">
                         <label for="onlyChildren">
                             <input type="checkbox" name="onlyChildren" id="onlyChildren" value="1" ' . ($onlyChildren == 1 ? 'checked="checked"' : '') . '>
-                            ' . Translate::getModuleTranslation('statsmodule', 'Display final level categories only (that have no child categories)', 'statsmodule') . '
+                            ' . $this->l('Display final level categories only (that have no child categories)') . '
                         </label>
                     </div>
 

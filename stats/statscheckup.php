@@ -50,8 +50,7 @@ class StatsCheckUp extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_CUSTOM;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Catalog evaluation', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a quick evaluation of your catalog quality to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Catalog evaluation');
     }
 
     /**
@@ -76,12 +75,12 @@ class StatsCheckUp extends StatsModule
             foreach ($confs as $confname) {
                 Configuration::updateValue($confname, (int)Tools::getValue($confname));
             }
-            echo '<div class="conf confirm"> ' . Translate::getModuleTranslation('statsmodule', 'Configuration updated', 'statsmodule') . '</div>';
+            echo '<div class="conf confirm"> ' . $this->l('Configuration updated') . '</div>';
         }
 
         if (Tools::isSubmit('submitCheckupOrder')) {
             $this->context->cookie->checkup_order = (int)Tools::getValue('submitCheckupOrder');
-            echo '<div class="conf confirm"> ' . Translate::getModuleTranslation('statsmodule', 'Configuration updated', 'statsmodule') . '</div>';
+            echo '<div class="conf confirm"> ' . $this->l('Configuration updated') . '</div>';
         }
 
         if (!isset($this->context->cookie->checkup_order)) {
@@ -99,9 +98,9 @@ class StatsCheckUp extends StatsModule
         $languages = $db->executeS($sql);
 
         $arrayColors = [
-            0 => '<img src="../modules/statsmodule/views/img/red.png" alt="' . Translate::getModuleTranslation('statsmodule', 'Bad', 'statsmodule') . '" />',
-            1 => '<img src="../modules/statsmodule/views/img/orange.png" alt="' . Translate::getModuleTranslation('statsmodule', 'Average', 'statsmodule') . '" />',
-            2 => '<img src="../modules/statsmodule/views/img/green.png" alt="' . Translate::getModuleTranslation('statsmodule', 'Good', 'statsmodule') . '" />',
+            0 => '<img src="../modules/statsmodule/views/img/red.png" alt="' . $this->l('Bad') . '" />',
+            1 => '<img src="../modules/statsmodule/views/img/orange.png" alt="' . $this->l('Average') . '" />',
+            2 => '<img src="../modules/statsmodule/views/img/green.png" alt="' . $this->l('Good') . '" />',
         ];
         $tokenProducts = Tools::getAdminToken('AdminProducts' . (int)Tab::getIdFromClassName('AdminProducts') . (int)Context::getContext()->employee->id);
         $divisor = 4;
@@ -145,14 +144,14 @@ class StatsCheckUp extends StatsModule
         $result = $db->executeS($sql);
 
         if (!$result) {
-            return Translate::getModuleTranslation('statsmodule', 'No product was found.', 'statsmodule');
+            return $this->l('No product was found.');
         }
 
         $arrayConf = [
-            'DESCRIPTIONS' => ['name' => Translate::getModuleTranslation('statsmodule', 'Descriptions', 'statsmodule'), 'text' => Translate::getModuleTranslation('statsmodule', 'chars (without HTML)', 'statsmodule')],
-            'IMAGES' => ['name' => Translate::getModuleTranslation('statsmodule', 'Images', 'statsmodule'), 'text' => Translate::getModuleTranslation('statsmodule', 'images', 'statsmodule')],
-            'SALES' => ['name' => Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule'), 'text' => Translate::getModuleTranslation('statsmodule', 'orders / month', 'statsmodule')],
-            'STOCK' => ['name' => Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule'), 'text' => Translate::getModuleTranslation('statsmodule', 'items', 'statsmodule')],
+            'DESCRIPTIONS' => ['name' => $this->l('Descriptions'), 'text' => $this->l('chars (without HTML)')],
+            'IMAGES' => ['name' => $this->l('Images'), 'text' => $this->l('images')],
+            'SALES' => ['name' => $this->l('Sales'), 'text' => $this->l('orders / month')],
+            'STOCK' => ['name' => $this->l('Available quantity for sale'), 'text' => $this->l('items')],
         ];
 
         $this->html = '
@@ -164,8 +163,8 @@ class StatsCheckUp extends StatsModule
 				<thead>
 					<tr>
 						<th></th>
-						<th><span class="title_box active">' . $arrayColors[0] . ' ' . Translate::getModuleTranslation('statsmodule', 'Not enough', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . $arrayColors[2] . ' ' . Translate::getModuleTranslation('statsmodule', 'Alright', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . $arrayColors[0] . ' ' . $this->l('Not enough') . '</span></th>
+						<th><span class="title_box active">' . $arrayColors[2] . ' ' . $this->l('Alright') . '</span></th>
 					</tr>
 				</thead>';
         foreach ($arrayConf as $conf => $translations) {
@@ -178,7 +177,7 @@ class StatsCheckUp extends StatsModule
 						<td>
 							<div class="row">
 								<div class="col-lg-11 input-group">
-									<span class="input-group-addon">' . Translate::getModuleTranslation('statsmodule', 'Less than', 'statsmodule') . '</span>
+									<span class="input-group-addon">' . $this->l('Less than') . '</span>
 									<input type="text" name="CHECKUP_' . $conf . '_LT" value="' . Tools::safeOutput(Tools::getValue('CHECKUP_' . $conf . '_LT', Configuration::get('CHECKUP_' . $conf . '_LT'))) . '" />
 									<span class="input-group-addon">' . $translations['text'] . '</span>
 								 </div>
@@ -187,7 +186,7 @@ class StatsCheckUp extends StatsModule
 						<td>
 							<div class="row">
 								<div class="col-lg-12 input-group">
-									<span class="input-group-addon">' . Translate::getModuleTranslation('statsmodule', 'Greater than', 'statsmodule') . '</span>
+									<span class="input-group-addon">' . $this->l('Greater than') . '</span>
 									<input type="text" name="CHECKUP_' . $conf . '_GT" value="' . Tools::safeOutput(Tools::getValue('CHECKUP_' . $conf . '_GT', Configuration::get('CHECKUP_' . $conf . '_GT'))) . '" />
 									<span class="input-group-addon">' . $translations['text'] . '</span>
 								 </div>
@@ -198,18 +197,18 @@ class StatsCheckUp extends StatsModule
         }
         $this->html .= '</table>
 			<button type="submit" name="submitCheckup" class="btn btn-default pull-right">
-				<i class="icon-save"></i> ' . Translate::getModuleTranslation('statsmodule', 'Save', 'statsmodule') . '
+				<i class="icon-save"></i> ' . $this->l('Save') . '
 			</button>
 		</form>
 		<form action="' . Tools::safeOutput(AdminController::$currentIndex . '&token=' . Tools::getValue('token') . '&module=statscheckup') . '" method="post" class="form-horizontal alert">
 			<div class="row">
 				<div class="col-lg-12">
-					<label class="control-label pull-left">' . Translate::getModuleTranslation('statsmodule', 'Order by', 'statsmodule') . '</label>
+					<label class="control-label pull-left">' . $this->l('Order by') . '</label>
 					<div class="col-lg-3">
 						<select name="submitCheckupOrder" onchange="this.form.submit();">
-							<option value="1">' . Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule') . '</option>
-							<option value="2" ' . ($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '') . '>' . Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule') . '</option>
-							<option value="3" ' . ($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '') . '>' . Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule') . '</option>
+							<option value="1">' . $this->l('ID') . '</option>
+							<option value="2" ' . ($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '') . '>' . $this->l('Name') . '</option>
+							<option value="3" ' . ($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '') . '>' . $this->l('Sales') . '</option>
 						</select>
 					</div>
 				</div>
@@ -219,17 +218,17 @@ class StatsCheckUp extends StatsModule
 		<table class="table checkup2">
 			<thead>
 				<tr>
-					<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule') . '</span></th>
-					<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Item', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Active', 'statsmodule') . '</span></th>';
+					<th><span class="title_box active">' . $this->l('ID') . '</span></th>
+					<th><span class="title_box active">' . $this->l('Item') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Active') . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Desc.', 'statsmodule') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th><span class="title_box active">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
         }
         $this->html .= '
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Images', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Global', 'statsmodule') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Images') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Sales') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Global') . '</span></th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -306,15 +305,15 @@ class StatsCheckUp extends StatsModule
 			<tfoot>
 				<tr>
 					<th colspan="2"></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Active', 'statsmodule') . '</span></th>';
+					<th class="center"><span class="title_box active">' . $this->l('Active') . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Desc.', 'statsmodule') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th class="center"><span class="title_box active">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
         }
         $this->html .= '
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Images', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Sales', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule') . '</span></th>
-					<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Global', 'statsmodule') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Images') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Sales') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
+					<th class="center"><span class="title_box active">' . $this->l('Global') . '</span></th>
 				</tr>
 				<tr>
 					<td colspan="2"></td>

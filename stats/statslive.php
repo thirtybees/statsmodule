@@ -39,8 +39,7 @@ class StatsLive extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_CUSTOM;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Visitors online', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a list of customers and visitors who are currently online to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Visitors online');
     }
 
     /**
@@ -153,20 +152,20 @@ class StatsLive extends StatsModule
         if (!Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
             $this->html .= '
 				<div class="alert alert-info">' .
-                Translate::getModuleTranslation('statsmodule', 'You must activate the "Save page views for each customer" option in the "Data mining for statistics" (StatsData) module in order to see the pages that your visitors are currently viewing.', 'statsmodule') . '
+                $this->l('You must activate the "Save page views for each customer" option in the "Data mining for statistics" (StatsData) module in order to see the pages that your visitors are currently viewing.') . '
 				</div>';
         }
         $this->html .= '
-			<h4> ' . Translate::getModuleTranslation('statsmodule', 'Current online customers', 'statsmodule') . '</h4>';
+			<h4> ' . $this->l('Current online customers') . '</h4>';
         if ($total_customers) {
-            $this->html .= Translate::getModuleTranslation('statsmodule', 'Total:', 'statsmodule') . ' ' . (int)$total_customers . '
+            $this->html .= $this->l('Total:') . ' ' . (int)$total_customers . '
 			<table class="table">
 				<thead>
 					<tr>
-						<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Customer ID', 'statsmodule') . '</span></th>
-						<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule') . '</span></th>
-						<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Current page', 'statsmodule') . '</span></th>
-						<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'View customer profile', 'statsmodule') . '</span></th>
+						<th class="center"><span class="title_box active">' . $this->l('Customer ID') . '</span></th>
+						<th class="center"><span class="title_box active">' . $this->l('Name') . '</span></th>
+						<th class="center"><span class="title_box active">' . $this->l('Current page') . '</span></th>
+						<th class="center"><span class="title_box active">' . $this->l('View customer profile') . '</span></th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -188,21 +187,21 @@ class StatsLive extends StatsModule
 				</tbody>
 			</table>';
         } else {
-            $this->html .= '<p class="alert alert-warning">' . Translate::getModuleTranslation('statsmodule', 'There are no active customers online right now.', 'statsmodule') . '</p>';
+            $this->html .= '<p class="alert alert-warning">' . $this->l('There are no active customers online right now.') . '</p>';
         }
         $this->html .= '
-			<h4> ' . Translate::getModuleTranslation('statsmodule', 'Current online visitors', 'statsmodule') . '</h4>';
+			<h4> ' . $this->l('Current online visitors') . '</h4>';
         if ($total_visitors) {
-            $this->html .= Translate::getModuleTranslation('statsmodule', 'Total:', 'statsmodule') . ' ' . (int)$total_visitors . '
+            $this->html .= $this->l('Total:') . ' ' . (int)$total_visitors . '
 			<div>
 				<table class="table">
 					<thead>
 						<tr>
-							<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Guest ID', 'statsmodule') . '</span></th>
-							<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'IP', 'statsmodule') . '</span></th>
-							<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Last activity', 'statsmodule') . '</span></th>
-							<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Current page', 'statsmodule') . '</span></th>
-							<th class="center"><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Referrer', 'statsmodule') . '</span></th>
+							<th class="center"><span class="title_box active">' . $this->l('Guest ID') . '</span></th>
+							<th class="center"><span class="title_box active">' . $this->l('IP') . '</span></th>
+							<th class="center"><span class="title_box active">' . $this->l('Last activity') . '</span></th>
+							<th class="center"><span class="title_box active">' . $this->l('Current page') . '</span></th>
+							<th class="center"><span class="title_box active">' . $this->l('Referrer') . '</span></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -211,8 +210,8 @@ class StatsLive extends StatsModule
 						<td class="center">' . $visitor['id_guest'] . '</td>
 						<td class="center">' . long2ip($visitor['ip_address']) . '</td>
 						<td class="center">' . substr($visitor['date_add'], 11) . '</td>
-						<td class="center">' . (isset($visitor['page']) ? $visitor['page'] : Translate::getModuleTranslation('statsmodule', 'Undefined', 'statsmodule')) . '</td>
-						<td class="center">' . (empty($visitor['http_referer']) ? Translate::getModuleTranslation('statsmodule', 'None', 'statsmodule') : parse_url($visitor['http_referer'], PHP_URL_HOST)) . '</td>
+						<td class="center">' . (isset($visitor['page']) ? $visitor['page'] : $this->l('Undefined')) . '</td>
+						<td class="center">' . (empty($visitor['http_referer']) ? $this->l('None') : parse_url($visitor['http_referer'], PHP_URL_HOST)) . '</td>
 					</tr>';
             }
             $this->html .= '
@@ -220,13 +219,13 @@ class StatsLive extends StatsModule
 				</table>
 			</div>';
         } else {
-            $this->html .= '<p class="alert alert-warning">' . Translate::getModuleTranslation('statsmodule', 'There are no visitors online.', 'statsmodule') . '</p>';
+            $this->html .= '<p class="alert alert-warning">' . $this->l('There are no visitors online.') . '</p>';
         }
         $this->html .= '
-			<h4>' . Translate::getModuleTranslation('statsmodule', 'Notice', 'statsmodule') . '</h4>
-			<p class="alert alert-info">' . Translate::getModuleTranslation('statsmodule', 'Maintenance IPs are excluded from the online visitors.', 'statsmodule') . '</p>
+			<h4>' . $this->l('Notice') . '</h4>
+			<p class="alert alert-info">' . $this->l('Maintenance IPs are excluded from the online visitors.') . '</p>
 			<a class="btn btn-default" href="' . Tools::safeOutput('index.php?controller=AdminMaintenance&token=' . Tools::getAdminTokenLite('AdminMaintenance')) . '">
-				<i class="icon-share-alt"></i> ' . Translate::getModuleTranslation('statsmodule', 'Add or remove an IP address.', 'statsmodule') . '
+				<i class="icon-share-alt"></i> ' . $this->l('Add or remove an IP address.') . '
 			</a>
 		';
 

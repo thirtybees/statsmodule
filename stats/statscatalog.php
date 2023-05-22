@@ -43,8 +43,7 @@ class StatsCatalog extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_CUSTOM;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Catalog statistics', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab containing general statistics about your catalog to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Catalog statistics');
     }
 
     /**
@@ -191,7 +190,7 @@ class StatsCatalog extends StatsModule
         $average_viewed = $total ? ($total_page_viewed / $total) : 0;
         $conversion = number_format((float)($total_page_viewed ? ($total_bought / $total_page_viewed) : 0), 2, '.', '');
         if ($conversion_reverse = number_format((float)($total_bought ? ($total_page_viewed / $total_bought) : 0), 2, '.', '')) {
-            $conversion .= sprintf(Translate::getModuleTranslation('statsmodule', '(1 purchase / %d visits)', 'statsmodule'), $conversion_reverse);
+            $conversion .= sprintf($this->l('(1 purchase / %d visits)'), $conversion_reverse);
         }
 
         $total_nv = $total - $this->getTotalProductViewed();
@@ -204,11 +203,11 @@ class StatsCatalog extends StatsModule
 			<form action="#" method="post" id="categoriesForm" class="form-horizontal">
 				<div class="row row-margin-bottom">
 					<label class="control-label col-lg-3">
-						' . Translate::getModuleTranslation('statsmodule', 'Choose a category', 'statsmodule') . '
+						' . $this->l('Choose a category') . '
 					</label>
 					<div class="col-lg-6">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
-							<option value="0">' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . '</option>';
+							<option value="0">' . $this->l('All') . '</option>';
         foreach ($categories as $category) {
             $html .= '<option value="' . $category['id_category'] . '"' . ($id_category == $category['id_category'] ? ' selected="selected"' : '') . '>' .
                 $category['name'] . '
@@ -220,33 +219,33 @@ class StatsCatalog extends StatsModule
 				</div>
 			</form>
 			<ul class="list-group">
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Products available:', 'statsmodule'), '<span class="badge">' . (int)$total) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Average price (base price):', 'statsmodule'), '<span class="badge">' . Tools::displayPrice($average_price, $this->context->currency)) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Product pages viewed:', 'statsmodule'), '<span class="badge">' . (int)$total_page_viewed) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Products bought:', 'statsmodule'), '<span class="badge">' . (int)$total_bought) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Average number of page visits:', 'statsmodule'), '<span class="badge">' . number_format((float)$average_viewed, 2, '.', '')) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Average number of purchases:', 'statsmodule'), '<span class="badge">' . number_format((float)$average_purchase, 2, '.', '')) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Images available:', 'statsmodule'), '<span class="badge">' . (int)$total_pictures) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Average number of images:', 'statsmodule'), '<span class="badge">' . number_format((float)$average_pictures, 2, '.', '')) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Products never viewed:', 'statsmodule'), '<span class="badge">' . (int)$total_nv . ' / ' . (int)$total) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Products never purchased:', 'statsmodule'), '<span class="badge">' . (int)$total_nb . ' / ' . (int)$total) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine(Translate::getModuleTranslation('statsmodule', 'Conversion rate*:', 'statsmodule'), '<span class="badge">' . $conversion) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Products available:'), '<span class="badge">' . (int)$total) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Average price (base price):'), '<span class="badge">' . Tools::displayPrice($average_price, $this->context->currency)) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Product pages viewed:'), '<span class="badge">' . (int)$total_page_viewed) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Products bought:'), '<span class="badge">' . (int)$total_bought) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Average number of page visits:'), '<span class="badge">' . number_format((float)$average_viewed, 2, '.', '')) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Average number of purchases:'), '<span class="badge">' . number_format((float)$average_purchase, 2, '.', '')) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Images available:'), '<span class="badge">' . (int)$total_pictures) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Average number of images:'), '<span class="badge">' . number_format((float)$average_pictures, 2, '.', '')) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Products never viewed:'), '<span class="badge">' . (int)$total_nv . ' / ' . (int)$total) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Products never purchased:'), '<span class="badge">' . (int)$total_nb . ' / ' . (int)$total) . '</span></li>
+				<li class="list-group-item">' . $this->returnLine($this->l('Conversion rate*:'), '<span class="badge">' . $conversion) . '</span></li>
 			</ul>
 			<div class="row row-margin-bottom">
 				<p>
-					<i class="icon-asterisk"></i>' . Translate::getModuleTranslation('statsmodule', 'Defines the average conversion rate for the product page. It is possible to purchase a product without viewing the product page, so this rate can be greater than 1.', 'statsmodule') . '
+					<i class="icon-asterisk"></i>' . $this->l('Defines the average conversion rate for the product page. It is possible to purchase a product without viewing the product page, so this rate can be greater than 1.') . '
 				</p>
 			</div>';
 
         if (count($products_nb) && count($products_nb) < 50) {
             $html .= '
-				<div class="panel-heading">' . Translate::getModuleTranslation('statsmodule', 'Products never purchased', 'statsmodule') . '</div>
+				<div class="panel-heading">' . $this->l('Products never purchased') . '</div>
 				<table class="table">
 					<thead>
 						<tr>
-							<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule') . '</span></th>
-							<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Name', 'statsmodule') . '</span></th>
-							<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Edit / View', 'statsmodule') . '</span></th>
+							<th><span class="title_box active">' . $this->l('ID') . '</span></th>
+							<th><span class="title_box active">' . $this->l('Name') . '</span></th>
+							<th><span class="title_box active">' . $this->l('Edit / View') . '</span></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -258,7 +257,7 @@ class StatsCatalog extends StatsModule
 						<td class="left">
 							<div class="btn-group btn-group-action">
 								<a class="btn btn-default" href="' . Tools::safeOutput('index.php?tab=AdminProducts&id_product=' . $product['id_product'] . '&addproduct&token=' . $product_token) . '" target="_blank">
-									<i class="icon-edit"></i> ' . Translate::getModuleTranslation('statsmodule', 'Edit', 'statsmodule') . '
+									<i class="icon-edit"></i> ' . $this->l('Edit') . '
 								</a>
 								<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">
 									<span class="caret">&nbsp;</span>
@@ -266,7 +265,7 @@ class StatsCatalog extends StatsModule
 								<ul class="dropdown-menu">
 									<li>
 										<a href="' . Tools::safeOutput($this->context->link->getProductLink($product['id_product'], $product['link_rewrite'])) . '" target="_blank">
-											<i class="icon-eye-open"></i> ' . Translate::getModuleTranslation('statsmodule', 'View', 'statsmodule') . '
+											<i class="icon-eye-open"></i> ' . $this->l('View') . '
 										</a>
 									</li>
 								</ul>

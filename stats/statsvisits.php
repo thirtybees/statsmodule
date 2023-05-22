@@ -43,8 +43,7 @@ class StatsVisits extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_GRAPH;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Visits and Visitors', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds statistics about your visits and visitors to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Visits and Visitors');
     }
 
     /**
@@ -100,23 +99,23 @@ class StatsVisits extends StatsModule
 		<div class="panel-heading">
 			' . $this->displayName . '
 		</div>
-		<h4>' . Translate::getModuleTranslation('statsmodule', 'Guide', 'statsmodule') . '</h4>
+		<h4>' . $this->l('Guide') . '</h4>
 			<div class="alert alert-warning">
-				<h4>' . Translate::getModuleTranslation('statsmodule', 'Determine the interest of a visit', 'statsmodule') . '</h4>
+				<h4>' . $this->l('Determine the interest of a visit') . '</h4>
 				<p>
-					' . Translate::getModuleTranslation('statsmodule', 'The visitors\' evolution graph strongly resembles the visits\' graph, but provides additional information:', 'statsmodule') . '<br />
+					' . $this->l('The visitors\' evolution graph strongly resembles the visits\' graph, but provides additional information:') . '<br />
 				</p>
 				<ul>
-					<li>' . Translate::getModuleTranslation('statsmodule', 'If this is the case, congratulations, your website is well planned and pleasing. Glad to see that you\'ve been paying attention.', 'statsmodule') . '</li>
-					<li>' . Translate::getModuleTranslation('statsmodule', 'Otherwise, the conclusion is not so simple. The problem can be aesthetic or ergonomic. It is also possible that many visitors have mistakenly visited your URL without possessing a particular interest in your shop. This strange and ever-confusing phenomenon is most likely cause by search engines. If this is the case, you should consider revising your SEO structure.', 'statsmodule') . '</li>
+					<li>' . $this->l('If this is the case, congratulations, your website is well planned and pleasing. Glad to see that you\'ve been paying attention.') . '</li>
+					<li>' . $this->l('Otherwise, the conclusion is not so simple. The problem can be aesthetic or ergonomic. It is also possible that many visitors have mistakenly visited your URL without possessing a particular interest in your shop. This strange and ever-confusing phenomenon is most likely cause by search engines. If this is the case, you should consider revising your SEO structure.') . '</li>
 				</ul>
 				<p>
-					' . Translate::getModuleTranslation('statsmodule', 'This information is mostly qualitative. It is up to you to determine the interest of a disjointed visit.', 'statsmodule') . '
+					' . $this->l('This information is mostly qualitative. It is up to you to determine the interest of a disjointed visit.') . '
 				</p>
 			</div>
 			<div class="alert alert-info">
-				' . Translate::getModuleTranslation('statsmodule', 'A visit corresponds to an internet user coming to your shop, and until the end of their session, only one visit is counted.', 'statsmodule') . '
-				' . Translate::getModuleTranslation('statsmodule', 'A visitor is an unknown person who has not registered or logged into your store. A visitor can also be considered a person who has visited your shop multiple times.', 'statsmodule') . '
+				' . $this->l('A visit corresponds to an internet user coming to your shop, and until the end of their session, only one visit is counted.') . '
+				' . $this->l('A visitor is an unknown person who has not registered or logged into your store. A visitor can also be considered a person who has visited your shop multiple times.') . '
 			</div>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
@@ -125,12 +124,12 @@ class StatsVisits extends StatsModule
 					</div>
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
-							<li>' . Translate::getModuleTranslation('statsmodule', 'Total visits:', 'statsmodule') . ' <span class="totalStats">' . $total_visits . '</span></li>
-							<li>' . Translate::getModuleTranslation('statsmodule', 'Total visitors:', 'statsmodule') . ' <span class="totalStats">' . $total_guests . '</span></li>
+							<li>' . $this->l('Total visits:') . ' <span class="totalStats">' . $total_visits . '</span></li>
+							<li>' . $this->l('Total visitors:') . ' <span class="totalStats">' . $total_guests . '</span></li>
 						</ul>
 						<hr/>
 						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
-							<i class="icon-cloud-upload"></i> ' . Translate::getModuleTranslation('statsmodule', 'CSV Export', 'statsmodule') . '
+							<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
 						</a> ' : '') . '
 					</div>
 				</div>
@@ -149,9 +148,9 @@ class StatsVisits extends StatsModule
     public function setOption($option, $layers = 1)
     {
         if ($option == 3) {
-            $this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Number of visits and unique visitors', 'statsmodule');
-            $this->_titles['main'][1] = Translate::getModuleTranslation('statsmodule', 'Visits', 'statsmodule');
-            $this->_titles['main'][2] = Translate::getModuleTranslation('statsmodule', 'Visitors', 'statsmodule');
+            $this->_titles['main'][0] = $this->l('Number of visits and unique visitors');
+            $this->_titles['main'][1] = $this->l('Visits');
+            $this->_titles['main'][2] = $this->l('Visitors');
             $this->query = [];
             $this->query[0] = 'SELECT date_add, COUNT(`date_add`) as total
 					FROM `' . _DB_PREFIX_ . 'connections`

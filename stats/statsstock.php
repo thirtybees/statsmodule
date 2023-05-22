@@ -39,8 +39,7 @@ class StatsStock extends StatsModule
         parent::__construct();
         $this->type = static::TYPE_CUSTOM;
 
-        $this->displayName = Translate::getModuleTranslation('statsmodule', 'Available quantities', 'statsmodule');
-        $this->description = Translate::getModuleTranslation('statsmodule', 'Adds a tab showing the quantity of available products for sale to the Stats dashboard.', 'statsmodule');
+        $this->displayName = $this->l('Available quantities');
     }
 
     /**
@@ -84,14 +83,14 @@ class StatsStock extends StatsModule
 		<script type="text/javascript">$(\'#calendar\').slideToggle();</script>
 
 		<div class="panel-heading">'
-            . Translate::getModuleTranslation('statsmodule', 'Evaluation of available quantities for sale', 'statsmodule') .
+            . $this->l('Evaluation of available quantities for sale') .
             '</div>
 		<form action="' . Tools::safeOutput($ru) . '" method="post" class="form-horizontal">
 			<div class="row row-margin-bottom">
-				<label class="control-label col-lg-3">' . Translate::getModuleTranslation('statsmodule', 'Category', 'statsmodule') . '</label>
+				<label class="control-label col-lg-3">' . $this->l('Category') . '</label>
 				<div class="col-lg-6">
 					<select name="statsstock_id_category" onchange="this.form.submit();">
-						<option value="0">- ' . Translate::getModuleTranslation('statsmodule', 'All', 'statsmodule') . ' -</option>';
+						<option value="0">- ' . $this->l('All') . ' -</option>';
         foreach (Category::getSimpleCategories($this->context->language->id) as $category) {
             $this->html .= '<option value="' . (int)$category['id_category'] . '" ' .
                 ($this->context->cookie->statsstock_id_category == $category['id_category'] ? 'selected="selected"' : '') . '>' .
@@ -106,7 +105,7 @@ class StatsStock extends StatsModule
 		</form>';
 
         if (!count($products)) {
-            $this->html .= '<p>' . Translate::getModuleTranslation('statsmodule', 'Your catalog is empty.', 'statsmodule') . '</p>';
+            $this->html .= '<p>' . $this->l('Your catalog is empty.') . '</p>';
         }
         else {
             $rollup = ['quantity' => 0, 'wholesale_price' => 0, 'stockvalue' => 0];
@@ -114,12 +113,12 @@ class StatsStock extends StatsModule
 			<table class="table">
 				<thead>
 					<tr>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'ID', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Ref.', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Item', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Available quantity for sale', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Price*', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Value', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . $this->l('ID') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Ref.') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Item') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Price*') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Value') . '</span></th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -141,9 +140,9 @@ class StatsStock extends StatsModule
 				<tfoot>
 					<tr>
 						<th colspan="3"></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Total quantities', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Average price', 'statsmodule') . '</span></th>
-						<th><span class="title_box active">' . Translate::getModuleTranslation('statsmodule', 'Total value', 'statsmodule') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Total quantities') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Average price') . '</span></th>
+						<th><span class="title_box active">' . $this->l('Total value') . '</span></th>
 					</tr>
 					<tr>
 						<td colspan="3"></td>
@@ -153,7 +152,7 @@ class StatsStock extends StatsModule
 					</tr>
 				</tfoot>
 			</table>
-			<i class="icon-asterisk"></i> ' . Translate::getModuleTranslation('statsmodule', 'This section corresponds to the default wholesale price according to the default supplier for the product. An average price is used when the product has attributes.', 'statsmodule');
+			<i class="icon-asterisk"></i> ' . $this->l('This section corresponds to the default wholesale price according to the default supplier for the product. An average price is used when the product has attributes.');
 
             return $this->html;
         }
