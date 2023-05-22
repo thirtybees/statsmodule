@@ -33,18 +33,22 @@ class StatsSales extends StatsModule
      * @var string
      */
     protected $html = '';
+
     /**
      * @var string
      */
     protected $query = '';
+
     /**
      * @var string
      */
     protected $query_group_by = '';
+
     /**
-     * @var string
+     * @var int
      */
-    protected $option = '';
+    protected $option = 0;
+
     /**
      * @var string
      */
@@ -221,7 +225,7 @@ class StatsSales extends StatsModule
      */
     public function setOption($options, $layers = 1)
     {
-        list($this->option, $this->id_country) = explode('-', $options);
+        list($this->option, $this->id_country) = array_map('intval', explode('-', $options));
         switch ($this->option) {
             case 1:
                 $this->_titles['main'][0] = Translate::getModuleTranslation('statsmodule', 'Orders placed', 'statsmodule');
@@ -245,21 +249,21 @@ class StatsSales extends StatsModule
      */
     protected function getData($layers)
     {
-        if ($this->option == 3) {
-            return $this->getStatesData();
+        if ($this->option === 3) {
+            $this->getStatesData();
+        } else {
+            $this->query = '
+                SELECT o.`invoice_date`, o.`total_paid_real` / o.conversion_rate AS total_paid_real, SUM(od.product_quantity) AS product_quantity
+                FROM `' . _DB_PREFIX_ . 'orders` o
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON od.`id_order` = o.`id_order`
+                ' . ((int)$this->id_country ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
+                WHERE o.valid = 1
+                    ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+                    ' . ((int)$this->id_country ? 'AND a.id_country = ' . (int)$this->id_country : '') . '
+                    AND o.`invoice_date` BETWEEN ';
+            $this->query_group_by = ' GROUP BY o.id_order';
+            $this->setDateGraph($layers, true);
         }
-
-        $this->query = '
-			SELECT o.`invoice_date`, o.`total_paid_real` / o.conversion_rate AS total_paid_real, SUM(od.product_quantity) AS product_quantity
-			FROM `' . _DB_PREFIX_ . 'orders` o
-			LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON od.`id_order` = o.`id_order`
-			' . ((int)$this->id_country ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
-			WHERE o.valid = 1
-				' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
-				' . ((int)$this->id_country ? 'AND a.id_country = ' . (int)$this->id_country : '') . '
-				AND o.`invoice_date` BETWEEN ';
-        $this->query_group_by = ' GROUP BY o.id_order';
-        $this->setDateGraph($layers, true);
     }
 
     /**
@@ -272,7 +276,7 @@ class StatsSales extends StatsModule
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
-            if ($this->option == 1) {
+            if ($this->option === 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 0, 4)] += 1;
                 $this->_values[1][(int)substr($row['invoice_date'], 0, 4)] += $row['product_quantity'];
             } else {
@@ -292,7 +296,7 @@ class StatsSales extends StatsModule
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
             $mounth = (int)substr($row['invoice_date'], 5, 2);
-            if ($this->option == 1) {
+            if ($this->option === 1) {
                 if (!isset($this->_values[0][$mounth])) {
                     $this->_values[0][$mounth] = 0;
                 }
@@ -320,7 +324,7 @@ class StatsSales extends StatsModule
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
-            if ($this->option == 1) {
+            if ($this->option === 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 8, 2)] += 1;
                 $this->_values[1][(int)substr($row['invoice_date'], 8, 2)] += $row['product_quantity'];
             } else {
@@ -339,7 +343,7 @@ class StatsSales extends StatsModule
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
-            if ($this->option == 1) {
+            if ($this->option === 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 11, 2)] += 1;
                 $this->_values[1][(int)substr($row['invoice_date'], 11, 2)] += $row['product_quantity'];
             } else {
