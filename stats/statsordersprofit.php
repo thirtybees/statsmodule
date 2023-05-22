@@ -167,8 +167,12 @@ class StatsOrdersProfit extends StatsModule
             }
         }
 
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
+        }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $values = $conn->executeS($query);
         foreach ($values as &$value) {
             $value['paid'] = Tools::displayPrice($value['paid'], $currency);
             $value['total'] = Tools::displayPrice($value['total'], $currency);
@@ -181,6 +185,16 @@ class StatsOrdersProfit extends StatsModule
         unset($value);
 
         $this->_values = $values;
-        $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
+
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $totalQuery = (new DbQuery())
+                ->select('COUNT(1)')
+                ->from('orders',  'o')
+                ->where('o.valid = 1')
+                ->where('o.invoice_date BETWEEN ' . $date_between);
+            $this->_totalCount = (int)$conn->getValue($totalQuery);
+        } else {
+            $this->_totalCount = count($values);
+        }
     }
 }

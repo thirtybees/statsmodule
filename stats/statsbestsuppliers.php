@@ -135,7 +135,7 @@ class StatsBestSuppliers extends StatsModule
 					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
 					AND o.valid = 1
 					AND s.id_supplier IS NOT NULL';
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
 
     /**
@@ -146,8 +146,6 @@ class StatsBestSuppliers extends StatsModule
      */
     public function getData($layers = null)
     {
-        $this->_totalCount = $this->getTotalCount();
-
         $query = 'SELECT s.name, SUM(od.product_quantity) AS quantity, ROUND(SUM(od.product_quantity * od.product_price) / o.conversion_rate, 2) AS sales
 				FROM ' . _DB_PREFIX_ . 'order_detail od
 				LEFT JOIN ' . _DB_PREFIX_ . 'product p ON p.id_product = od.product_id
@@ -165,9 +163,14 @@ class StatsBestSuppliers extends StatsModule
             }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
+        if (Validate::IsUnsignedInt($this->_limit)) {
             $query .= ' LIMIT ' . $this->_start . ', ' . ($this->_limit);
         }
         $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $this->_totalCount = $this->getTotalCount();
+        } else {
+            $this->_totalCount = count($this->_values);
+        }
     }
 }

@@ -166,7 +166,7 @@ class StatsBestProducts extends StatsModule
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
 
-        $query = 'SELECT SQL_CALC_FOUND_ROWS p.reference, p.id_product, pl.name,
+        $query = 'SELECT p.reference, p.id_product, pl.name,
 				ROUND(AVG(od.product_price / o.conversion_rate), 2) as avgPriceSold,
 				IFNULL(stock.quantity, 0) as quantity,
 				IFNULL(SUM(od.product_quantity), 0) AS totalQuantitySold,
@@ -200,11 +200,12 @@ class StatsBestProducts extends StatsModule
             }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
+        if (Validate::IsUnsignedInt($this->_limit)) {
             $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $values = $conn->executeS($query);
         foreach ($values as &$value) {
             $value['avgPriceSold'] = Tools::displayPrice($value['avgPriceSold'], $currency);
             $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);
@@ -212,6 +213,18 @@ class StatsBestProducts extends StatsModule
         unset($value);
 
         $this->_values = $values;
-        $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
+
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $totalQuery = (new DbQuery())
+                ->select('COUNT(DISTINCT p.id_product)')
+                ->from('orders', 'o')
+                ->innerJoin('order_detail', 'od', '(od.id_order = o.id_order)')
+                ->innerJoin('product', 'p', '(p.id_product = od.product_id)')
+                ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+                ->where('o.invoice_date BETWEEN ' . $this->getDate());
+            $this->_totalCount = (int)$conn->getValue($totalQuery);
+        } else {
+            $this->_totalCount = count($values);
+        }
     }
 }

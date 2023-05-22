@@ -169,7 +169,7 @@ class StatsBestCustomers extends StatsModule
     public function getData($layers = null)
     {
         $this->query = '
-		SELECT SQL_CALC_FOUND_ROWS c.`id_customer`, c.`lastname`, c.`firstname`, c.`email`,
+		SELECT c.`id_customer`, c.`lastname`, c.`firstname`, c.`email`,
 			COUNT(co.`id_connections`) AS totalVisits,
 			IFNULL((
 				SELECT ROUND(SUM(IFNULL(op.`amount`, 0) / cu.conversion_rate), 2)
@@ -201,11 +201,23 @@ class StatsBestCustomers extends StatsModule
             }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
+        if (Validate::IsUnsignedInt($this->_limit)) {
             $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
-        $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
+        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $this->_values = $conn->executeS($this->query);
+
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $totalQuery = (new DbQuery())
+                ->select("COUNT(DISTINCT c.id_customer)")
+                ->from('customer', 'c')
+                ->leftJoin('guest', 'g', 'c.`id_customer` = g.`id_customer`')
+                ->leftJoin('connections', 'co', 'g.`id_guest` = co.`id_guest`')
+                ->where('co.date_add BETWEEN ' . $this->getDate(). ' ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'c'));
+            $this->_totalCount = (int)$conn->getValue($totalQuery);
+        } else {
+            $this->_totalCount = count($this->_values);
+        }
     }
 }

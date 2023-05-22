@@ -148,7 +148,7 @@ class StatsBestVouchers extends StatsModule
     public function getData($layers = null)
     {
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
-        $this->query = 'SELECT SQL_CALC_FOUND_ROWS cr.code, ocr.name, COUNT(ocr.id_cart_rule) AS total, ROUND(SUM(o.total_paid_real) / o.conversion_rate,2) AS ca
+        $this->query = 'SELECT cr.code, ocr.name, COUNT(ocr.id_cart_rule) AS total, ROUND(SUM(o.total_paid_real) / o.conversion_rate,2) AS ca
 				FROM ' . _DB_PREFIX_ . 'order_cart_rule ocr
 				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = ocr.id_order
 				LEFT JOIN ' . _DB_PREFIX_ . 'cart_rule cr ON cr.id_cart_rule = ocr.id_cart_rule
@@ -164,16 +164,29 @@ class StatsBestVouchers extends StatsModule
             }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
+        if (Validate::IsUnsignedInt($this->_limit)) {
             $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $values = $conn->executeS($this->query);
         foreach ($values as &$value) {
             $value['ca'] = Tools::displayPrice($value['ca'], $currency);
         }
 
         $this->_values = $values;
-        $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
+
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $totalQuery = (new DbQuery())
+                ->select('COUNT(DISTINCT ocr.id_cart_rule)')
+                ->from('order_cart_rule', 'ocr')
+                ->leftJoin('orders', 'o', '(o.id_order = ocr.id_order)')
+                ->leftJoin('cart_rule', 'cr', '(cr.id_cart_rule = ocr.id_cart_rule)')
+                ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+                ->where('o.invoice_date BETWEEN ' . $this->getDate());
+            $this->_totalCount = (int)$conn->getValue($totalQuery);
+        } else {
+            $this->_totalCount = count($values);
+        }
     }
 }

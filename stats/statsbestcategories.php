@@ -192,12 +192,12 @@ class StatsBestCategories extends StatsModule
 
         $onlyChildren = '';
         if ((int)Tools::getValue('onlyChildren') == 1) {
-            $onlyChildren = 'AND NOT EXISTS (SELECT NULL FROM ' . _DB_PREFIX_ . 'category WHERE id_parent = ca.id_category)';
+            $onlyChildren = 'NOT EXISTS (SELECT NULL FROM ' . _DB_PREFIX_ . 'category WHERE id_parent = ca.id_category)';
         }
 
         // Get best categories
         $query = '
-				SELECT SQL_CALC_FOUND_ROWS ca.`id_category`, CONCAT(parent.name, \' > \', calang.`name`) AS name,
+				SELECT ca.`id_category`, CONCAT(parent.name, \' > \', calang.`name`) AS name,
 				IFNULL(SUM(t.`totalQuantitySold`), 0) AS totalQuantitySold,
 				ROUND(IFNULL(SUM(t.`totalPriceSold`), 0), 2) AS totalPriceSold,
 				ROUND(IFNULL(SUM(t.`totalWholeSalePriceSold`), 0), 2) AS totalWholeSalePriceSold,
@@ -248,7 +248,7 @@ class StatsBestCategories extends StatsModule
 				) t ON t.`id_product` = pr.`id_product`
 			) t	ON t.`id_product` = capr.`id_product`
 			' . (($categories) ? 'WHERE ca.id_category IN (' . implode(', ', $categories) . ')' : '') . '
-			' . $onlyChildren . '
+			' . ($onlyChildren ? 'AND '.$onlyChildren : '') . '
 			GROUP BY ca.`id_category`
 			HAVING ca.`id_category` != 1';
 
@@ -259,11 +259,12 @@ class StatsBestCategories extends StatsModule
             }
         }
 
-        if (($this->_start === 0 || Validate::IsUnsignedInt($this->_start)) && Validate::IsUnsignedInt($this->_limit)) {
+        if (Validate::IsUnsignedInt($this->_limit)) {
             $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $values = $conn->executeS($query);
         foreach ($values as &$value) {
 
             if ((int)Tools::getIsset('export') == false) {
@@ -284,6 +285,21 @@ class StatsBestCategories extends StatsModule
         }
 
         $this->_values = $values;
-        $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
+
+        if (Validate::IsUnsignedInt($this->_limit)) {
+            $totalQuery = (new DbQuery())
+                ->select('COUNT(1)')
+                ->from('category', 'ca');
+            if ($categories) {
+                $totalQuery->where('ca.id_category IN (' . implode(', ', $categories) . ')');
+            }
+            if ($onlyChildren) {
+                $totalQuery->where($onlyChildren);
+            }
+            $this->_totalCount = (int)$conn->getValue($totalQuery);
+        } else {
+            $this->_totalCount = count($values);
+
+        }
     }
 }
