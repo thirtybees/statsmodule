@@ -62,6 +62,7 @@ class StatsModule extends ModuleStats
         'statsorigin',
         'statspersonalinfos',
         'statsproduct',
+        'statsproductsprofit',
         'statsregistrations',
         'statssales',
         'statssearch',
@@ -498,6 +499,7 @@ class StatsModule extends ModuleStats
  * $this->l('Conversion rate*:')
  * $this->l('Conversion')
  * $this->l('Cost')
+ * $this->l('Costs')
  * $this->l('Counter')
  * $this->l('Country distribution allows you to analyze which part of the World your customers are shopping from.')
  * $this->l('Country distribution')
@@ -527,6 +529,7 @@ class StatsModule extends ModuleStats
  * $this->l('Discount')
  * $this->l('Display final level categories only (that have no child categories)')
  * $this->l('Displaying %1$s of %2$s')
+ * $this->l('Displaying products from order ID %s')
  * $this->l('Edit / View')
  * $this->l('Edit')
  * $this->l('Email')
@@ -646,9 +649,11 @@ class StatsModule extends ModuleStats
  * $this->l('Price sold')
  * $this->l('Price')
  * $this->l('Price*')
+ * $this->l('Product ID')
  * $this->l('Product details')
  * $this->l('Product name')
  * $this->l('Product pages viewed:')
+ * $this->l('Product reference')
  * $this->l('Products available')
  * $this->l('Products available:')
  * $this->l('Products bought')
@@ -656,6 +661,7 @@ class StatsModule extends ModuleStats
  * $this->l('Products never purchased')
  * $this->l('Products never purchased:')
  * $this->l('Products never viewed:')
+ * $this->l('Products profit')
  * $this->l('Products sold')
  * $this->l('Products:')
  * $this->l('Profit')

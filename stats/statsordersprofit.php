@@ -135,6 +135,7 @@ class StatsOrdersProfit extends StatsModule
      */
     public function getData($layers = null)
     {
+        $export = !!Tools::getValue('export');
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $date_between = $this->getDate();
 
@@ -181,6 +182,13 @@ class StatsOrdersProfit extends StatsModule
             $value['cost'] = Tools::displayPrice($value['cost'], $currency);
             $value['totalDiscount'] = Tools::displayPrice($value['totalDiscount'], $currency);
             $value['profit'] = Tools::displayPrice($value['profit'], $currency);
+            if (! $export) {
+                $drilldown = Context::getContext()->link->getAdminLink('AdminStats', true, [
+                    'module' => 'statsproductsprofit',
+                    'id_order' => (int)$value['number']
+                ]);
+                $value['profit'] = '<a href="'.Tools::safeOutput($drilldown).'">'.$value['profit'].'</a>';
+            }
         }
         unset($value);
 

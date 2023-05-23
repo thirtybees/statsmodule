@@ -157,6 +157,7 @@ class StatsBestCategories extends StatsModule
      */
     protected function getData($layers = null)
     {
+        $export = !!Tools::getValue('export');
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $date_between = $this->getDate();
         $id_lang = $this->getLang();
@@ -266,8 +267,13 @@ class StatsBestCategories extends StatsModule
         $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
         $values = $conn->executeS($query);
         foreach ($values as &$value) {
+            $totalPriceSold = round((float)$value['totalPriceSold'], 2);
+            $totalWholeSalePriceSold = round((float)$value['totalWholeSalePriceSold'], 2);
 
-            if ((int)Tools::getIsset('export') == false) {
+            $value['totalWholeSalePriceSold'] = Tools::displayPrice($totalPriceSold - $totalWholeSalePriceSold, $currency);
+            $value['totalPriceSold'] = Tools::displayPrice($totalPriceSold, $currency);
+
+            if (! $export) {
                 $parts = explode('>', $value['name']);
                 $value['name'] = '<i class="icon-folder-open"></i> ' . trim($parts[0]) . ' > ';
                 if ((int)$value['hasChildren'] == 0) {
@@ -276,12 +282,14 @@ class StatsBestCategories extends StatsModule
                     $value['name'] .= '<i class="icon-folder-open"></i> ';
                 }
                 $value['name'] .= trim($parts[1]);
+
+                $drilldown = Context::getContext()->link->getAdminLink('AdminStats', true, [
+                    'module' => 'statsproductsprofit',
+                    'id_category' => (int)$value['id_category']
+                ]);
+                $value['totalWholeSalePriceSold'] = '<a href="'.Tools::safeOutput($drilldown).'">'.$value['totalWholeSalePriceSold'].'</a>';
             }
 
-            if (isset($value['totalWholeSalePriceSold'])) {
-                $value['totalWholeSalePriceSold'] = Tools::displayPrice($value['totalPriceSold'] - $value['totalWholeSalePriceSold'], $currency);
-            }
-            $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);
         }
 
         $this->_values = $values;
