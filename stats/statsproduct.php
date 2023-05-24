@@ -523,7 +523,7 @@ class StatsProduct extends StatsModule
                 break;
 
             case 3:
-                $this->query = 'SELECT product_attribute_id, SUM(od.`product_quantity`) AS total
+                $this->query = 'SELECT od.product_attribute_id, MAX(od.product_name) as name, SUM(od.`product_quantity`) AS total
 						FROM `' . _DB_PREFIX_ . 'orders` o
 						LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON o.`id_order` = od.`id_order`
 						WHERE od.`product_id` = ' . (int)$this->id_product . '
@@ -584,8 +584,11 @@ class StatsProduct extends StatsModule
 
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
                 foreach ($result as $row) {
+                    $attributeId = (int)$row['product_attribute_id'];
                     $this->_values[] = $row['total'];
-                    $this->_legend[] = @$assoc_names[$row['product_attribute_id']];
+                    $this->_legend[] = isset($assoc_names[$attributeId])
+                        ? $assoc_names[$attributeId]
+                        : $row['name'];
                 }
             }
         }
