@@ -34,6 +34,10 @@ if (!defined('_TB_VERSION_')) {
  */
 class StatsCheckUp extends StatsModule
 {
+    const ORDER_PRODUCT_ID = 0;
+    const ORDER_SALES = 1;
+    const ORDER_NAME = 2;
+
     /**
      * @var string
      */
@@ -78,14 +82,8 @@ class StatsCheckUp extends StatsModule
             echo '<div class="conf confirm"> ' . $this->l('Configuration updated') . '</div>';
         }
 
-        if (Tools::isSubmit('submitCheckupOrder')) {
-            $this->context->cookie->checkup_order = (int)Tools::getValue('submitCheckupOrder');
-            echo '<div class="conf confirm"> ' . $this->l('Configuration updated') . '</div>';
-        }
-
-        if (!isset($this->context->cookie->checkup_order)) {
-            $this->context->cookie->checkup_order = 1;
-        }
+        $orderOption = (int)Tools::getValue('submitCheckupOrder');
+        $orderBy = $this->getOrderBy($orderOption);
 
         $db = Db::getInstance(_PS_USE_SQL_SLAVE_);
         $employee = Context::getContext()->employee;
@@ -124,14 +122,6 @@ class StatsCheckUp extends StatsModule
             $totals['description_' . $key] = 0;
         }
 
-        $orderBy = 'p.id_product';
-        if ($this->context->cookie->checkup_order == 2) {
-            $orderBy = 'pl.name';
-        } else {
-            if ($this->context->cookie->checkup_order == 3) {
-                $orderBy = 'nbSales DESC';
-            }
-        }
 
         // Get products stats
         $sql = 'SELECT p.id_product, product_shop.active, pl.name, (
@@ -219,9 +209,9 @@ class StatsCheckUp extends StatsModule
 					<label class="control-label pull-left">' . Tools::safeOutput($this->l('Order by')) . '</label>
 					<div class="col-lg-3">
 						<select name="submitCheckupOrder" onchange="this.form.submit();">
-							<option value="1">' . Tools::safeOutput($this->l('ID')) . '</option>
-							<option value="2" ' . ($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Name')) . '</option>
-							<option value="3" ' . ($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Sales')) . '</option>
+							<option value="'.static::ORDER_PRODUCT_ID.'" '. ($orderOption === static::ORDER_PRODUCT_ID ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('ID')) . '</option>
+							<option value="'.static::ORDER_NAME.'" ' . ($orderOption === static::ORDER_NAME ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Name')) . '</option>
+							<option value="'.static::ORDER_SALES.'" ' . ($orderOption === static::ORDER_SALES ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Sales')) . '</option>
 						</select>
 					</div>
 				</div>
@@ -357,5 +347,21 @@ class StatsCheckUp extends StatsModule
 		</table></div>';
 
         return $this->html;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getOrderBy($orderOption)
+    {
+        switch ($orderOption) {
+            case static::ORDER_SALES:
+                return 'nbSales DESC';
+            case static::ORDER_NAME:
+                return 'pl.name';
+            case static::ORDER_PRODUCT_ID:
+            default:
+                return 'p.id_product';
+        }
     }
 }
