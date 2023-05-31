@@ -112,9 +112,9 @@ class StatsCheckUp extends StatsModule
         }
 
         $arrayColors = [
-            0 => '<img src="../modules/statsmodule/views/img/red.png" alt="' . $this->l('Bad') . '" />',
-            1 => '<img src="../modules/statsmodule/views/img/orange.png" alt="' . $this->l('Average') . '" />',
-            2 => '<img src="../modules/statsmodule/views/img/green.png" alt="' . $this->l('Good') . '" />',
+            0 => '<img src="../modules/statsmodule/views/img/red.png" title="' . Tools::safeOutput($this->l('Bad')) . '" />',
+            1 => '<img src="../modules/statsmodule/views/img/orange.png" title="' . Tools::safeOutput($this->l('Average')) . '" />',
+            2 => '<img src="../modules/statsmodule/views/img/green.png" title="' . Tools::safeOutput($this->l('Good')) . '" />',
         ];
         $tokenProducts = Tools::getAdminToken('AdminProducts' . (int)Tab::getIdFromClassName('AdminProducts') . (int)Context::getContext()->employee->id);
         $divisor = 4;
@@ -176,8 +176,8 @@ class StatsCheckUp extends StatsModule
 				<thead>
 					<tr>
 						<th></th>
-						<th><span class="title_box active">' . $arrayColors[0] . ' ' . $this->l('Not enough') . '</span></th>
-						<th><span class="title_box active">' . $arrayColors[2] . ' ' . $this->l('Alright') . '</span></th>
+						<th><span class="title_box active">' . $arrayColors[0] . ' ' . Tools::safeOutput($this->l('Not enough')) . '</span></th>
+						<th><span class="title_box active">' . $arrayColors[2] . ' ' . Tools::safeOutput($this->l('Alright')) . '</span></th>
 					</tr>
 				</thead>';
         foreach ($arrayConf as $conf => $translations) {
@@ -185,23 +185,23 @@ class StatsCheckUp extends StatsModule
 				<tbody>
 					<tr>
 						<td>
-							<label class="control-label col-lg-12">' . $translations['name'] . '</label>
+							<label class="control-label col-lg-12">' . Tools::safeOutput($translations['name']) . '</label>
 						</td>
 						<td>
 							<div class="row">
 								<div class="col-lg-11 input-group">
-									<span class="input-group-addon">' . $this->l('Less than') . '</span>
+									<span class="input-group-addon">' . Tools::safeOutput($this->l('Less than')) . '</span>
 									<input type="text" name="CHECKUP_' . $conf . '_LT" value="' . Tools::safeOutput(Tools::getValue('CHECKUP_' . $conf . '_LT', Configuration::get('CHECKUP_' . $conf . '_LT'))) . '" />
-									<span class="input-group-addon">' . $translations['text'] . '</span>
+									<span class="input-group-addon">' . Tools::safeOutput($translations['text']) . '</span>
 								 </div>
 							 </div>
 						</td>
 						<td>
 							<div class="row">
 								<div class="col-lg-12 input-group">
-									<span class="input-group-addon">' . $this->l('Greater than') . '</span>
+									<span class="input-group-addon">' . Tools::safeOutput($this->l('Greater than')) . '</span>
 									<input type="text" name="CHECKUP_' . $conf . '_GT" value="' . Tools::safeOutput(Tools::getValue('CHECKUP_' . $conf . '_GT', Configuration::get('CHECKUP_' . $conf . '_GT'))) . '" />
-									<span class="input-group-addon">' . $translations['text'] . '</span>
+									<span class="input-group-addon">' . Tools::safeOutput($translations['text']) . '</span>
 								 </div>
 							 </div>
 						</td>
@@ -210,18 +210,18 @@ class StatsCheckUp extends StatsModule
         }
         $this->html .= '</table>
 			<button type="submit" name="submitCheckup" class="btn btn-default pull-right">
-				<i class="icon-save"></i> ' . $this->l('Save') . '
+				<i class="icon-save"></i> ' . Tools::safeOutput($this->l('Save')) . '
 			</button>
 		</form>
 		<form action="' . Tools::safeOutput(AdminController::$currentIndex . '&token=' . Tools::getValue('token') . '&module=statscheckup') . '" method="post" class="form-horizontal alert">
 			<div class="row">
 				<div class="col-lg-12">
-					<label class="control-label pull-left">' . $this->l('Order by') . '</label>
+					<label class="control-label pull-left">' . Tools::safeOutput($this->l('Order by')) . '</label>
 					<div class="col-lg-3">
 						<select name="submitCheckupOrder" onchange="this.form.submit();">
-							<option value="1">' . $this->l('ID') . '</option>
-							<option value="2" ' . ($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '') . '>' . $this->l('Name') . '</option>
-							<option value="3" ' . ($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '') . '>' . $this->l('Sales') . '</option>
+							<option value="1">' . Tools::safeOutput($this->l('ID')) . '</option>
+							<option value="2" ' . ($this->context->cookie->checkup_order == 2 ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Name')) . '</option>
+							<option value="3" ' . ($this->context->cookie->checkup_order == 3 ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Sales')) . '</option>
 						</select>
 					</div>
 				</div>
@@ -231,17 +231,17 @@ class StatsCheckUp extends StatsModule
 		<table class="table checkup2">
 			<thead>
 				<tr>
-					<th><span class="title_box active">' . $this->l('ID') . '</span></th>
-					<th><span class="title_box active">' . $this->l('Item') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Active') . '</span></th>';
+					<th><span class="title_box active">' . Tools::safeOutput($this->l('ID')) . '</span></th>
+					<th><span class="title_box active">' . Tools::safeOutput($this->l('Item')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Active')) . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th><span class="title_box active" title="'.htmlentities($language['shopName']).'">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th><span class="title_box active" title="'.Tools::safeOutput($language['shopName']).'">' . Tools::safeOutput($this->l('Desc.')) . ' (' . Tools::safeOutput(strtoupper($language['iso_code'])) . ')</span></th>';
         }
         $this->html .= '
-					<th class="center"><span class="title_box active">' . $this->l('Images') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Sales') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Global') . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Images')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Sales')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Available quantity for sale')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Global')) . '</span></th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -331,15 +331,15 @@ class StatsCheckUp extends StatsModule
 			<tfoot>
 				<tr>
 					<th colspan="2"></th>
-					<th class="center"><span class="title_box active">' . $this->l('Active') . '</span></th>';
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Active')) . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th class="center"><span class="title_box active" title="'.htmlentities($language['shopName']).'">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th class="center"><span class="title_box active" title="'.Tools::safeOutput($language['shopName']).'">' . Tools::safeOutput($this->l('Desc.')) . ' (' . Tools::safeOutput(strtoupper($language['iso_code'])) . ')</span></th>';
         }
         $this->html .= '
-					<th class="center"><span class="title_box active">' . $this->l('Images') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Sales') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
-					<th class="center"><span class="title_box active">' . $this->l('Global') . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Images')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Sales')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Available quantity for sale')) . '</span></th>
+					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Global')) . '</span></th>
 				</tr>
 				<tr>
 					<td colspan="2"></td>
