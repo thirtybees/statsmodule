@@ -92,10 +92,24 @@ class StatsCheckUp extends StatsModule
         $prop30 = ((strtotime($employee->stats_date_to . ' 23:59:59') - strtotime($employee->stats_date_from . ' 00:00:00')) / 60 / 60 / 24) / 30;
 
         // Get languages
-        $sql = 'SELECT l.*
-				FROM ' . _DB_PREFIX_ . 'lang l'
-            . Shop::addSqlAssociation('lang', 'l');
-        $languages = $db->executeS($sql);
+        $sql = (new DbQuery())
+            ->select('lang_shop.id_shop')
+            ->select('lang_shop.id_lang')
+            ->select('lang.iso_code')
+            ->select('shop.name')
+            ->from('lang', 'lang')
+            ->innerJoin('lang_shop', 'lang_shop', 'lang_shop.id_lang = lang.id_lang')
+            ->innerJoin('shop', 'shop', 'lang_shop.id_shop = shop.id_shop')
+            ->addCurrentShopRestriction('lang_shop')
+            ->orderBy('lang_shop.id_shop, lang.iso_code');
+        $languages = [];
+        foreach ($db->executeS($sql) as $row) {
+            $key = $row['id_shop'] . '_' . $row['id_lang'];
+            $languages[$key] = [
+                'iso_code' => $row['iso_code'],
+                'shopName' => $row['name']
+            ];
+        }
 
         $arrayColors = [
             0 => '<img src="../modules/statsmodule/views/img/red.png" alt="' . $this->l('Bad') . '" />',
@@ -105,13 +119,12 @@ class StatsCheckUp extends StatsModule
         $tokenProducts = Tools::getAdminToken('AdminProducts' . (int)Tab::getIdFromClassName('AdminProducts') . (int)Context::getContext()->employee->id);
         $divisor = 4;
         $totals = ['products' => 0, 'active' => 0, 'images' => 0, 'sales' => 0, 'stock' => 0];
-        foreach ($languages as $language) {
+        foreach ($languages as $key => $_) {
             $divisor++;
-            $totals['description_' . $language['iso_code']] = 0;
+            $totals['description_' . $key] = 0;
         }
 
         $orderBy = 'p.id_product';
-        // FIXME: it's not works ^MD
         if ($this->context->cookie->checkup_order == 2) {
             $orderBy = 'pl.name';
         } else {
@@ -222,7 +235,7 @@ class StatsCheckUp extends StatsModule
 					<th><span class="title_box active">' . $this->l('Item') . '</span></th>
 					<th class="center"><span class="title_box active">' . $this->l('Active') . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th><span class="title_box active">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th><span class="title_box active" title="'.htmlentities($language['shopName']).'">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
         }
         $this->html .= '
 					<th class="center"><span class="title_box active">' . $this->l('Images') . '</span></th>
@@ -233,6 +246,7 @@ class StatsCheckUp extends StatsModule
 			</thead>
 			<tbody>';
         foreach ($result as $row) {
+            $productId = (int)$row['id_product'];
             $totals['products']++;
             $scores = [
                 'active' => ($row['active'] ? 2 : 0),
@@ -244,34 +258,46 @@ class StatsCheckUp extends StatsModule
             $totals['images'] += (int)$scores['images'];
             $totals['sales'] += (int)$scores['sales'];
             $totals['stock'] += (int)$scores['stock'];
-            $descriptions = $db->executeS(
-                '
-				SELECT l.iso_code, pl.description
-				FROM ' . _DB_PREFIX_ . 'product_lang pl
-				LEFT JOIN ' . _DB_PREFIX_ . 'lang l
-					ON pl.id_lang = l.id_lang
-				WHERE id_product = ' . (int)$row['id_product'] . Shop::addSqlRestrictionOnLang('pl')
-            );
-            foreach ($descriptions as $description) {
-                if (isset($description['iso_code']) && isset($description['description'])) {
-                    $row['desclength_' . $description['iso_code']] = mb_strlen(strip_tags($description['description']));
+
+            $descriptionSql = (new DbQuery())
+                ->select('pl.id_shop')
+                ->select('pl.id_lang')
+                ->select('pl.description')
+                ->from('product_lang', 'pl')
+                ->innerJoin('shop', 's', 'pl.id_shop = s.id_shop')
+                ->innerJoin('lang', 'l', 'pl.id_lang = l.id_lang')
+                ->where('pl.id_product = ' . $productId)
+                ->addCurrentShopRestriction('pl');
+            foreach ($db->executeS($descriptionSql) as $descriptionRow) {
+                $shopId = (int)$descriptionRow['id_shop'];
+                $langId = (int)$descriptionRow['id_lang'];
+                $description = (string)$descriptionRow['description'];
+
+                $descriptionKey = 'description_' . $shopId . '_' . $langId;
+                $descLengthKey = 'desclength_' . $shopId . '_' . $langId;
+                $descLength = mb_strlen(strip_tags($description));
+                $row[$descLengthKey] = $descLength;
+
+                if ($descLength < (int)Configuration::get('CHECKUP_DESCRIPTIONS_LT')) {
+                    $scores[$descriptionKey] = 0;
+                } elseif ($descLength > (int)Configuration::get('CHECKUP_DESCRIPTIONS_GT')) {
+                    $scores[$descriptionKey] = 2;
+                } else {
+                    $scores[$descriptionKey] = 1;
                 }
-                if (isset($description['iso_code'])) {
-                    $scores['description_' . $description['iso_code']] = (!isset($row['desclength_' . $description['iso_code']]) || $row['desclength_' . $description['iso_code']] < Configuration::get('CHECKUP_DESCRIPTIONS_LT') ? 0 : ($row['desclength_' . $description['iso_code']] > Configuration::get('CHECKUP_DESCRIPTIONS_GT') ? 2 : 1));
-                    $totals['description_' . $description['iso_code']] += $scores['description_' . $description['iso_code']];
-                }
+                $totals[$descriptionKey] += $scores[$descriptionKey];
             }
             $scores['average'] = array_sum($scores) / $divisor;
             $scores['average'] = ($scores['average'] < 1 ? 0 : ($scores['average'] > 1.5 ? 2 : 1));
 
             $this->html .= '
 				<tr>
-					<td>' . $row['id_product'] . '</td>
-					<td><a href="' . Tools::safeOutput('index.php?tab=AdminProducts&updateproduct&id_product=' . $row['id_product'] . '&token=' . $tokenProducts) . '">' . mb_substr($row['name'], 0, 42) . '</a></td>
+					<td>' . $productId . '</td>
+					<td><a href="' . Tools::safeOutput('index.php?tab=AdminProducts&updateproduct&id_product=' . $productId . '&token=' . $tokenProducts) . '">' . mb_substr($row['name'], 0, 42) . '</a></td>
 					<td class="center">' . $arrayColors[$scores['active']] . '</td>';
-            foreach ($languages as $language) {
-                if (isset($row['desclength_' . $language['iso_code']])) {
-                    $this->html .= '<td class="center">' . (int)$row['desclength_' . $language['iso_code']] . ' ' . $arrayColors[$scores['description_' . $language['iso_code']]] . '</td>';
+            foreach ($languages as $key => $language) {
+                if (isset($row['desclength_' . $key])) {
+                    $this->html .= '<td class="center">' . (int)$row['desclength_' . $key] . ' ' . $arrayColors[$scores['description_' . $key]] . '</td>';
                 } else {
                     $this->html .= '<td>0 ' . $arrayColors[0] . '</td>';
                 }
@@ -294,9 +320,9 @@ class StatsCheckUp extends StatsModule
         $totals['sales'] = ($totals['sales'] < 1 ? 0 : ($totals['sales'] > 1.5 ? 2 : 1));
         $totals['stock'] = $totals['stock'] / $totals['products'];
         $totals['stock'] = ($totals['stock'] < 1 ? 0 : ($totals['stock'] > 1.5 ? 2 : 1));
-        foreach ($languages as $language) {
-            $totals['description_' . $language['iso_code']] = $totals['description_' . $language['iso_code']] / $totals['products'];
-            $totals['description_' . $language['iso_code']] = ($totals['description_' . $language['iso_code']] < 1 ? 0 : ($totals['description_' . $language['iso_code']] > 1.5 ? 2 : 1));
+        foreach ($languages as $key => $language) {
+            $totals['description_' . $key] = $totals['description_' . $key] / $totals['products'];
+            $totals['description_' . $key] = ($totals['description_' . $key] < 1 ? 0 : ($totals['description_' . $key] > 1.5 ? 2 : 1));
         }
         $totals['average'] = array_sum($totals) / $divisor;
         $totals['average'] = ($totals['average'] < 1 ? 0 : ($totals['average'] > 1.5 ? 2 : 1));
@@ -307,7 +333,7 @@ class StatsCheckUp extends StatsModule
 					<th colspan="2"></th>
 					<th class="center"><span class="title_box active">' . $this->l('Active') . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th class="center"><span class="title_box active">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
+            $this->html .= '<th class="center"><span class="title_box active" title="'.htmlentities($language['shopName']).'">' . $this->l('Desc.') . ' (' . strtoupper($language['iso_code']) . ')</span></th>';
         }
         $this->html .= '
 					<th class="center"><span class="title_box active">' . $this->l('Images') . '</span></th>
@@ -318,8 +344,8 @@ class StatsCheckUp extends StatsModule
 				<tr>
 					<td colspan="2"></td>
 					<td class="center">' . $arrayColors[$totals['active']] . '</td>';
-        foreach ($languages as $language) {
-            $this->html .= '<td class="center">' . $arrayColors[$totals['description_' . $language['iso_code']]] . '</td>';
+        foreach ($languages as $key => $language) {
+            $this->html .= '<td class="center">' . $arrayColors[$totals['description_' . $key]] . '</td>';
         }
         $this->html .= '
 					<td class="center">' . $arrayColors[$totals['images']] . '</td>
