@@ -147,7 +147,7 @@ class StatsBestCategories extends StatsModule
                         <label class="control-label pull-left">' . Tools::safeOutput($this->l('Attribution model')) . '</label>
                         <div class="col-lg-3">
                             <select id="attributionModel" name="'.static::PARAM_ATTRIBUTION_MODEL.'" onchange="this.form.submit();">
-                                <option value="'.static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY.'" '. ($attributionModel === static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Default cateory')) . '</option>
+                                <option value="'.static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY.'" '. ($attributionModel === static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Default category')) . '</option>
                                 <option value="'.static::ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES.'" ' . ($attributionModel === static::ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Associated categories')) . '</option>
                             </select>
                         </div>
