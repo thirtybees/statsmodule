@@ -23,15 +23,24 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
+use Thirtybees\StatsModule\Utils;
+
 if (!defined('_TB_VERSION_')) {
     exit;
 }
+
+require_once __DIR__ . '/src/Utils.php';
 
 class StatsModule extends ModuleStats
 {
     const TYPE_GRID = 'Grid';
     const TYPE_GRAPH = 'Graph';
     const TYPE_CUSTOM = 'Custom';
+
+    /**
+     * @var \Thirtybees\StatsModule\Utils
+     */
+    protected $utils;
 
     /**
      * @var string Grid|Graph|Custom
@@ -80,6 +89,7 @@ class StatsModule extends ModuleStats
         $this->version = '2.3.0';
         $this->author = 'thirty bees';
         $this->need_instance = 0;
+        $this->bootstrap = true;
 
         parent::__construct();
 
@@ -87,6 +97,7 @@ class StatsModule extends ModuleStats
         $this->description = $this->l('Adds several statistics to the shop.');
         $this->tb_versions_compliancy = '> 1.0.3';
         $this->tb_min_version = '1.0.4';
+        $this->utils = new Utils($this);
     }
 
     /**
@@ -416,6 +427,83 @@ class StatsModule extends ModuleStats
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     *
+     * @throws PrestaShopException
+     * @throws SmartyException
+     */
+    public function getContent()
+    {
+        $this->postProcess();
+
+        $form = [
+            'legend' => [
+                'title' => $this->l('Stats Module configuration'),
+                'icon' => 'icon-list-alt'
+            ],
+            'input' => [
+                [
+                    'type'     => 'switch',
+                    'label'    => $this->l('Category filter with path'),
+                    'name'     => Utils::CONFIG_CAT_NAME_WITH_PATH,
+                    'hint'     => $this->l('If enabled, category filter will show full path to category. Otherwise, only category name will be displayed'),
+                    'required' => false,
+                    'class'    => 't',
+                    'is_bool'  => true,
+                    'values'   => [
+                        [
+                            'id'    => 'active_on',
+                            'value' => 1,
+                        ],
+                        [
+                            'id'    => 'active_off',
+                            'value' => 0,
+                        ],
+                    ],
+                ]
+            ],
+            'submit' => [
+                'title' => $this->l('Save'),
+            ],
+        ];
+
+        $fieldsValues[Utils::CONFIG_CAT_NAME_WITH_PATH] = $this->utils->categoryNameIncludesPath();
+
+        /** @var AdminModulesController $controller */
+        $controller = $this->context->controller;
+
+        $helper = new HelperForm();
+        $helper->module = $this;
+        $helper->name_controller = 'statsmodule';
+        $helper->identifier = $this->identifier;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->languages = $controller->getLanguages();
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->default_form_language = $controller->default_form_language;
+        $helper->allow_employee_form_lang = $controller->allow_employee_form_lang;
+        $helper->toolbar_scroll = true;
+        $helper->title = $this->l('Stats Module configuration');
+        $helper->submit_action = 'submit'.$this->name;
+        $helper->fields_value = $fieldsValues;
+
+        return $helper->generateForm([[ 'form' => $form ]]);
+    }
+
+    /**
+     * Save form data.
+     *
+     * @return void
+     * @throws PrestaShopException
+     * @since 1.0.0
+     */
+    protected function postProcess()
+    {
+        if (Tools::isSubmit('submit'.$this->name)) {
+            Configuration::updateValue(Utils::CONFIG_CAT_NAME_WITH_PATH, (int)Tools::getValue(Utils::CONFIG_CAT_NAME_WITH_PATH, 0));
+        }
     }
 
 }

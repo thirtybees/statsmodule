@@ -164,7 +164,6 @@ class StatsCatalog extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $categories = Category::getCategories($this->context->language->id, true, false);
         $product_token = Tools::getAdminToken('AdminProducts' . (int)Tab::getIdFromClassName('AdminProducts') . (int)$this->context->employee->id);
         $irow = 0;
 
@@ -205,15 +204,9 @@ class StatsCatalog extends StatsModule
 					<label class="control-label col-lg-3">
 						' . $this->l('Choose a category') . '
 					</label>
-					<div class="col-lg-6">
+					<div class="col-lg-9">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
-							<option value="0">' . $this->l('All') . '</option>';
-        foreach ($categories as $category) {
-            $html .= '<option value="' . $category['id_category'] . '"' . ($id_category == $category['id_category'] ? ' selected="selected"' : '') . '>' .
-                $category['name'] . '
-							</option>';
-        }
-        $html .= '
+						' . $this->utils->getCategoryOptions($id_category). '
 						</select>
 					</div>
 				</div>

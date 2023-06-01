@@ -418,7 +418,6 @@ class StatsProduct extends StatsModule
                 }
             }
         } else {
-            $categories = Category::getCategories((int)$this->context->language->id, true, false);
             $this->html .= '
 			<form action="#" method="post" id="categoriesForm" class="form-horizontal">
 				<div class="row row-margin-bottom">
@@ -427,13 +426,9 @@ class StatsProduct extends StatsModule
 							' . $this->l('Choose a category') . '
 						</span>
 					</label>
-					<div class="col-lg-3">
+					<div class="col-lg-9">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
-							<option value="0">' . $this->l('All') . '</option>';
-            foreach ($categories as $category) {
-                $this->html .= '<option value="' . $category['id_category'] . '"' . ($id_category == $category['id_category'] ? ' selected="selected"' : '') . '>' . $category['name'] . '</option>';
-            }
-            $this->html .= '
+						' . $this->utils->getCategoryOptions($id_category). '
 						</select>
 					</div>
 				</div>

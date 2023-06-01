@@ -23,6 +23,8 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
+use Thirtybees\StatsModule\Utils;
+
 if (!defined('_TB_VERSION_')) {
     exit;
 }
@@ -137,11 +139,6 @@ class StatsProductsProfit extends StatsModule
             $this->csvExport($engineParams);
         }
 
-        $categories = Category::getCategories((int)$this->context->language->id, true, false);
-        $categoriesOptions = '';
-        foreach ($categories as $category) {
-            $categoriesOptions .= '<option value="' . $category['id_category'] . '"' . ($this->categoryId === (int)$category['id_category'] ? ' selected="selected"' : '') . '>' . $category['name'] . '</option>';
-        }
         $info = '';
         if ($this->orderId) {
             $info = '<p class="alert alert-warning">' . sprintf($this->l('Displaying products from order ID %s'), $this->orderId) . '</p>';
@@ -151,10 +148,9 @@ class StatsProductsProfit extends StatsModule
 			<form action="#" method="post" id="categoriesForm" class="form-horizontal">
 				<div class="row row-margin-bottom">
 					<label class="control-label col-lg-3">' . $this->l('Choose a category') . '</label>
-					<div class="col-lg-3">
+					<div class="col-lg-9">
 						<select name="id_category" onchange="$(\'#categoriesForm\').submit();">
-							<option value="0">' . $this->l('All') . '</option>
-							'.$categoriesOptions.'
+							'.$this->utils->getCategoryOptions($this->categoryId).'
 						</select>
 					</div>
 				</div>
