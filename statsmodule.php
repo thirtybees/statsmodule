@@ -52,7 +52,6 @@ class StatsModule extends ModuleStats
      */
     public $modules = [
         'pagesnotfound',
-        'sekeywords',
         'statsbestcategories',
         'statsbestcustomers',
         'statsbestmanufacturers',
@@ -141,16 +140,6 @@ class StatsModule extends ModuleStats
         // Search Engine Keywords
         Configuration::updateValue('SEK_MIN_OCCURENCES', 1);
         Configuration::updateValue('SEK_FILTER_KW', '');
-
-        Db::getInstance()->execute('
-		CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'sekeyword` (
-			id_sekeyword INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-			id_shop INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			id_shop_group INTEGER UNSIGNED NOT NULL DEFAULT \'1\',
-			keyword VARCHAR(256) NOT NULL,
-			date_add DATETIME NOT NULL,
-			PRIMARY KEY(id_sekeyword)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
 
         Db::getInstance()->execute(
             'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'pagenotfound` (
@@ -298,22 +287,6 @@ class StatsModule extends ModuleStats
                 ]);
             }
         }
-
-        // track search engine query words, if passed in referrer
-        if ($referer) {
-            $pos = strpos($referer, Tools::getHttpHost());
-            if ($pos === false) {
-                $keywords = $this->getKeywords($referer);
-                if ($keywords) {
-                    Db::getInstance()->insert('sekeyword', [
-                        'keyword' => pSQL(mb_strtolower(trim($keywords))),
-                        'date_add' => date('Y-m-d H:I:s'),
-                        'id_shop' => (int)$this->context->shop->id,
-                        'id_shop_group' => (int)$this->context->shop->id_shop_group
-                    ]);
-                }
-            }
-        }
     }
 
     /**
@@ -379,54 +352,6 @@ class StatsModule extends ModuleStats
      */
     public function hookDisplayAdminStatsModules()
     {
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return false|string
-     * @throws PrestaShopException
-     */
-    public function getKeywords($url)
-    {
-        if (!Validate::isAbsoluteUrl($url)) {
-            return false;
-        }
-
-        $parsed_url = parse_url($url);
-        if (!isset($parsed_url['query']) && isset($parsed_url['fragment'])) {
-            $parsed_url['query'] = $parsed_url['fragment'];
-        }
-
-        if (!isset($parsed_url['query'])) {
-            return false;
-        }
-
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('SELECT `server`, `getvar` FROM `' . _DB_PREFIX_ . 'search_engine`');
-        foreach ($result as $row) {
-            $host =& $row['server'];
-            $varname =& $row['getvar'];
-            if (strstr($parsed_url['host'], $host)) {
-                $k_array = [];
-                preg_match('/[^a-zA-Z&]?' . $varname . '=.*\&' . '/U', $parsed_url['query'], $k_array);
-
-                if (empty($k_array[0])) {
-                    preg_match('/[^a-zA-Z&]?' . $varname . '=.*$' . '/', $parsed_url['query'], $k_array);
-                }
-
-                if (empty($k_array[0])) {
-                    return false;
-                }
-
-                if ($k_array[0][0] == '&' && mb_strlen($k_array[0]) == 1) {
-                    return false;
-                }
-
-                return urldecode(str_replace('+', ' ', ltrim(mb_substr(rtrim($k_array[0], '&'), mb_strlen($varname) + 1), '=')));
-            }
-        }
-
-        return false;
     }
 
     /**
