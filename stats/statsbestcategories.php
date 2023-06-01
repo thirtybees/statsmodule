@@ -30,6 +30,12 @@ if (!defined('_TB_VERSION_')) {
 
 class StatsBestCategories extends StatsModule
 {
+    const PARAM_ONLY_LEAF_CATEGORIES = 'only_leaf_categories';
+    const PARAM_ATTRIBUTION_MODEL = 'attribution_model';
+
+    const ATTRIBUTION_MODEL_DEFAULT_CATEGORY = 'default_category';
+    const ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES = 'associated_categories';
+
     /**
      * @var string
      */
@@ -69,7 +75,18 @@ class StatsBestCategories extends StatsModule
      */
     public function hookAdminStatsModules()
     {
-        $onlyChildren = (int)Tools::getValue('onlyChildren');
+        $onlyLeafCategories = $this->showLeafOnlyCategories();
+        $attributionModel = $this->getAttributionModel();
+
+        $method = strtoupper($_SERVER['REQUEST_METHOD']);
+        if ($method === 'POST') {
+            $url = Context::getContext()->link->getAdminLink('AdminStats', true, [
+                'module' => 'statsbestcategories',
+                static::PARAM_ONLY_LEAF_CATEGORIES => $onlyLeafCategories,
+                static::PARAM_ATTRIBUTION_MODEL => $attributionModel,
+            ]);
+            Tools::redirectAdmin($url);
+        }
 
         $engine_params = [
             'id' => 'id_category',
@@ -111,7 +128,8 @@ class StatsBestCategories extends StatsModule
             'emptyMessage' => $this->empty_message,
             'pagingMessage' => $this->paging_message,
             'customParams' => [
-                'onlyChildren' => $onlyChildren,
+                static::PARAM_ONLY_LEAF_CATEGORIES => $onlyLeafCategories,
+                static::PARAM_ATTRIBUTION_MODEL => $attributionModel,
             ],
         ];
 
@@ -123,6 +141,29 @@ class StatsBestCategories extends StatsModule
 			<div class="panel-heading">
 				<i class="icon-sitemap"></i> ' . $this->displayName . '
 			</div>
+            <form action="' . Tools::safeOutput(AdminController::$currentIndex . '&token=' . Tools::getValue('token') . '&module=statsbestcategories') . '" method="post" class="form-horizontal alert">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label class="control-label pull-left">' . Tools::safeOutput($this->l('Attribution model')) . '</label>
+                        <div class="col-lg-3">
+                            <select id="attributionModel" name="'.static::PARAM_ATTRIBUTION_MODEL.'" onchange="this.form.submit();">
+                                <option value="'.static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY.'" '. ($attributionModel === static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Default cateory')) . '</option>
+                                <option value="'.static::ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES.'" ' . ($attributionModel === static::ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES ? 'selected="selected"' : '') . '>' . Tools::safeOutput($this->l('Associated categories')) . '</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="checkbox">
+                            <label for="'.static::PARAM_ONLY_LEAF_CATEGORIES.'">
+                                <input type="checkbox" name="'.static::PARAM_ONLY_LEAF_CATEGORIES.'" value="1" ' . ($onlyLeafCategories == 1 ? 'checked="checked"' : '') . ' onchange="this.form.submit();">
+                                ' . $this->l('Display final level categories only (that have no child categories)') . '
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
 			' . $this->engine($engine_params) . '
             <div class="row form-horizontal">
                 <div class="col-md-3">
@@ -130,23 +171,7 @@ class StatsBestCategories extends StatsModule
                         <i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
                     </a>
                 </div>
-                <div class="col-md-9">
-                    <div class="checkbox">
-                        <label for="onlyChildren">
-                            <input type="checkbox" name="onlyChildren" id="onlyChildren" value="1" ' . ($onlyChildren == 1 ? 'checked="checked"' : '') . '>
-                            ' . $this->l('Display final level categories only (that have no child categories)') . '
-                        </label>
-                    </div>
-
-                </div>
-            </div>
-            <script type="text/javascript">
-                $(function(){
-                    $("#onlyChildren").change(function(){
-                        $("#calendar_form").append($(this).clone().css("display", "none")).submit();
-                    });
-                });
-            </script>';
+            </div>';
     }
 
     /**
@@ -191,14 +216,22 @@ class StatsBestCategories extends StatsModule
             }
         }
 
-        $onlyChildren = '';
-        if ((int)Tools::getValue('onlyChildren') == 1) {
-            $onlyChildren = 'NOT EXISTS (SELECT NULL FROM ' . _DB_PREFIX_ . 'category WHERE id_parent = ca.id_category)';
+        $productJoinCond = '';
+        if ($this->getAttributionModel() === static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY) {
+            $productJoinCond = 'AND t.id_category_default = capr.id_category';
         }
 
         // Get best categories
         $query = '
-				SELECT ca.`id_category`, CONCAT(parent.name, \' > \', calang.`name`) AS name,
+				SELECT ca.`id_category`,
+				(
+					SELECT GROUP_CONCAT(cl2.name ORDER BY c2.nleft SEPARATOR " > ")
+					FROM '._DB_PREFIX_.'category c2
+					INNER JOIN '._DB_PREFIX_.'category_lang cl2 ON (cl2.id_category = c2.id_category AND cl2.id_lang = ' . (int)$id_lang . Shop::addSqlRestrictionOnLang('cl2') .')
+					WHERE c2.nleft <= ca.nleft
+					AND c2.nright >= ca.nright
+					AND c2.id_parent
+				) AS name,
 				IFNULL(SUM(t.`totalQuantitySold`), 0) AS totalQuantitySold,
 				ROUND(IFNULL(SUM(t.`totalPriceSold`), 0), 2) AS totalPriceSold,
 				ROUND(IFNULL(SUM(t.`totalWholeSalePriceSold`), 0), 2) AS totalWholeSalePriceSold,
@@ -218,16 +251,14 @@ class StatsBestCategories extends StatsModule
                     SELECT COUNT(id_category) FROM ' . _DB_PREFIX_ . 'category WHERE `id_parent` = ca.`id_category`
 			    ) AS hasChildren
 			FROM `' . _DB_PREFIX_ . 'category` ca
-			LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` calang ON (ca.`id_category` = calang.`id_category` AND calang.`id_lang` = ' . (int)$id_lang . Shop::addSqlRestrictionOnLang('calang') . ')
-			LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` parent ON (ca.`id_parent` = parent.`id_category` AND parent.`id_lang` = ' . (int)$id_lang . Shop::addSqlRestrictionOnLang('parent') . ')
 			LEFT JOIN `' . _DB_PREFIX_ . 'category_product` capr ON ca.`id_category` = capr.`id_category`
 			LEFT JOIN (
-				SELECT pr.`id_product`, t.`totalQuantitySold`, t.`totalPriceSold`, t.`totalWholeSalePriceSold`
+				SELECT pr.`id_product`, pr.`id_category_default`, t.`totalQuantitySold`, t.`totalPriceSold`, t.`totalWholeSalePriceSold`
 				FROM `' . _DB_PREFIX_ . 'product` pr
 				LEFT JOIN (
-					SELECT pr.`id_product`, pa.`wholesale_price`,
+					SELECT pr.`id_product`,
 						IFNULL(SUM(cp.`product_quantity`), 0) AS totalQuantitySold,
-						IFNULL(SUM(cp.`product_price` * cp.`product_quantity`), 0) / o.conversion_rate AS totalPriceSold,
+						IFNULL(SUM(cp.`product_price` * cp.`product_quantity` / o.conversion_rate), 0) AS totalPriceSold,
 						IFNULL(SUM(
 							CASE
 								WHEN cp.`original_wholesale_price` <> "0.000000"
@@ -247,11 +278,14 @@ class StatsBestCategories extends StatsModule
 					AND o.invoice_date BETWEEN ' . $date_between . '
 					GROUP BY pr.`id_product`
 				) t ON t.`id_product` = pr.`id_product`
-			) t	ON t.`id_product` = capr.`id_product`
+			) t	ON (t.`id_product` = capr.`id_product` '.$productJoinCond.')
 			' . (($categories) ? 'WHERE ca.id_category IN (' . implode(', ', $categories) . ')' : '') . '
-			' . ($onlyChildren ? 'AND '.$onlyChildren : '') . '
 			GROUP BY ca.`id_category`
 			HAVING ca.`id_category` != 1';
+
+        if ($this->showLeafOnlyCategories()) {
+            $query .= ' AND hasChildren = 0';
+        }
 
         if (Validate::IsName($this->_sort)) {
             $query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
@@ -274,15 +308,6 @@ class StatsBestCategories extends StatsModule
             $value['totalPriceSold'] = Tools::displayPrice($totalPriceSold, $currency);
 
             if (! $export) {
-                $parts = explode('>', $value['name']);
-                $value['name'] = '<i class="icon-folder-open"></i> ' . trim($parts[0]) . ' > ';
-                if ((int)$value['hasChildren'] == 0) {
-                    $value['name'] .= '&bull; ';
-                } else {
-                    $value['name'] .= '<i class="icon-folder-open"></i> ';
-                }
-                $value['name'] .= trim($parts[1]);
-
                 $drilldown = Context::getContext()->link->getAdminLink('AdminStats', true, [
                     'module' => 'statsproductsprofit',
                     'id_category' => (int)$value['id_category']
@@ -301,13 +326,34 @@ class StatsBestCategories extends StatsModule
             if ($categories) {
                 $totalQuery->where('ca.id_category IN (' . implode(', ', $categories) . ')');
             }
-            if ($onlyChildren) {
-                $totalQuery->where($onlyChildren);
+            if ($this->showLeafOnlyCategories()) {
+                $totalQuery->where('NOT EXISTS (SELECT NULL FROM ' . _DB_PREFIX_ . 'category WHERE id_parent = ca.id_category)');
             }
             $this->_totalCount = (int)$conn->getValue($totalQuery);
         } else {
             $this->_totalCount = count($values);
 
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAttributionModel()
+    {
+        switch (Tools::getValue(static::PARAM_ATTRIBUTION_MODEL)) {
+            case static::ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES:
+                return static::ATTRIBUTION_MODEL_ASSOCIATED_CATEGORIES;
+            default:
+                return static::ATTRIBUTION_MODEL_DEFAULT_CATEGORY;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    protected function showLeafOnlyCategories()
+    {
+        return (int)Tools::getValue(static::PARAM_ONLY_LEAF_CATEGORIES, 0);
     }
 }
