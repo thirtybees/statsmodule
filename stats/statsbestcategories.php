@@ -243,7 +243,7 @@ class StatsBestCategories extends StatsModule
 					LEFT JOIN `' . _DB_PREFIX_ . 'product` pr ON CAST(p.`id_object` AS UNSIGNED INTEGER) = pr.`id_product`
 					LEFT JOIN `' . _DB_PREFIX_ . 'category_product` capr2 ON capr2.`id_product` = pr.`id_product`
 					WHERE capr.`id_category` = capr2.`id_category`
-					AND p.`id_page_type` = 1
+					AND p.`id_page_type` = ' . (int)Page::getPageTypeByName('product') . '
 					AND dr.`time_start` BETWEEN ' . $date_between . '
 					AND dr.`time_end` BETWEEN ' . $date_between . '
 				) AS totalPageViewed,
