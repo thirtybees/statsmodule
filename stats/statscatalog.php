@@ -211,7 +211,7 @@ class StatsCatalog extends StatsModule
         }
 
         $html = '
-		<script type="text/javascript">$(\'#calendar\').slideToggle();</script>
+		<script type="text/javascript">$(\'#calendar\').hide();</script>
 			<div class="panel-heading">
 				' . $this->displayName . '
 			</div>
