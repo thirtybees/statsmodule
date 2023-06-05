@@ -69,16 +69,19 @@ class StatsCatalog extends StatsModule
      */
     public function getTotalPageViewed()
     {
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
-		SELECT SUM(pv.`counter`)
-		FROM `' . _DB_PREFIX_ . 'product` p
-		' . Shop::addSqlAssociation('product', 'p') . '
-		LEFT JOIN `' . _DB_PREFIX_ . 'page` pa ON p.`id_product` = pa.`id_object`
-		LEFT JOIN `' . _DB_PREFIX_ . 'page_type` pt ON (pt.`id_page_type` = pa.`id_page_type` AND pt.`name` IN ("product.php", "product"))
-		LEFT JOIN `' . _DB_PREFIX_ . 'page_viewed` pv ON pv.`id_page` = pa.`id_page`
-		' . $this->join . '
-		WHERE product_shop.`active` = 1
-		' . $this->where);
+        if ($this->utils->trackingPageViews()) {
+            return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+            SELECT SUM(pv.`counter`)
+            FROM `' . _DB_PREFIX_ . 'product` p
+            ' . Shop::addSqlAssociation('product', 'p') . '
+            LEFT JOIN `' . _DB_PREFIX_ . 'page` pa ON p.`id_product` = pa.`id_object`
+            LEFT JOIN `' . _DB_PREFIX_ . 'page_type` pt ON (pt.`id_page_type` = pa.`id_page_type` AND pt.`name` IN ("product.php", "product"))
+            LEFT JOIN `' . _DB_PREFIX_ . 'page_viewed` pv ON pv.`id_page` = pa.`id_page`
+            ' . $this->join . '
+            WHERE product_shop.`active` = 1
+            ' . $this->where);
+        }
+        return 0;
     }
 
     /**
@@ -185,14 +188,27 @@ class StatsCatalog extends StatsModule
         $total_bought = $this->getTotalBought();
         $average_purchase = $total ? ($total_bought / $total) : 0;
 
-        $total_page_viewed = $this->getTotalPageViewed();
-        $average_viewed = $total ? ($total_page_viewed / $total) : 0;
-        $conversion = number_format((float)($total_page_viewed ? ($total_bought / $total_page_viewed) : 0), 2, '.', '');
-        if ($conversion_reverse = number_format((float)($total_bought ? ($total_page_viewed / $total_bought) : 0), 2, '.', '')) {
-            $conversion .= sprintf($this->l('(1 purchase / %d visits)'), $conversion_reverse);
-        }
+        $extra = '';
+        $productsPageViewed = '';
+        $productsNeverViewed = '';
+        $avaragedViewed = '';
+        $conversionRate ='';
 
-        $total_nv = $total - $this->getTotalProductViewed();
+        if ($this->utils->trackingPageViews()) {
+            $total_page_viewed = $this->getTotalPageViewed();
+            $average_viewed = $total ? ($total_page_viewed / $total) : 0;
+            $conversion = number_format((float)($total_page_viewed ? ($total_bought / $total_page_viewed) : 0), 2, '.', '');
+            if ($conversion_reverse = number_format((float)($total_bought ? ($total_page_viewed / $total_bought) : 0), 2, '.', '')) {
+                $conversion .= sprintf($this->l('(1 purchase / %d visits)'), $conversion_reverse);
+            }
+            $total_nv = $total - $this->getTotalProductViewed();
+
+            $productsPageViewed = '<li class="list-group-item">' . $this->returnLine($this->l('Product pages viewed:'), '<span class="badge">' . (int)$total_page_viewed) . '</span></li>';
+            $productsNeverViewed = ' <li class="list-group-item">' . $this->returnLine($this->l('Products never viewed:'), '<span class="badge">' . (int)$total_nv . ' / ' . (int)$total) . '</span></li>';
+            $avaragedViewed = '<li class="list-group-item">' . $this->returnLine($this->l('Average number of page visits:'), '<span class="badge">' . number_format((float)$average_viewed, 2, '.', '')) . '</span></li>';
+            $conversionRate = '<li class="list-group-item">' . $this->returnLine($this->l('Conversion rate*:'), '<span class="badge">' . $conversion) . '</span></li>';
+            $extra = '<p class="row row-margin-bottom"><b>*</b>&nbsp;' . $this->l('Defines the average conversion rate for the product page. It is possible to purchase a product without viewing the product page, so this rate can be greater than 1.') . ' </p>';
+        }
 
         $html = '
 		<script type="text/javascript">$(\'#calendar\').slideToggle();</script>
@@ -211,26 +227,24 @@ class StatsCatalog extends StatsModule
 					</div>
 				</div>
 			</form>
-			<ul class="list-group">
-				<li class="list-group-item">' . $this->returnLine($this->l('Products available:'), '<span class="badge">' . (int)$total) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Average price (base price):'), '<span class="badge">' . Tools::displayPrice($average_price, $this->context->currency)) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Product pages viewed:'), '<span class="badge">' . (int)$total_page_viewed) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Products bought:'), '<span class="badge">' . (int)$total_bought) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Average number of page visits:'), '<span class="badge">' . number_format((float)$average_viewed, 2, '.', '')) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Average number of purchases:'), '<span class="badge">' . number_format((float)$average_purchase, 2, '.', '')) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Images available:'), '<span class="badge">' . (int)$total_pictures) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Average number of images:'), '<span class="badge">' . number_format((float)$average_pictures, 2, '.', '')) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Products never viewed:'), '<span class="badge">' . (int)$total_nv . ' / ' . (int)$total) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Products never purchased:'), '<span class="badge">' . (int)$total_nb . ' / ' . (int)$total) . '</span></li>
-				<li class="list-group-item">' . $this->returnLine($this->l('Conversion rate*:'), '<span class="badge">' . $conversion) . '</span></li>
-			</ul>
 			<div class="row row-margin-bottom">
-				<p>
-					<i class="icon-asterisk"></i>' . $this->l('Defines the average conversion rate for the product page. It is possible to purchase a product without viewing the product page, so this rate can be greater than 1.') . '
-				</p>
-			</div>';
+                <ul class="list-group">
+                    <li class="list-group-item">' . $this->returnLine($this->l('Products available:'), '<span class="badge">' . (int)$total) . '</span></li>
+                    <li class="list-group-item">' . $this->returnLine($this->l('Average price (base price):'), '<span class="badge">' . Tools::displayPrice($average_price, $this->context->currency)) . '</span></li>
+                    '. $productsPageViewed . '
+                    <li class="list-group-item">' . $this->returnLine($this->l('Products bought:'), '<span class="badge">' . (int)$total_bought) . '</span></li>
+                    '. $avaragedViewed . '
+                    <li class="list-group-item">' . $this->returnLine($this->l('Average number of purchases:'), '<span class="badge">' . number_format((float)$average_purchase, 2, '.', '')) . '</span></li>
+                    <li class="list-group-item">' . $this->returnLine($this->l('Images available:'), '<span class="badge">' . (int)$total_pictures) . '</span></li>
+                    <li class="list-group-item">' . $this->returnLine($this->l('Average number of images:'), '<span class="badge">' . number_format((float)$average_pictures, 2, '.', '')) . '</span></li>
+                    '. $productsNeverViewed . '
+                    <li class="list-group-item">' . $this->returnLine($this->l('Products never purchased:'), '<span class="badge">' . (int)$total_nb . ' / ' . (int)$total) . '</span></li>
+                    '. $conversionRate . '
+                </ul>'
+                . $extra . '
+            </div>';
 
-        if (count($products_nb) && count($products_nb) < 50) {
+        if ($products_nb) {
             $html .= '
 				<div class="panel-heading">' . $this->l('Products never purchased') . '</div>
 				<table class="table">
@@ -242,7 +256,7 @@ class StatsCatalog extends StatsModule
 						</tr>
 					</thead>
 					<tbody>';
-            foreach ($products_nb as $product) {
+            foreach (array_slice($products_nb, 0, 50) as $product) {
                 $html .= '
 					<tr' . ($irow++ % 2 ? ' class="alt_row"' : '') . '>
 						<td>' . $product['id_product'] . '</td>

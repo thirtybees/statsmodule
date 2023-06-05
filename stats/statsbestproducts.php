@@ -124,6 +124,12 @@ class StatsBestProducts extends StatsModule
             ],
         ];
 
+        if (! $this->utils->trackingPageViews()) {
+            $this->columns = array_filter($this->columns, function($column) {
+                return $column['id'] !== 'totalPageViewed';
+            });
+        }
+
         $this->displayName = $this->l('Best-selling products');
     }
 
@@ -172,15 +178,7 @@ class StatsBestProducts extends StatsModule
 				IFNULL(SUM(od.product_quantity), 0) AS totalQuantitySold,
 				ROUND(IFNULL(IFNULL(SUM(od.product_quantity), 0) / (1 + LEAST(TO_DAYS(' . $array_date_between[1] . '), TO_DAYS(NOW())) - GREATEST(TO_DAYS(' . $array_date_between[0] . '), TO_DAYS(product_shop.date_add))), 0), 2) as averageQuantitySold,
 				ROUND(IFNULL(SUM((od.product_price * od.product_quantity) / o.conversion_rate), 0), 2) AS totalPriceSold,
-				(
-					SELECT IFNULL(SUM(pv.counter), 0)
-					FROM ' . _DB_PREFIX_ . 'page pa
-					LEFT JOIN ' . _DB_PREFIX_ . 'page_viewed pv ON pa.id_page = pv.id_page
-					LEFT JOIN ' . _DB_PREFIX_ . 'date_range dr ON pv.id_date_range = dr.id_date_range
-					WHERE pa.id_object = p.id_product AND pa.id_page_type = ' . (int)Page::getPageTypeByName('product') . '
-					AND dr.time_start BETWEEN ' . $date_between . '
-					AND dr.time_end BETWEEN ' . $date_between . '
-				) AS totalPageViewed,
+			    '.$this->getPageViewedSubselect($date_between).' AS totalPageViewed,
 				product_shop.active
 				FROM ' . _DB_PREFIX_ . 'product p
 				' . Shop::addSqlAssociation('product', 'p') . '
@@ -226,5 +224,28 @@ class StatsBestProducts extends StatsModule
         } else {
             $this->_totalCount = count($values);
         }
+    }
+
+    /**
+     * @param string $dateBetween
+     *
+     * @return string
+     * @throws PrestaShopException
+     */
+    protected function getPageViewedSubselect($dateBetween)
+    {
+        if ($this->utils->trackingPageViews()) {
+            $sql = (new DbQuery())
+                ->select('IFNULL(SUM(pv.`counter`), 0)')
+                ->from('page', 'pa')
+                ->innerJoin('page_viewed', 'pv', 'pa.`id_page` = pv.`id_page`')
+                ->innerJoin('date_range', 'dr', 'pv.`id_date_range` = dr.`id_date_range`')
+                ->where('pa.id_object = p.id_product')
+                ->where('pa.id_page_type = '. (int)Page::getPageTypeByName('product'))
+                ->where('dr.`time_start` BETWEEN ' . $dateBetween)
+                ->where('dr.`time_end` BETWEEN ' . $dateBetween);
+            return "($sql)";
+        }
+        return '0';
     }
 }

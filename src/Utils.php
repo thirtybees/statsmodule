@@ -128,6 +128,18 @@ class Utils
     }
 
     /**
+     * Returns true, if shop collects pageview data
+     *
+     * @return bool
+     *
+     * @throws PrestaShopException
+     */
+    public function trackingPageViews()
+    {
+        return (bool) Configuration::get('PS_STATSDATA_PAGESVIEWS');
+    }
+
+    /**
      * @param string $str
      *
      * @return string

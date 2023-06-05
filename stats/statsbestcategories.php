@@ -88,41 +88,46 @@ class StatsBestCategories extends StatsModule
             Tools::redirectAdmin($url);
         }
 
+        $columns = [
+            [
+                'id' => 'name',
+                'header' => $this->l('Name'),
+                'dataIndex' => 'name',
+                'align' => 'left',
+            ],
+            [
+                'id' => 'totalQuantitySold',
+                'header' => $this->l('Total Quantity Sold'),
+                'dataIndex' => 'totalQuantitySold',
+                'align' => 'center',
+            ],
+            [
+                'id' => 'totalPriceSold',
+                'header' => $this->l('Total Price'),
+                'dataIndex' => 'totalPriceSold',
+                'align' => 'right',
+            ],
+            [
+                'id' => 'totalWholeSalePriceSold',
+                'header' => $this->l('Total Margin'),
+                'dataIndex' => 'totalWholeSalePriceSold',
+                'align' => 'center',
+            ],
+        ];
+
+        if ($this->utils->trackingPageViews()) {
+            $columns[] = [
+                'id' => 'totalPageViewed',
+                'header' => $this->l('Total Viewed'),
+                'dataIndex' => 'totalPageViewed',
+                'align' => 'center',
+            ];
+        }
+
         $engine_params = [
             'id' => 'id_category',
             'title' => $this->displayName,
-            'columns' => [
-                [
-                    'id' => 'name',
-                    'header' => $this->l('Name'),
-                    'dataIndex' => 'name',
-                    'align' => 'left',
-                ],
-                [
-                    'id' => 'totalQuantitySold',
-                    'header' => $this->l('Total Quantity Sold'),
-                    'dataIndex' => 'totalQuantitySold',
-                    'align' => 'center',
-                ],
-                [
-                    'id' => 'totalPriceSold',
-                    'header' => $this->l('Total Price'),
-                    'dataIndex' => 'totalPriceSold',
-                    'align' => 'right',
-                ],
-                [
-                    'id' => 'totalWholeSalePriceSold',
-                    'header' => $this->l('Total Margin'),
-                    'dataIndex' => 'totalWholeSalePriceSold',
-                    'align' => 'center',
-                ],
-                [
-                    'id' => 'totalPageViewed',
-                    'header' => $this->l('Total Viewed'),
-                    'dataIndex' => 'totalPageViewed',
-                    'align' => 'center',
-                ],
-            ],
+            'columns' => $columns,
             'defaultSortColumn' => $this->default_sort_column,
             'defaultSortDirection' => $this->default_sort_direction,
             'emptyMessage' => $this->empty_message,
@@ -235,18 +240,7 @@ class StatsBestCategories extends StatsModule
 				IFNULL(SUM(t.`totalQuantitySold`), 0) AS totalQuantitySold,
 				ROUND(IFNULL(SUM(t.`totalPriceSold`), 0), 2) AS totalPriceSold,
 				ROUND(IFNULL(SUM(t.`totalWholeSalePriceSold`), 0), 2) AS totalWholeSalePriceSold,
-				(
-					SELECT IFNULL(SUM(pv.`counter`), 0)
-					FROM `' . _DB_PREFIX_ . 'page` p
-					LEFT JOIN `' . _DB_PREFIX_ . 'page_viewed` pv ON p.`id_page` = pv.`id_page`
-					LEFT JOIN `' . _DB_PREFIX_ . 'date_range` dr ON pv.`id_date_range` = dr.`id_date_range`
-					LEFT JOIN `' . _DB_PREFIX_ . 'product` pr ON CAST(p.`id_object` AS UNSIGNED INTEGER) = pr.`id_product`
-					LEFT JOIN `' . _DB_PREFIX_ . 'category_product` capr2 ON capr2.`id_product` = pr.`id_product`
-					WHERE capr.`id_category` = capr2.`id_category`
-					AND p.`id_page_type` = ' . (int)Page::getPageTypeByName('product') . '
-					AND dr.`time_start` BETWEEN ' . $date_between . '
-					AND dr.`time_end` BETWEEN ' . $date_between . '
-				) AS totalPageViewed,
+			    '.$this->getPageViewedSubselect($date_between).' AS totalPageViewed,
 				(
                     SELECT COUNT(id_category) FROM ' . _DB_PREFIX_ . 'category WHERE `id_parent` = ca.`id_category`
 			    ) AS hasChildren
@@ -355,5 +349,30 @@ class StatsBestCategories extends StatsModule
     protected function showLeafOnlyCategories()
     {
         return (int)Tools::getValue(static::PARAM_ONLY_LEAF_CATEGORIES, 0);
+    }
+
+    /**
+     * @param string $dateBetween
+     *
+     * @return string
+     * @throws PrestaShopException
+     */
+    protected function getPageViewedSubselect($dateBetween)
+    {
+        if ($this->utils->trackingPageViews()) {
+            $sql = (new DbQuery())
+                ->select('IFNULL(SUM(pv.`counter`), 0)')
+                ->from('page', 'p')
+                ->innerJoin('page_viewed', 'pv', 'p.`id_page` = pv.`id_page`')
+                ->innerJoin('date_range', 'dr', 'pv.`id_date_range` = dr.`id_date_range`')
+                ->innerJoin('product', 'pr', ' CAST(p.`id_object` AS UNSIGNED INTEGER) = pr.`id_product`')
+                ->innerJoin('category_product', 'capr2', 'capr2.`id_product` = pr.`id_product`')
+                ->where('capr2.id_category = capr.id_category')
+                ->where('p.id_page_type = '. (int)Page::getPageTypeByName('product'))
+                ->where('dr.`time_start` BETWEEN ' . $dateBetween)
+                ->where('dr.`time_end` BETWEEN ' . $dateBetween);
+            return "($sql)";
+        }
+        return '0';
     }
 }
