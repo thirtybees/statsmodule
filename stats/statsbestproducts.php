@@ -23,6 +23,8 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
+use Thirtybees\StatsModule\ProductSalesView;
+
 if (!defined('_TB_VERSION_')) {
     exit;
 }
@@ -81,14 +83,32 @@ class StatsBestProducts extends StatsModule
                 'align' => 'left',
             ],
             [
+                'id' => 'totalOrders',
+                'header' => $this->l('Orders'),
+                'dataIndex' => 'totalOrders',
+                'align' => 'center',
+            ],
+            [
+                'id' => 'totalQuantityProduct',
+                'header' => $this->l('Qty (individual)'),
+                'dataIndex' => 'totalQuantityProduct',
+                'align' => 'center',
+            ],
+            [
+                'id' => 'totalQuantityPack',
+                'header' => $this->l('Qty (pack)'),
+                'dataIndex' => 'totalQuantityPack',
+                'align' => 'center',
+            ],
+            [
                 'id' => 'totalQuantitySold',
-                'header' => $this->l('Quantity sold'),
+                'header' => $this->l('Qty'),
                 'dataIndex' => 'totalQuantitySold',
                 'align' => 'center',
             ],
             [
                 'id' => 'avgPriceSold',
-                'header' => $this->l('Price sold'),
+                'header' => $this->l('Avg price'),
                 'dataIndex' => 'avgPriceSold',
                 'align' => 'right',
             ],
@@ -100,7 +120,7 @@ class StatsBestProducts extends StatsModule
             ],
             [
                 'id' => 'averageQuantitySold',
-                'header' => $this->l('Quantity sold in a day'),
+                'header' => $this->l('Quantity/day'),
                 'dataIndex' => 'averageQuantitySold',
                 'align' => 'center',
             ],
@@ -112,7 +132,7 @@ class StatsBestProducts extends StatsModule
             ],
             [
                 'id' => 'quantity',
-                'header' => $this->l('Available quantity for sale'),
+                'header' => $this->l('Available quantity'),
                 'dataIndex' => 'quantity',
                 'align' => 'center',
             ],
@@ -124,11 +144,21 @@ class StatsBestProducts extends StatsModule
             ],
         ];
 
-        if (! $this->utils->trackingPageViews()) {
-            $this->columns = array_filter($this->columns, function($column) {
-                return $column['id'] !== 'totalPageViewed';
-            });
-        }
+        $this->columns = array_filter($this->columns, function($column) {
+            $id = $column['id'];
+            // Do not display totalPageViewed if we don't collect this information
+            if ($id === 'totalPageViewed' && !$this->utils->trackingPageViews()) {
+                return false;
+            }
+
+            // Hide packs related quantities if we don't have any packs
+            if (in_array($id, ['totalQuantityPack', 'totalQuantityProduct']) && !Pack::isFeatureActive()) {
+                return false;
+            }
+
+            // show the rest
+            return true;
+        });
 
         $this->displayName = $this->l('Best-selling products');
     }
@@ -153,6 +183,7 @@ class StatsBestProducts extends StatsModule
             $this->csvExport($engine_params);
         }
 
+
         return '<div class="panel-heading">' . $this->displayName . '</div>
 		' . $this->engine($engine_params) . '
 		<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1') . '">
@@ -171,25 +202,27 @@ class StatsBestProducts extends StatsModule
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
+        $export = !!Tools::getValue('export');
+
+        $sales = new ProductSalesView($date_between);
 
         $query = 'SELECT p.reference, p.id_product, pl.name,
-				ROUND(AVG(od.product_price / o.conversion_rate), 2) as avgPriceSold,
+				ROUND(AVG(sales.price), 2) as avgPriceSold,
 				IFNULL(stock.quantity, 0) as quantity,
-				IFNULL(SUM(od.product_quantity), 0) AS totalQuantitySold,
-				ROUND(IFNULL(IFNULL(SUM(od.product_quantity), 0) / (1 + LEAST(TO_DAYS(' . $array_date_between[1] . '), TO_DAYS(NOW())) - GREATEST(TO_DAYS(' . $array_date_between[0] . '), TO_DAYS(product_shop.date_add))), 0), 2) as averageQuantitySold,
-				ROUND(IFNULL(SUM((od.product_price * od.product_quantity) / o.conversion_rate), 0), 2) AS totalPriceSold,
+				COUNT(DISTINCT sales.id_order) AS totalOrders,
+				IFNULL(SUM(sales.quantity), 0) AS totalQuantitySold,
+				IFNULL(SUM(CASE WHEN sales.pack_item THEN 0 ELSE sales.quantity END), 0) AS totalQuantityProduct,
+				IFNULL(SUM(CASE WHEN sales.pack_item THEN sales.quantity ELSE 0 END), 0) AS totalQuantityPack,
+				ROUND(IFNULL(IFNULL(SUM(sales.quantity), 0) / (1 + LEAST(TO_DAYS(' . $array_date_between[1] . '), TO_DAYS(NOW())) - GREATEST(TO_DAYS(' . $array_date_between[0] . '), TO_DAYS(product_shop.date_add))), 0), 2) as averageQuantitySold,
+				ROUND(IFNULL(SUM(sales.price * sales.quantity), 0), 2) AS totalPriceSold,
 			    '.$this->getPageViewedSubselect($date_between).' AS totalPageViewed,
 				product_shop.active
 				FROM ' . _DB_PREFIX_ . 'product p
 				' . Shop::addSqlAssociation('product', 'p') . '
 				LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int)$this->getLang() . ' ' . Shop::addSqlRestrictionOnLang('pl') . ')
-				LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.product_id = p.id_product
-				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON od.id_order = o.id_order
-				' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+				INNER JOIN '.$sales->getAsTable().' sales ON (sales.id_product = p.id_product)
 				' . Product::sqlStock('p', 0) . '
-				WHERE o.valid = 1
-				AND o.invoice_date BETWEEN ' . $date_between . '
-				GROUP BY od.product_id';
+				GROUP BY sales.id_product';
 
         if (Validate::IsName($this->_sort)) {
             $query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
@@ -207,6 +240,14 @@ class StatsBestProducts extends StatsModule
         foreach ($values as &$value) {
             $value['avgPriceSold'] = Tools::displayPrice($value['avgPriceSold'], $currency);
             $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);
+
+            if (! $export) {
+                $drilldown = Context::getContext()->link->getAdminLink('AdminStats', true, [
+                    'module' => 'statsproduct',
+                    'id_product' => (int)$value['id_product']
+                ]);
+                $value['name'] = '<a href="'.Tools::safeOutput($drilldown).'">'.$value['name'].'</a>';
+            }
         }
         unset($value);
 
@@ -214,12 +255,9 @@ class StatsBestProducts extends StatsModule
 
         if (Validate::IsUnsignedInt($this->_limit)) {
             $totalQuery = (new DbQuery())
-                ->select('COUNT(DISTINCT p.id_product)')
+                ->select('COUNT(DISTINCT sales.id_product)')
                 ->from('orders', 'o')
-                ->innerJoin('order_detail', 'od', '(od.id_order = o.id_order)')
-                ->innerJoin('product', 'p', '(p.id_product = od.product_id)')
-                ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
-                ->where('o.invoice_date BETWEEN ' . $this->getDate());
+                ->join('INNER JOIN ' . $sales->getAsTable() . ' AS sales ON (sales.id_order = o.id_order)');
             $this->_totalCount = (int)$conn->getValue($totalQuery);
         } else {
             $this->_totalCount = count($values);

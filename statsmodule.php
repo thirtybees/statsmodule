@@ -30,6 +30,7 @@ if (!defined('_TB_VERSION_')) {
 }
 
 require_once __DIR__ . '/src/Utils.php';
+require_once __DIR__ . '/src/ProductSalesView.php';
 
 class StatsModule extends ModuleStats
 {
