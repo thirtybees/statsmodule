@@ -121,6 +121,9 @@ class PagesNotFound extends StatsModule
 
         $pages = $this->getPages();
         if (count($pages)) {
+            $baseUrl = Configuration::get('PS_SSL_ENABLED')
+                ? Tools::getProtocol(true) . Context::getContext()->shop->domain_ssl
+                : Tools::getProtocol(false) . Context::getContext()->shop->domain;
             $html .= '
 			<table class="table">
 				<thead>
@@ -136,8 +139,8 @@ class PagesNotFound extends StatsModule
                     if ($hr != 'nb') {
                         $html .= '
 						<tr>
-							<td><a href="' . $ru . '-admin404">' . wordwrap($ru, 30, '<br />', true) . '</a></td>
-							<td><a href="' . Tools::getProtocol() . $hr . '">' . wordwrap($hr, 40, '<br />', true) . '</a></td>
+							<td><a href="' . $baseUrl . Tools::safeOutput($ru) . '" target="_blank">' . Tools::safeOutput(Tools::truncate(urldecode($ru), 30)) . '</a></td>
+							<td><a href="' . Tools::getProtocol(true) . Tools::safeOutput($hr) . '" target="_blank" noreferrer>' .Tools::safeOutput(Tools::truncate(urldecode($hr), 40)) . '</a></td>
 							<td>' . $counter . '</td>
 						</tr>';
                     }
