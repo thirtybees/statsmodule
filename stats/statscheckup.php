@@ -275,7 +275,11 @@ class StatsCheckUp extends StatsModule
                 } else {
                     $scores[$descriptionKey] = 1;
                 }
-                $totals[$descriptionKey] += $scores[$descriptionKey];
+                if (isset($totals[$descriptionKey])) {
+                    $totals[$descriptionKey] += $scores[$descriptionKey];
+                } else {
+                    $totals[$descriptionKey] = $scores[$descriptionKey];
+                }
             }
             $scores['average'] = array_sum($scores) / $divisor;
             $scores['average'] = ($scores['average'] < 1 ? 0 : ($scores['average'] > 1.5 ? 2 : 1));
