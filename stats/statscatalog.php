@@ -116,6 +116,7 @@ class StatsCatalog extends StatsModule
 		LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON p.`id_product` = od.`product_id`
 		' . $this->join . '
 		WHERE o.valid = 1
+		' . Shop::addSqlRestriction(false, 'o') . '
 		' . $this->where);
     }
 
@@ -134,6 +135,7 @@ class StatsCatalog extends StatsModule
 				' . Shop::addSqlAssociation('product', 'p') . '
 				' . $this->join . '
 				WHERE o.valid = 1
+		            ' . Shop::addSqlRestriction(false, 'o') . '
 					' . $this->where . '
 					AND product_shop.`active` = 1
 				GROUP BY p.`id_product`';

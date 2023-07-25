@@ -153,7 +153,7 @@ class StatsBestVouchers extends StatsModule
 				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = ocr.id_order
 				LEFT JOIN ' . _DB_PREFIX_ . 'cart_rule cr ON cr.id_cart_rule = ocr.id_cart_rule
 				WHERE o.valid = 1
-					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					AND o.invoice_date BETWEEN ' . $this->getDate() . '
 				GROUP BY ocr.id_cart_rule';
 
@@ -182,7 +182,7 @@ class StatsBestVouchers extends StatsModule
                 ->from('order_cart_rule', 'ocr')
                 ->leftJoin('orders', 'o', '(o.id_order = ocr.id_order)')
                 ->leftJoin('cart_rule', 'cr', '(cr.id_cart_rule = ocr.id_cart_rule)')
-                ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+                ->where('o.valid = 1 ' . Shop::addSqlRestriction(false, 'o'))
                 ->where('o.invoice_date BETWEEN ' . $this->getDate());
             $this->_totalCount = (int)$conn->getValue($totalQuery);
         } else {

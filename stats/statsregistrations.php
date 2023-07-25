@@ -55,7 +55,7 @@ class StatsRegistrations extends StatsModule
         $sql = 'SELECT COUNT(`id_customer`) as total
 				FROM `' . _DB_PREFIX_ . 'customer`
 				WHERE `date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
-				' . Shop::addSqlRestriction(Shop::SHARE_ORDER);
+				' . Shop::addSqlRestriction(false);
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
         return isset($result['total']) ? $result['total'] : 0;
@@ -93,7 +93,7 @@ class StatsRegistrations extends StatsModule
 				LEFT JOIN `' . _DB_PREFIX_ . 'guest` g ON o.id_customer = g.id_customer
 				LEFT JOIN `' . _DB_PREFIX_ . 'connections` c ON c.id_guest = g.id_guest
 				WHERE o.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
-					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					AND o.valid = 1
 					AND ABS(TIMEDIFF(o.date_add, c.date_add)+0) < 120000';
         return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);

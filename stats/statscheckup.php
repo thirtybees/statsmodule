@@ -135,7 +135,7 @@ class StatsCheckUp extends StatsModule
 					LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON o.id_order = od.id_order
 					WHERE od.product_id = p.id_product
 						AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '
-						' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+						' . Shop::addSqlRestriction(false, 'o') . '
 				) as nbSales,
 				IFNULL(stock.quantity, 0) as stock
 				FROM ' . _DB_PREFIX_ . 'product p

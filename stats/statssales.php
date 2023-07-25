@@ -187,7 +187,7 @@ class StatsSales extends StatsModule
 				FROM `' . _DB_PREFIX_ . 'orders` o
 				' . ((int)Tools::getValue('id_country') ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
 				WHERE o.valid = 1
-					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					' . ((int)Tools::getValue('id_country') ? 'AND a.id_country = ' . (int)Tools::getValue('id_country') : '') . '
 					AND o.`invoice_date` BETWEEN ' . ModuleGraph::getDateBetween();
         $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
@@ -197,7 +197,7 @@ class StatsSales extends StatsModule
 				LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON od.`id_order` = o.`id_order`
 				' . ((int)Tools::getValue('id_country') ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
 				WHERE o.valid = 1
-					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					' . ((int)Tools::getValue('id_country') ? 'AND a.id_country = ' . (int)Tools::getValue('id_country') : '') . '
 					AND o.`invoice_date` BETWEEN ' . ModuleGraph::getDateBetween();
         $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
@@ -247,7 +247,7 @@ class StatsSales extends StatsModule
                 LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON od.`id_order` = o.`id_order`
                 ' . ((int)$this->id_country ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
                 WHERE o.valid = 1
-                    ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+                    ' . Shop::addSqlRestriction(false, 'o') . '
                     ' . ((int)$this->id_country ? 'AND a.id_country = ' . (int)$this->id_country : '') . '
                     AND o.`invoice_date` BETWEEN ';
             $this->query_group_by = ' GROUP BY o.id_order';

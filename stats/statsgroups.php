@@ -71,7 +71,7 @@ class StatsGroups extends StatsModule
             FROM ' . _DB_PREFIX_ . 'orders o
             WHERE o.valid = 1
             AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '
-            ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
+            ' . Shop::addSqlRestriction(false, 'o');
 
         if ($newResult = Db::getInstance()->getRow($resultSql)) {
             $this->html .= '<div>' . $this->l('Placed orders') . ': ' . $newResult['countOrders'] . ' | ' . $this->l('Bought items') . ': ' . $newResult['countProducts'] . ' | ' . $this->l('Revenue') . ': ' . Tools::displayPrice($newResult['totalSales'], $currency) . '</div><br /><br />';
@@ -103,7 +103,7 @@ class StatsGroups extends StatsModule
                         WHERE c.id_default_group=' . $grow['id_group'] . '
                         AND o.valid = 1
                         AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '
-                        ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o');
+                        ' . Shop::addSqlRestriction(false, 'o');
                     if ($cagroup = Db::getInstance()->getrow($cagroupSql)) {
                         if ((int)$cagroup['nbrCommandes']) {
                             $this->html .= '<td class="text-right">' . Tools::displayPrice($cagroup['totalCA'], $currency) . '</td>';

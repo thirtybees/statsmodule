@@ -57,7 +57,7 @@ class ProductSalesView
             ->select('(psv_od1.product_price / psv_o1.conversion_rate) as price')
             ->from('order_detail', 'psv_od1')
             ->innerJoin('orders', 'psv_o1', 'psv_od1.id_order = psv_o1.id_order')
-            ->addCurrentShopRestriction('psv_o1', Shop::SHARE_ORDER);
+            ->addCurrentShopRestriction('psv_o1', false);
         foreach ($this->orderConditions as $orderColumn => $condition) {
             $details->where('psv_o1.`' . $orderColumn.'` ' . $condition);
         }
@@ -72,7 +72,8 @@ class ProductSalesView
             ->select('0.0')
             ->from('order_detail_pack', 'psv_odp')
             ->innerJoin('order_detail', 'psv_od2', 'psv_odp.id_order_detail = psv_od2.id_order_detail')
-            ->innerJoin('orders', 'psv_o2', 'psv_od2.id_order = psv_o2.id_order');
+            ->innerJoin('orders', 'psv_o2', 'psv_od2.id_order = psv_o2.id_order')
+            ->addCurrentShopRestriction('psv_o2', false);
         foreach ($this->orderConditions as $orderColumn => $condition) {
             $pack->where('psv_o2.`' . $orderColumn.'` ' . $condition);
         }

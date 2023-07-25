@@ -361,8 +361,7 @@ class StatsPersonalInfos extends StatsModule
                 $sql = 'SELECT c.`name`, COUNT(c.`id_currency`) AS total
 						FROM `' . _DB_PREFIX_ . 'orders` o
 						LEFT JOIN `' . _DB_PREFIX_ . 'currency` c ON o.`id_currency` = c.`id_currency`
-						WHERE 1
-							' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+						WHERE 1 ' . Shop::addSqlRestriction(false, 'o') . '
 						GROUP BY c.`id_currency`';
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
                 foreach ($result as $row) {
@@ -376,8 +375,7 @@ class StatsPersonalInfos extends StatsModule
                 $sql = 'SELECT c.`name`, COUNT(c.`id_lang`) AS total
 						FROM `' . _DB_PREFIX_ . 'orders` o
 						LEFT JOIN `' . _DB_PREFIX_ . 'lang` c ON o.`id_lang` = c.`id_lang`
-						WHERE 1
-							' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+						WHERE 1 ' . Shop::addSqlRestriction(false, 'o') . '
 						GROUP BY c.`id_lang`';
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
                 foreach ($result as $row) {

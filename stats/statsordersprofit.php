@@ -157,7 +157,7 @@ class StatsOrdersProfit extends StatsModule
 			ROUND( o.total_shipping_tax_excl / o.conversion_rate , 2 )
 			) AS profit
 			FROM `' . _DB_PREFIX_ . 'orders` o
-			WHERE o.valid = 1
+			WHERE o.valid = 1 ' . Shop::addSqlRestriction(false, 'o') . '
 			AND o.invoice_date BETWEEN ' . $date_between . '
 			GROUP BY o.`id_order`';
 
@@ -199,7 +199,8 @@ class StatsOrdersProfit extends StatsModule
                 ->select('COUNT(1)')
                 ->from('orders',  'o')
                 ->where('o.valid = 1')
-                ->where('o.invoice_date BETWEEN ' . $date_between);
+                ->where('o.invoice_date BETWEEN ' . $date_between)
+                ->addCurrentShopRestriction('o');
             $this->_totalCount = (int)$conn->getValue($totalQuery);
         } else {
             $this->_totalCount = count($values);

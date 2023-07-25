@@ -178,14 +178,14 @@ class StatsBestCustomers extends StatsModule
 				LEFT JOIN `' . _DB_PREFIX_ . 'currency` cu ON o.id_currency = cu.id_currency
 				WHERE o.id_customer = c.id_customer
 				AND o.invoice_date BETWEEN ' . $this->getDate() . '
-				AND o.valid
+				AND o.valid ' . Shop::addSqlRestriction(false, 'o') . '
 			), 0) AS totalMoneySpent,
 			IFNULL((
 				SELECT COUNT(*)
 				FROM `' . _DB_PREFIX_ . 'orders` o
 				WHERE o.id_customer = c.id_customer
 				AND o.invoice_date BETWEEN ' . $this->getDate() . '
-				AND o.valid
+				AND o.valid ' . Shop::addSqlRestriction(false, 'o') . '
 			), 0) AS totalValidOrders
 		FROM `' . _DB_PREFIX_ . 'customer` c
 		LEFT JOIN `' . _DB_PREFIX_ . 'guest` g ON c.`id_customer` = g.`id_customer`

@@ -84,7 +84,7 @@ class StatsProduct extends StatsModule
             ->from('order_detail', 'od')
             ->innerJoin('orders', 'o', 'o.id_order = od.id_order')
             ->where("od.product_id = $productId")
-            ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+            ->where('o.valid = 1 ' . Shop::addSqlRestriction(false, 'o'))
             ->where("o.date_add BETWEEN $dateBetween");
         return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
     }
@@ -108,7 +108,7 @@ class StatsProduct extends StatsModule
                 ->innerJoin('order_detail_pack', 'p', 'p.id_order_detail = od.id_order_detail')
                 ->innerJoin('orders', 'o', 'o.id_order = od.id_order')
                 ->where("p.id_product = $productId")
-                ->where('o.valid = 1 ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'))
+                ->where('o.valid = 1 ' . Shop::addSqlRestriction(false, 'o'))
                 ->where("o.date_add BETWEEN $dateBetween");
             return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
         }
@@ -128,7 +128,7 @@ class StatsProduct extends StatsModule
 				FROM `' . _DB_PREFIX_ . 'order_detail` od
 				LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON o.`id_order` = od.`id_order`
 				WHERE od.`product_id` = ' . (int)$id_product . '
-					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					AND o.valid = 1
 					AND o.`date_add` BETWEEN ' . $date_between;
 
@@ -198,7 +198,7 @@ class StatsProduct extends StatsModule
             ->from('orders', 'o')
             ->innerJoin('order_detail', 'od', 'o.id_order = od.id_order')
             ->where('o.date_add BETWEEN ' . $this->getDate())
-            ->where('o.valid ' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o'));
+            ->where('o.valid ' . Shop::addSqlRestriction(false, 'o'));
 
         if ($this->packTracking) {
             $sql->leftJoin('order_detail_pack', 'p', "(p.id_order_detail = od.id_order_detail AND p.id_product = $productId)");
@@ -233,7 +233,7 @@ class StatsProduct extends StatsModule
 						AND o.valid = 1
 						AND od.product_id = ' . (int)$id_product . '
 					)
-					' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					AND o.date_add BETWEEN ' . $this->getDate() . '
 					AND o.valid = 1
 					AND od.product_id != ' . (int)$id_product . '
@@ -499,7 +499,7 @@ class StatsProduct extends StatsModule
 						FROM `' . _DB_PREFIX_ . 'order_detail` od
 						LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON o.`id_order` = od.`id_order`
 						WHERE od.`product_id` = ' . (int)$this->id_product . '
-							' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+							' . Shop::addSqlRestriction(false, 'o') . '
 							AND o.valid = 1
 							AND o.`date_add` BETWEEN ' . $date_between . '
 						GROUP BY o.`date_add`';
@@ -522,7 +522,7 @@ class StatsProduct extends StatsModule
 						FROM `' . _DB_PREFIX_ . 'orders` o
 						LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON o.`id_order` = od.`id_order`
 						WHERE od.`product_id` = ' . (int)$this->id_product . '
-							' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
+							' . Shop::addSqlRestriction(false, 'o') . '
 							AND o.valid = 1
 							AND o.`date_add` BETWEEN ' . $date_between . '
 						GROUP BY od.`product_attribute_id`';
