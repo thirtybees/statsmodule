@@ -88,16 +88,8 @@ class StatsLive extends StatsModule
     /**
      * Get the number of online visitors
      *
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @return array(array, int) array of online visitors entries, number of online visitors
-=======
-     * @return array (array, int) array of online visitors entries, number of online visitors
->>>>>>> 09921f0 (Use short array syntax)
-     * @throws PrestaShopDatabaseException
-=======
-     * @return array (array, int) array of online visitors entries, number of online visitors
->>>>>>> 33b2647 (phpdocs)
+     *
      * @throws PrestaShopException
      */
     private function getVisitorsOnline()
