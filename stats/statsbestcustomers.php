@@ -170,7 +170,13 @@ class StatsBestCustomers extends StatsModule
     {
         $this->query = '
 		SELECT c.`id_customer`, c.`lastname`, c.`firstname`, c.`email`,
-			COUNT(co.`id_connections`) AS totalVisits,
+			IFNULL((
+			    SELECT COUNT(co.`id_connections`)
+		        FROM `' . _DB_PREFIX_ . 'guest` g
+		        INNER JOIN `' . _DB_PREFIX_ . 'connections` co ON g.`id_guest` = co.`id_guest`
+		        WHERE  c.`id_customer` = g.`id_customer`
+				  AND co.date_add BETWEEN ' . $this->getDate() . '
+			), 0) AS totalVisits,
 			IFNULL((
 				SELECT ROUND(SUM(IFNULL(op.`amount`, 0) / cu.conversion_rate), 2)
 				FROM `' . _DB_PREFIX_ . 'orders` o
@@ -188,10 +194,7 @@ class StatsBestCustomers extends StatsModule
 				AND o.valid ' . Shop::addSqlRestriction(false, 'o') . '
 			), 0) AS totalValidOrders
 		FROM `' . _DB_PREFIX_ . 'customer` c
-		LEFT JOIN `' . _DB_PREFIX_ . 'guest` g ON c.`id_customer` = g.`id_customer`
-		LEFT JOIN `' . _DB_PREFIX_ . 'connections` co ON g.`id_guest` = co.`id_guest`
-		WHERE co.date_add BETWEEN ' . $this->getDate()
-            . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'c') .
+		WHERE 1 ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'c') .
             'GROUP BY c.`id_customer`, c.`lastname`, c.`firstname`, c.`email`';
 
         if (Validate::IsName($this->_sort)) {
