@@ -105,7 +105,8 @@ class StatsCheckUp extends StatsModule
             $key = $row['id_shop'] . '_' . $row['id_lang'];
             $languages[$key] = [
                 'iso_code' => $row['iso_code'],
-                'shopName' => $row['name']
+                'shopId' => (int)$row['id_shop'],
+                'shopName' => $row['name'],
             ];
         }
 
@@ -225,7 +226,7 @@ class StatsCheckUp extends StatsModule
 					<th><span class="title_box active">' . Tools::safeOutput($this->l('Item')) . '</span></th>
 					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Active')) . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th><span class="title_box active" title="'.Tools::safeOutput($language['shopName']).'">' . Tools::safeOutput($this->l('Desc.')) . ' (' . Tools::safeOutput(strtoupper($language['iso_code'])) . ')</span></th>';
+            $this->html .= '<th><span class="title_box active" title="'.Tools::safeOutput($language['shopName']).'">' . $this->getDescColumnTitle($language) . '</span></th>';
         }
         $this->html .= '
 					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Images')) . '</span></th>
@@ -287,14 +288,16 @@ class StatsCheckUp extends StatsModule
             $this->html .= '
 				<tr>
 					<td>' . $productId . '</td>
-					<td><a href="' . Tools::safeOutput('index.php?tab=AdminProducts&updateproduct&id_product=' . $productId . '&token=' . $tokenProducts) . '">' . mb_substr($row['name'], 0, 42) . '</a></td>
+					<td><a href="' . Tools::safeOutput($this->getProductEditUrl($productId)) . '">' . mb_substr($row['name'], 0, 42) . '</a></td>
 					<td class="center">' . $arrayColors[$scores['active']] . '</td>';
             foreach ($languages as $key => $language) {
                 if (isset($row['desclength_' . $key])) {
-                    $this->html .= '<td class="center">' . (int)$row['desclength_' . $key] . ' ' . $arrayColors[$scores['description_' . $key]] . '</td>';
+                    $cellContent = (int)$row['desclength_' . $key] . ' ' . $arrayColors[$scores['description_' . $key]];
                 } else {
-                    $this->html .= '<td>0 ' . $arrayColors[0] . '</td>';
+                    $cellContent = '0 ' . $arrayColors[0];
                 }
+                $productUrl = $this->getProductEditUrl($productId, $language['shopId']);
+                $this->html .= '<td class="center"><a href="' . Tools::safeOutput($productUrl) . '">' . $cellContent . '</td>';
             }
             $this->html .= '
 					<td class="center">' . (int)$row['nbImages'] . ' ' . $arrayColors[$scores['images']] . '</td>
@@ -327,7 +330,7 @@ class StatsCheckUp extends StatsModule
 					<th colspan="2"></th>
 					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Active')) . '</span></th>';
         foreach ($languages as $language) {
-            $this->html .= '<th class="center"><span class="title_box active" title="'.Tools::safeOutput($language['shopName']).'">' . Tools::safeOutput($this->l('Desc.')) . ' (' . Tools::safeOutput(strtoupper($language['iso_code'])) . ')</span></th>';
+            $this->html .= '<th class="center"><span class="title_box active" title="'.Tools::safeOutput($language['shopName']).'">' . $this->getDescColumnTitle($language) . '</span></th>';
         }
         $this->html .= '
 					<th class="center"><span class="title_box active">' . Tools::safeOutput($this->l('Images')) . '</span></th>
@@ -351,6 +354,41 @@ class StatsCheckUp extends StatsModule
 		</table></div>';
 
         return $this->html;
+    }
+
+    /**
+     * @param array $language
+     *
+     * @return string
+     * @throws PrestaShopException
+     */
+    protected function getDescColumnTitle($language)
+    {
+        $title = Tools::safeOutput($this->l('Desc.')) . ' (' . Tools::safeOutput(strtoupper($language['iso_code'])) . ')';
+        if (Shop::isFeatureActive()) {
+            $title = $language['shopName'] . '<br />' . $title;
+        }
+        return $title;
+    }
+
+    /**
+     * @param int $productId
+     * @param int $shopContext
+     *
+     * @return string
+     * @throws PrestaShopException
+     */
+    protected function getProductEditUrl(int $productId, int $shopContext = 0)
+    {
+        $link = Context::getContext()->link;
+        $params = [
+            'id_product' => $productId,
+            'updateproduct' => 1
+        ];
+        if ($shopContext && Shop::isFeatureActive()) {
+            $params['setShopContext'] = 's-' . $shopContext;
+        }
+        return $link->getAdminLink('AdminProducts', true, $params);
     }
 
     /**
