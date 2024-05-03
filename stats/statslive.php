@@ -51,9 +51,7 @@ class StatsLive extends StatsModule
      */
     private function getCustomersOnline()
     {
-        if ($maintenance_ips = Configuration::get('PS_MAINTENANCE_IP')) {
-            $maintenance_ips = implode(',', array_map('ip2long', array_map('trim', explode(',', $maintenance_ips))));
-        }
+        $maintenanceIPs = $this->getMaintenanceIPs();
 
         if (Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
             $sql = 'SELECT u.id_customer, u.firstname, u.lastname, pt.name AS page
@@ -66,7 +64,7 @@ class StatsLive extends StatsModule
 					WHERE cp.`time_end` IS NULL
 						' . Shop::addSqlRestriction(false, 'c') . '
 						AND TIME_TO_SEC(TIMEDIFF(\'' . pSQL(date('Y-m-d H:i:00', time())) . '\', cp.`time_start`)) < 900
-					' . ($maintenance_ips ? 'AND c.ip_address NOT IN (' . preg_replace('/[^,0-9]/', '', $maintenance_ips) . ')' : '') . '
+					' . ($maintenanceIPs ? 'AND c.ip_address NOT IN (' . $maintenanceIPs . ')' : '') . '
 					GROUP BY u.id_customer
 					ORDER BY u.firstname, u.lastname';
         } else {
@@ -76,7 +74,7 @@ class StatsLive extends StatsModule
 					INNER JOIN `' . _DB_PREFIX_ . 'customer` u ON u.id_customer = g.id_customer
 					WHERE TIME_TO_SEC(TIMEDIFF(\'' . pSQL(date('Y-m-d H:i:00', time())) . '\', c.`date_add`)) < 900
 						' . Shop::addSqlRestriction(false, 'c') . '
-					' . ($maintenance_ips ? 'AND c.ip_address NOT IN (' . preg_replace('/[^,0-9]/', '', $maintenance_ips) . ')' : '') . '
+					' . ($maintenanceIPs ? 'AND c.ip_address NOT IN (' . $maintenanceIPs . ')' : '') . '
 					GROUP BY u.id_customer
 					ORDER BY u.firstname, u.lastname';
         }
@@ -94,9 +92,7 @@ class StatsLive extends StatsModule
      */
     private function getVisitorsOnline()
     {
-        if ($maintenance_ips = Configuration::get('PS_MAINTENANCE_IP')) {
-            $maintenance_ips = implode(',', array_map('ip2long', array_filter(array_map('trim', explode(',', $maintenance_ips)))));
-        }
+        $maintenanceIPs = $this->getMaintenanceIPs();
 
         if (Configuration::get('PS_STATSDATA_CUSTOMER_PAGESVIEWS')) {
             $sql = 'SELECT c.id_guest, c.ip_address, c.date_add, c.http_referer, pt.name AS page
@@ -109,7 +105,7 @@ class StatsLive extends StatsModule
 						' . Shop::addSqlRestriction(false, 'c') . '
 						AND cp.`time_end` IS NULL
 					AND TIME_TO_SEC(TIMEDIFF(\'' . pSQL(date('Y-m-d H:i:00', time())) . '\', cp.`time_start`)) < 900
-					' . ($maintenance_ips ? 'AND c.ip_address NOT IN (' . preg_replace('/[^,0-9]/', '', $maintenance_ips) . ')' : '') . '
+					' . ($maintenanceIPs ? 'AND c.ip_address NOT IN (' . $maintenanceIPs . ')' : '') . '
 					GROUP BY c.id_connections
 					ORDER BY c.date_add DESC';
         } else {
@@ -119,7 +115,7 @@ class StatsLive extends StatsModule
 					WHERE (g.id_customer IS NULL OR g.id_customer = 0)
 						' . Shop::addSqlRestriction(false, 'c') . '
 						AND TIME_TO_SEC(TIMEDIFF(\'' . pSQL(date('Y-m-d H:i:00', time())) . '\', c.`date_add`)) < 900
-					' . ($maintenance_ips ? 'AND c.ip_address NOT IN (' . preg_replace('/[^,0-9]/', '', $maintenance_ips) . ')' : '') . '
+					' . ($maintenanceIPs ? 'AND c.ip_address NOT IN (' . $maintenanceIPs . ')' : '') . '
 					ORDER BY c.date_add DESC';
         }
 
@@ -222,5 +218,21 @@ class StatsLive extends StatsModule
 		';
 
         return $this->html;
+    }
+
+    /**
+     * @return string|null
+     * @throws PrestaShopException
+     */
+    protected function getMaintenanceIPs()
+    {
+        $ips = (string)Configuration::get('PS_MAINTENANCE_IP');
+        if ($ips) {
+            $addresses = array_filter(array_map('ip2long', array_map('trim', explode(',', $ips))));
+            if ($addresses) {
+                return implode(',', $addresses);
+            }
+        }
+        return null;
     }
 }
