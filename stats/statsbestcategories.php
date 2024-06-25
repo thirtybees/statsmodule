@@ -266,10 +266,10 @@ class StatsBestCategories extends StatsModule
 					FROM `' . _DB_PREFIX_ . 'product` pr
 					INNER JOIN `' . _DB_PREFIX_ . 'order_detail` cp ON pr.`id_product` = cp.`product_id`
 					INNER JOIN `' . _DB_PREFIX_ . 'orders` o ON o.`id_order` = cp.`id_order`
-					INNER JOIN `' . _DB_PREFIX_ . 'product_attribute` pa ON pa.`id_product_attribute` = cp.`product_attribute_id`
-					' . Shop::addSqlRestriction(false, 'o') . '
+					LEFT JOIN `' . _DB_PREFIX_ . 'product_attribute` pa ON pa.`id_product_attribute` = cp.`product_attribute_id`
 					WHERE o.valid = 1
 					AND o.invoice_date BETWEEN ' . $date_between . '
+					' . Shop::addSqlRestriction(false, 'o') . '
 					GROUP BY pr.`id_product`
 				) t ON t.`id_product` = pr.`id_product`
 			) t	ON (t.`id_product` = capr.`id_product` '.$productJoinCond.')
