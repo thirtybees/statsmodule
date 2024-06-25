@@ -23,6 +23,8 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
+use Thirtybees\StatsModule\ProductSalesView;
+
 if (!defined('_TB_VERSION_')) {
     exit;
 }
@@ -75,7 +77,7 @@ class StatsProduct extends StatsModule
      * @return int
      * @throws PrestaShopException
      */
-    public function getTotalBought($productId)
+    public function getTotalBoughtIndividual($productId)
     {
         $dateBetween = ModuleGraph::getDateBetween();
         $productId = (int)$productId;
@@ -296,12 +298,13 @@ class StatsProduct extends StatsModule
                 }
             }
             $product = new Product($id_product, false, $this->context->language->id);
-            $totalBought = $this->getTotalBought($product->id);
+            $totalBoughtIndividual = $this->getTotalBoughtIndividual($product->id);
             $isPartOfPack = $this->packTracking && Pack::isPacked($product->id);
             $totalBoughtPack = $isPartOfPack ? $this->getTotalBoughtAsPartOfPack($product->id) : 0;
+            $totalBought = $totalBoughtIndividual + $totalBoughtPack;
             $total_sales = $this->getTotalSales($product->id);
             $total_viewed = $this->getTotalViewed($product->id);
-            $hasSales = $totalBought > 0 || $totalBoughtPack > 0;
+            $hasSales = $totalBoughtIndividual > 0 || $totalBoughtPack > 0;
             $this->html .= '<h4>' . $product->name . ' - ' . $this->l('Details') . '</h4>
 			<div class="row row-margin-bottom">
 				<div class="col-lg-12">
@@ -311,10 +314,11 @@ class StatsProduct extends StatsModule
 					<div class="col-lg-4">
 						<ul class="list-unstyled">
 							<li>' . $this->l('Total bought') . ' ' . $totalBought . '</li>
-							' . ($isPartOfPack ? ('<li>' . $this->l('Total bought in pack') . ' ' . $totalBoughtPack . '</li>') : '') . '
+							' . ($isPartOfPack ? ('<li>' . $this->l('Total bought (individual)') . ' ' . $totalBoughtIndividual . '</li>') : '') . '
+							' . ($isPartOfPack ? ('<li>' . $this->l('Total bought (part of pack)') . ' ' . $totalBoughtPack . '</li>') : '') . '
 							<li>' . $this->l('Sales (tax excluded)') . ' ' . Tools::displayprice($total_sales, $currency) . '</li>
 							<li>' . $this->l('Total viewed') . ' ' . $total_viewed . '</li>
-							<li>' . $this->l('Conversion rate') . ' ' . number_format($total_viewed ? $totalBought / $total_viewed : 0, 2) . '</li>
+							<li>' . $this->l('Conversion rate') . ' ' . number_format($total_viewed ? $totalBoughtIndividual / $total_viewed : 0, 2) . '</li>
 						</ul>
 						<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI']) . '&export=1&exportType=1">
 							<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
@@ -491,18 +495,39 @@ class StatsProduct extends StatsModule
         $date_between = $this->getDate();
         switch ($this->option) {
             case 1:
-                $this->_titles['main'][0] = $this->l('Popularity');
-                $this->_titles['main'][1] = $this->l('Sales');
-                $this->_titles['main'][2] = $this->l('Visits (x100)');
+                $this->_titles['main'][0] = $this->l('Sales');
+                $this->_titles['main'][1] = $this->l('Popularity');
                 $this->query = [];
-                $this->query[0] = 'SELECT o.`date_add`, SUM(od.`product_quantity`) AS total
-						FROM `' . _DB_PREFIX_ . 'order_detail` od
-						LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON o.`id_order` = od.`id_order`
-						WHERE od.`product_id` = ' . (int)$this->id_product . '
-							' . Shop::addSqlRestriction(false, 'o') . '
-							AND o.valid = 1
-							AND o.`date_add` BETWEEN ' . $date_between . '
-						GROUP BY o.`date_add`';
+                if ($this->packTracking && Pack::isPacked($this->id_product)) {
+                    $this->query[0] = '
+                              SELECT 
+                                DATE_FORMAT(o.`date_add`, "%Y-%m-%d") as date_add, 
+                                (
+		                            COALESCE((SELECT SUM(od.product_quantity) FROM ' . _DB_PREFIX_. 'order_detail od WHERE od.id_order = o.id_order AND od.product_id = ' . (int)$this->id_product . '), 0)
+		                            +
+		                            COALESCE((SELECT SUM(od.product_quantity * p.quantity) FROM ' . _DB_PREFIX_. 'order_detail od INNER JOIN ' . _DB_PREFIX_. 'order_detail_pack p ON (p.id_order_detail = od.id_order_detail) WHERE od.id_order = o.id_order AND p.id_product = ' . (int)$this->id_product . '), 0)
+	                            ) AS total  
+                              FROM ' . _DB_PREFIX_ . 'orders o
+                              WHERE o.valid = 1
+                                AND o.`date_add` BETWEEN ' . $date_between . '
+                                   ' . Shop::addSqlRestriction(false, 'o') . '
+                                AND (
+		                            EXISTS(SELECT 1 FROM ' . _DB_PREFIX_. 'order_detail od WHERE od.id_order = o.id_order AND od.product_id = ' . (int)$this->id_product . ')
+		                            OR
+		                            EXISTS(SELECT 1 FROM ' . _DB_PREFIX_. 'order_detail od INNER JOIN ' . _DB_PREFIX_. 'order_detail_pack p ON (p.id_order_detail = od.id_order_detail) WHERE od.id_order = o.id_order AND p.id_product = ' . (int)$this->id_product . ')
+	                            )   
+                              GROUP BY o.`date_add`';
+                } else {
+                    $this->query[0] = 'SELECT DATE_FORMAT(o.`date_add`, "%Y-%m-%d") as date_add, SUM(od.`product_quantity`) AS total
+                              FROM `' . _DB_PREFIX_ . 'order_detail` od
+                              LEFT JOIN `' . _DB_PREFIX_ . 'orders` o ON o.`id_order` = od.`id_order`
+                              WHERE od.`product_id` = ' . (int)$this->id_product . '
+                                   ' . Shop::addSqlRestriction(false, 'o') . '
+                                   AND o.valid = 1
+                                   AND o.`date_add` BETWEEN ' . $date_between . '
+                              GROUP BY o.`date_add`';
+                }
+
 
                 $this->query[1] = 'SELECT dr.`time_start` AS date_add, (SUM(pv.`counter`) / 100) AS total
 						FROM `' . _DB_PREFIX_ . 'page_viewed` pv
