@@ -80,10 +80,10 @@ class StatsPersonalInfos extends StatsModule
         $has_customers = (bool)Db::getInstance()->getValue('SELECT id_customer FROM ' . _DB_PREFIX_ . 'customer');
         if ($has_customers) {
             if (Tools::getValue('export')) {
-                if (Tools::getValue('exportType') == 'gender') {
+                if (Tools::getValue('exportType') == 'social-titles') {
                     $this->csvExport([
                         'type' => 'pie',
-                        'option' => 'gender',
+                        'option' => 'social-titles',
                     ]);
                 } else {
                     if (Tools::getValue('exportType') == 'age') {
@@ -122,11 +122,11 @@ class StatsPersonalInfos extends StatsModule
 						<div class="col-lg-8">
 							' . $this->engine([
                     'type' => 'pie',
-                    'option' => 'gender',
+                    'option' => 'social-titles',
                 ]) . '
 						</div>
 						<div class="col-lg-4">
-							<p>' . $this->l('Gender distribution allows you to determine the percentage of men and women shoppers on your store.') . '</p>
+							<p>' . $this->l('Social titles distribution allows you to determine the percentage of social titles used by shoppers on your store.') . '</p>
 							<hr/>
 							<a class="btn btn-default export-csv" href="' . Tools::safeOutput($_SERVER['REQUEST_URI'] . '&export=1&exportType=gender') . '">
 								<i class="icon-cloud-upload"></i> ' . $this->l('CSV Export') . '
@@ -217,34 +217,28 @@ class StatsPersonalInfos extends StatsModule
     protected function getData($layers)
     {
         switch ($this->option) {
-            case 'gender':
-                $this->_titles['main'] = $this->l('Gender distribution');
-                $genders = [
-                    0 => $this->l('Male'),
-                    1 => $this->l('Female'),
-                    2 => $this->l('Unknown'),
+            case 'social-titles':
+                $titles = [
+                    0 => $this->l('Unknown')
                 ];
+                /** @var Gender $gender */
+                foreach (Gender::getGenders($this->context->language->id) as $gender) {
+                    $titles[$gender->id] = $gender->name;
+                }
+                $this->_titles['main'] = $this->l('Social titles distribution');
 
-                $sql = 'SELECT g.type, c.id_gender, COUNT(c.id_customer) AS total
+                $sql = 'SELECT g.id_gender, COUNT(c.id_customer) AS total
 						FROM ' . _DB_PREFIX_ . 'customer c
-						LEFT JOIN ' . _DB_PREFIX_ . 'gender g ON c.id_gender = g.id_gender
+						LEFT JOIN ' . _DB_PREFIX_ . 'gender g ON (c.id_gender = g.id_gender)
 						WHERE 1
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'c') . '
-						GROUP BY c.id_gender';
+						GROUP BY g.id_gender';
                 $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-                $genders_results = [];
                 foreach ($result as $row) {
-                    $type = (is_null($row['type'])) ? 2 : $row['type'];
-                    if (!isset($genders_results[$type])) {
-                        $genders_results[$type] = 0;
-                    }
-                    $genders_results[$type] += $row['total'];
-                }
-
-                foreach ($genders_results as $type => $total) {
-                    $this->_values[] = $total;
-                    $this->_legend[] = $genders[$type];
+                    $genderId = (int)$row['id_gender'];
+                    $this->_values[] = (int)$row['total'];
+                    $this->_legend[] = $titles[$genderId];
                 }
                 break;
 
