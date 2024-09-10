@@ -86,7 +86,7 @@ class StatsModule extends ModuleStats
     {
         $this->name = 'statsmodule';
         $this->tab = 'analytics_stats';
-        $this->version = '2.5.3';
+        $this->version = '2.5.4';
         $this->author = 'thirty bees';
         $this->need_instance = 0;
         $this->bootstrap = true;
