@@ -57,9 +57,10 @@ class StatsOrigin extends StatsModule
 				WHERE 1
 					' . Shop::addSqlRestriction() . '
 					AND date_add BETWEEN ' . $dateBetween;
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
+        $conn = Db::readOnly();
+        $result = $conn->query($sql);
         $websites = [$directLink => 0];
-        while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
+        while ($row = $conn->nextRow($result)) {
             if (empty($row['http_referer'])) {
                 ++$websites[$directLink];
             }

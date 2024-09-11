@@ -78,9 +78,11 @@ class StatsLive extends StatsModule
 					GROUP BY u.id_customer
 					ORDER BY u.firstname, u.lastname';
         }
-        $results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-        return [$results, Db::getInstance()->NumRows()];
+        $conn = Db::readOnly();
+        $results = $conn->getArray($sql);
+
+        return [$results, $conn->numRows()];
     }
 
     /**
@@ -119,9 +121,10 @@ class StatsLive extends StatsModule
 					ORDER BY c.date_add DESC';
         }
 
-        $results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+        $conn = Db::readOnly();
+        $results = $conn->getArray($sql);
 
-        return [$results, Db::getInstance()->NumRows()];
+        return [$results, $conn->numRows()];
     }
 
     /**
@@ -198,7 +201,7 @@ class StatsLive extends StatsModule
 						<td class="center">' . $visitor['id_guest'] . '</td>
 						<td class="center">' . long2ip($visitor['ip_address']) . '</td>
 						<td class="center">' . substr($visitor['date_add'], 11) . '</td>
-						<td class="center">' . (isset($visitor['page']) ? $visitor['page'] : $this->l('Undefined')) . '</td>
+						<td class="center">' . ($visitor['page'] ?? $this->l('Undefined')) . '</td>
 						<td class="center">' . (empty($visitor['http_referer']) ? $this->l('None') : parse_url($visitor['http_referer'], PHP_URL_HOST)) . '</td>
 					</tr>';
             }

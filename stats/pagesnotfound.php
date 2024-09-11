@@ -52,7 +52,7 @@ class PagesNotFound extends StatsModule
 				WHERE date_add BETWEEN ' . ModuleGraph::getDateBetween()
             . Shop::addSqlRestriction() .
             'GROUP BY http_referer, request_uri';
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+        $result = Db::readOnly()->getArray($sql);
 
         $pages = [];
         foreach ($result as $row) {

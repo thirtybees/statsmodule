@@ -56,7 +56,7 @@ class StatsCarrier extends StatsModule
 				WHERE o.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 					' . Shop::addSqlRestriction(false, 'o') . '
 					' . ((int)Tools::getValue('id_order_state') ? 'AND (SELECT oh.id_order_state FROM `' . _DB_PREFIX_ . 'order_history` oh WHERE o.id_order = oh.id_order ORDER BY oh.date_add DESC, oh.id_order_history DESC LIMIT 1) = ' . (int)Tools::getValue('id_order_state') : '');
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $result = Db::readOnly()->getRow($sql);
         $states = OrderState::getOrderStates($this->context->language->id);
 
         if (Tools::getValue('export')) {
@@ -137,7 +137,7 @@ class StatsCarrier extends StatsModule
 					' . Shop::addSqlRestriction(false, 'o') . '
 					' . $state_query . '
 				GROUP BY c.`id_carrier`';
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+        $result = Db::readOnly()->getArray($sql);
         foreach ($result as $row) {
             $this->_values[] = $row['total'];
             $this->_legend[] = $row['name'];

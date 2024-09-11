@@ -73,7 +73,8 @@ class StatsGroups extends StatsModule
             AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '
             ' . Shop::addSqlRestriction(false, 'o');
 
-        if ($newResult = Db::getInstance()->getRow($resultSql)) {
+        $conn = Db::readOnly();
+        if ($newResult = $conn->getRow($resultSql)) {
             $this->html .= '<div>' . $this->l('Placed orders') . ': ' . $newResult['countOrders'] . ' | ' . $this->l('Bought items') . ': ' . $newResult['countProducts'] . ' | ' . $this->l('Revenue') . ': ' . Tools::displayPrice($newResult['totalSales'], $currency) . '</div><br /><br />';
 
             $this->html .= '<table class="table">
@@ -90,7 +91,7 @@ class StatsGroups extends StatsModule
                 <tbody>';
 
             $groupSql = 'SELECT * FROM `' . _DB_PREFIX_ . 'group_lang` WHERE `id_lang`=' . (int)$this->context->language->id . ' GROUP BY `id_group` ORDER BY `id_group`';
-            if ($results = Db::getInstance()->ExecuteS($groupSql)) {
+            if ($results = $conn->getArray($groupSql)) {
                 foreach ($results as $grow) {
                     $this->html .= '<tr>';
                     $this->html .= '<td>' . $grow['id_group'] . '</td>';
@@ -104,7 +105,7 @@ class StatsGroups extends StatsModule
                         AND o.valid = 1
                         AND o.invoice_date BETWEEN ' . ModuleGraph::getDateBetween() . '
                         ' . Shop::addSqlRestriction(false, 'o');
-                    if ($cagroup = Db::getInstance()->getrow($cagroupSql)) {
+                    if ($cagroup = $conn->getRow($cagroupSql)) {
                         if ((int)$cagroup['nbrCommandes']) {
                             $this->html .= '<td class="text-right">' . Tools::displayPrice($cagroup['totalCA'], $currency) . '</td>';
                             $this->html .= '<td class="text-right">' . Tools::displayPrice(($cagroup['totalCA'] / $cagroup['nbrCommandes']), $currency) . '</td>';
@@ -124,7 +125,7 @@ class StatsGroups extends StatsModule
                         FROM ' . _DB_PREFIX_ . 'customer WHERE id_default_group=' . $grow['id_group'] . '
                         AND date_add <= "' . $employee->stats_date_to . ' 23:59:59"';
 
-                    if ($members = Db::getInstance()->getrow($membersSql)) {
+                    if ($members = $conn->getRow($membersSql)) {
                         $this->html .= '<td class="text-center">' . $members['nombread'] . '</td>';
                     }
                     $this->html .= '</tr>';

@@ -85,7 +85,7 @@ class StatsCheckUp extends StatsModule
         $orderOption = (int)Tools::getValue('submitCheckupOrder');
         $orderBy = $this->getOrderBy($orderOption);
 
-        $db = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $conn = Db::readOnly();
         $employee = Context::getContext()->employee;
         $prop30 = ((strtotime($employee->stats_date_to . ' 23:59:59') - strtotime($employee->stats_date_from . ' 00:00:00')) / 60 / 60 / 24) / 30;
 
@@ -101,7 +101,7 @@ class StatsCheckUp extends StatsModule
             ->addCurrentShopRestriction('lang_shop')
             ->orderBy('lang_shop.id_shop, lang.iso_code');
         $languages = [];
-        foreach ($db->executeS($sql) as $row) {
+        foreach ($conn->getArray($sql) as $row) {
             $key = $row['id_shop'] . '_' . $row['id_lang'];
             $languages[$key] = [
                 'iso_code' => $row['iso_code'],
@@ -115,7 +115,6 @@ class StatsCheckUp extends StatsModule
             1 => '<img src="../modules/statsmodule/views/img/orange.png" title="' . Tools::safeOutput($this->l('Average')) . '" />',
             2 => '<img src="../modules/statsmodule/views/img/green.png" title="' . Tools::safeOutput($this->l('Good')) . '" />',
         ];
-        $tokenProducts = Tools::getAdminToken('AdminProducts' . (int)Tab::getIdFromClassName('AdminProducts') . (int)Context::getContext()->employee->id);
         $divisor = 4;
         $totals = ['products' => 0, 'active' => 0, 'images' => 0, 'sales' => 0, 'stock' => 0];
         foreach ($languages as $key => $_) {
@@ -145,7 +144,7 @@ class StatsCheckUp extends StatsModule
 				LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl
 					ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int)$this->context->language->id . Shop::addSqlRestrictionOnLang('pl') . ')
 				ORDER BY ' . $orderBy;
-        $result = $db->executeS($sql);
+        $result = $conn->getArray($sql);
 
         if (!$result) {
             return $this->l('No product was found.');
@@ -259,7 +258,7 @@ class StatsCheckUp extends StatsModule
                 ->innerJoin('lang', 'l', 'pl.id_lang = l.id_lang')
                 ->where('pl.id_product = ' . $productId)
                 ->addCurrentShopRestriction('pl');
-            foreach ($db->executeS($descriptionSql) as $descriptionRow) {
+            foreach ($conn->getArray($descriptionSql) as $descriptionRow) {
                 $shopId = (int)$descriptionRow['id_shop'];
                 $langId = (int)$descriptionRow['id_lang'];
                 $description = (string)$descriptionRow['description'];

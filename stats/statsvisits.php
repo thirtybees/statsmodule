@@ -57,7 +57,7 @@ class StatsVisits extends StatsModule
 				WHERE c.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 					' . Shop::addSqlRestriction(false, 'c');
 
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -71,7 +71,7 @@ class StatsVisits extends StatsModule
 				WHERE c.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 					' . Shop::addSqlRestriction(false, 'c');
 
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -183,8 +183,9 @@ class StatsVisits extends StatsModule
      */
     protected function setAllTimeValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 4)');
+            $result = $conn->getArray($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 4)');
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 0, 4)] = (int)$row['total'];
             }
@@ -199,8 +200,9 @@ class StatsVisits extends StatsModule
      */
     protected function setYearValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 7)');
+            $result = $conn->getArray($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 7)');
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 5, 2)] = (int)$row['total'];
             }
@@ -215,8 +217,9 @@ class StatsVisits extends StatsModule
      */
     protected function setMonthValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 10)');
+            $result = $conn->getArray($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 10)');
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 8, 2)] = (int)$row['total'];
             }
@@ -231,8 +234,9 @@ class StatsVisits extends StatsModule
      */
     protected function setDayValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 13)');
+            $result = $conn->getArray($this->query[$i] . $this->getDate() . ' GROUP BY LEFT(date_add, 13)');
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 11, 2)] = (int)$row['total'];
             }

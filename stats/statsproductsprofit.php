@@ -23,8 +23,6 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
-use Thirtybees\StatsModule\Utils;
-
 if (!defined('_TB_VERSION_')) {
     exit;
 }
@@ -173,7 +171,7 @@ class StatsProductsProfit extends StatsModule
         $export = !!Tools::getValue('export');
         $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
         $idLang = (int)Context::getContext()->language->id;
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
+        $conn = Db::readOnly();
 
         $baseQuery = (new DbQuery())
             ->from('orders', 'o')
@@ -212,10 +210,7 @@ class StatsProductsProfit extends StatsModule
             $query->limit((int)$this->_limit, (int)$this->_start);
         }
 
-        $values = $conn->executeS($query);
-        if (! is_array($values)) {
-            $values = [];
-        }
+        $values = $conn->getArray($query);
         foreach ($values as &$value) {
             $costs = round((float)$value['total_costs'], 2);
             $income = round((float)$value['total_income'], 2);

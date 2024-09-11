@@ -60,7 +60,7 @@ class StatsCatalog extends StatsModule
 				WHERE product_shop.`active` = 1
 					' . $this->where;
 
-        return DB::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        return Db::readOnly()->getRow($sql);
     }
 
     /**
@@ -70,7 +70,7 @@ class StatsCatalog extends StatsModule
     public function getTotalPageViewed()
     {
         if ($this->utils->trackingPageViews()) {
-            return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+            return (int)Db::readOnly()->getValue('
             SELECT SUM(pv.`counter`)
             FROM `' . _DB_PREFIX_ . 'product` p
             ' . Shop::addSqlAssociation('product', 'p') . '
@@ -90,7 +90,7 @@ class StatsCatalog extends StatsModule
      */
     public function getTotalProductViewed()
     {
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+        return (int)Db::readOnly()->getValue('
 		SELECT COUNT(DISTINCT pa.`id_object`)
 		FROM `' . _DB_PREFIX_ . 'page_viewed` pv
 		LEFT JOIN `' . _DB_PREFIX_ . 'page` pa ON pv.`id_page` = pa.`id_page`
@@ -109,7 +109,7 @@ class StatsCatalog extends StatsModule
      */
     public function getTotalBought()
     {
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+        return (int)Db::readOnly()->getValue('
 		SELECT SUM(od.`product_quantity`)
 		FROM `' . _DB_PREFIX_ . 'orders` o
 		LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON o.`id_order` = od.`id_order`
@@ -128,6 +128,9 @@ class StatsCatalog extends StatsModule
      */
     public function getProductsNB($id_lang)
     {
+
+        $conn = Db::readOnly();
+
         $sql = 'SELECT p.`id_product`
 				FROM `' . _DB_PREFIX_ . 'orders` o
 				LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON o.`id_order` = od.`id_order`
@@ -139,7 +142,8 @@ class StatsCatalog extends StatsModule
 					' . $this->where . '
 					AND product_shop.`active` = 1
 				GROUP BY p.`id_product`';
-        $precalc = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+
+        $precalc = $conn->getArray($sql);
 
         $precalc2 = [];
         foreach ($precalc as $array) {
@@ -155,10 +159,11 @@ class StatsCatalog extends StatsModule
 				WHERE product_shop.`active` = 1
 					' . (count($precalc2) ? 'AND p.`id_product` NOT IN (' . implode(',', $precalc2) . ')' : '') . '
 					' . $this->where;
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+
+        $result = $conn->getArray($sql);
 
         return [
-            'total' => Db::getInstance(_PS_USE_SQL_SLAVE_)->NumRows(),
+            'total' => $conn->numRows(),
             'result' => $result
         ];
     }

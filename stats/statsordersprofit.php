@@ -172,8 +172,8 @@ class StatsOrdersProfit extends StatsModule
             $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
-        $values = $conn->executeS($query);
+        $conn = Db::readOnly();
+        $values = $conn->getArray($query);
         foreach ($values as &$value) {
             $value['paid'] = Tools::displayPrice($value['paid'], $currency);
             $value['total'] = Tools::displayPrice($value['total'], $currency);

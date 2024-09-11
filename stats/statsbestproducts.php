@@ -235,8 +235,8 @@ class StatsBestProducts extends StatsModule
             $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
-        $values = $conn->executeS($query);
+        $conn = Db::readOnly();
+        $values = $conn->getArray($query);
         foreach ($values as &$value) {
             $value['avgPriceSold'] = Tools::displayPrice($value['avgPriceSold'], $currency);
             $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);

@@ -56,9 +56,9 @@ class StatsRegistrations extends StatsModule
 				FROM `' . _DB_PREFIX_ . 'customer`
 				WHERE `date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 				' . Shop::addSqlRestriction(false);
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $result = Db::readOnly()->getRow($sql);
 
-        return isset($result['total']) ? $result['total'] : 0;
+        return $result['total'] ?? 0;
     }
 
     /**
@@ -77,7 +77,7 @@ class StatsRegistrations extends StatsModule
 					' . Shop::addSqlRestriction(false, 'c') . '
 					AND (g.id_customer IS NULL OR g.id_customer = 0)
 					AND c.`date_add` BETWEEN ' . ModuleGraph::getDateBetween();
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $result = Db::readOnly()->getRow($sql);
 
         return $result['blocked'];
     }
@@ -96,7 +96,7 @@ class StatsRegistrations extends StatsModule
 					' . Shop::addSqlRestriction(false, 'o') . '
 					AND o.valid = 1
 					AND ABS(TIMEDIFF(o.date_add, c.date_add)+0) < 120000';
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -186,7 +186,7 @@ class StatsRegistrations extends StatsModule
      */
     protected function setAllTimeValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
+        $result = Db::readOnly()->getArray($this->query . $this->getDate());
         foreach ($result as $row) {
             $this->_values[(int)substr($row['date_add'], 0, 4)]++;
         }
@@ -200,7 +200,7 @@ class StatsRegistrations extends StatsModule
      */
     protected function setYearValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
+        $result = Db::readOnly()->getArray($this->query . $this->getDate());
         foreach ($result as $row) {
             $mounth = (int)substr($row['date_add'], 5, 2);
             if (!isset($this->_values[$mounth])) {
@@ -218,7 +218,7 @@ class StatsRegistrations extends StatsModule
      */
     protected function setMonthValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
+        $result = Db::readOnly()->getArray($this->query . $this->getDate());
         foreach ($result as $row) {
             $this->_values[(int)substr($row['date_add'], 8, 2)]++;
         }
@@ -232,7 +232,7 @@ class StatsRegistrations extends StatsModule
      */
     protected function setDayValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate());
+        $result = Db::readOnly()->getArray($this->query . $this->getDate());
         foreach ($result as $row) {
             $this->_values[(int)substr($row['date_add'], 11, 2)]++;
         }

@@ -134,7 +134,7 @@ class StatsBestManufacturers extends StatsModule
 					' . Shop::addSqlRestriction(false, 'o') . '
 					AND o.valid = 1
 					AND m.id_manufacturer IS NOT NULL';
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -166,7 +166,7 @@ class StatsBestManufacturers extends StatsModule
         if (Validate::IsUnsignedInt($this->_limit)) {
             $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
-        $this->_values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+        $this->_values = Db::readOnly()->getArray($query);
 
         if (Validate::IsUnsignedInt($this->_limit)) {
             $this->_totalCount = $this->getTotalCount();

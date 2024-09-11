@@ -124,14 +124,15 @@ class StatsNewsletter extends StatsModule
 				WHERE 1
 					' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 					AND `newsletter_date_add` BETWEEN ' . ModuleGraph::getDateBetween();
-        $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $conn = Db::readOnly();
+        $result1 = $conn->getRow($sql);
 
         $sql = 'SELECT COUNT(*) AS visitors
 				FROM ' . $this->table_name . '
 				WHERE 1
 				   ' . Shop::addSqlRestriction() . '
 					AND `newsletter_date_add` BETWEEN ' . ModuleGraph::getDateBetween();
-        $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $result2 = $conn->getRow($sql);
         return [
             'customers' => $result1['customers'],
             'visitors' => $result2['visitors'],
@@ -174,8 +175,9 @@ class StatsNewsletter extends StatsModule
      */
     protected function setAllTimeValues($layers)
     {
-        $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
-        $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
+        $conn = Db::readOnly();
+        $result1 = $conn->getArray($this->_query . $this->getDate());
+        $result2 = $conn->getArray($this->_query2 . $this->getDate());
         foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 0, 4)] += 1;
         }
@@ -197,8 +199,9 @@ class StatsNewsletter extends StatsModule
      */
     protected function setYearValues($layers)
     {
-        $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
-        $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
+        $conn = Db::readOnly();
+        $result1 = $conn->getArray($this->_query . $this->getDate());
+        $result2 = $conn->getArray($this->_query2 . $this->getDate());
         foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 5, 2)] += 1;
         }
@@ -220,8 +223,9 @@ class StatsNewsletter extends StatsModule
      */
     protected function setMonthValues($layers)
     {
-        $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
-        $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
+        $conn = Db::readOnly();
+        $result1 = $conn->getArray($this->_query . $this->getDate());
+        $result2 = $conn->getArray($this->_query2 . $this->getDate());
         foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 8, 2)] += 1;
         }
@@ -243,8 +247,9 @@ class StatsNewsletter extends StatsModule
      */
     protected function setDayValues($layers)
     {
-        $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query . $this->getDate());
-        $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->_query2 . $this->getDate());
+        $conn = Db::readOnly();
+        $result1 = $conn->getArray($this->_query . $this->getDate());
+        $result2 = $conn->getArray($this->_query2 . $this->getDate());
         foreach ($result1 as $row) {
             $this->_values[0][(int)substr($row['newsletter_date_add'], 11, 2)] += 1;
         }

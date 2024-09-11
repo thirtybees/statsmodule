@@ -62,7 +62,8 @@ class StatsEquipment extends StatsModule
 				LEFT JOIN `' . _DB_PREFIX_ . 'guest` g ON g.`id_guest` = c.`id_guest`
 				WHERE c.`date_add` BETWEEN ' . ModuleGraph::getDateBetween() . '
 					' . Shop::addSqlRestriction(false, 'c');
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->query($sql);
+        $conn = Db::readOnly();
+        $result = $conn->query($sql);
 
         $calc_array = [
             'jsOK' => 0,
@@ -80,7 +81,7 @@ class StatsEquipment extends StatsModule
             'directorOK' => 0,
             'directorKO' => 0,
         ];
-        while ($row = Db::getInstance(_PS_USE_SQL_SLAVE_)->nextRow($result)) {
+        while ($row = $conn->nextRow($result)) {
             if (!$row['javascript']) {
                 ++$calc_array['jsKO'];
                 continue;
@@ -223,7 +224,7 @@ class StatsEquipment extends StatsModule
      */
     protected function getData($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query2);
+        $result = Db::readOnly()->getArray($this->query . $this->getDate() . $this->query2);
         $this->_values = [];
         $i = 0;
         foreach ($result as $row) {

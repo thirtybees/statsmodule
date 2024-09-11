@@ -183,6 +183,7 @@ class StatsSales extends StatsModule
      */
     private function getTotals()
     {
+        $conn = Db::readOnly();
         $sql = 'SELECT COUNT(o.`id_order`) AS orderCount, SUM(o.`total_paid_real` / o.conversion_rate) AS orderSum
 				FROM `' . _DB_PREFIX_ . 'orders` o
 				' . ((int)Tools::getValue('id_country') ? 'LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON o.id_address_delivery = a.id_address' : '') . '
@@ -190,7 +191,7 @@ class StatsSales extends StatsModule
 					' . Shop::addSqlRestriction(false, 'o') . '
 					' . ((int)Tools::getValue('id_country') ? 'AND a.id_country = ' . (int)Tools::getValue('id_country') : '') . '
 					AND o.`invoice_date` BETWEEN ' . ModuleGraph::getDateBetween();
-        $result1 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $result1 = $conn->getRow($sql);
 
         $sql = 'SELECT SUM(od.product_quantity) AS products
 				FROM `' . _DB_PREFIX_ . 'orders` o
@@ -200,21 +201,21 @@ class StatsSales extends StatsModule
 					' . Shop::addSqlRestriction(false, 'o') . '
 					' . ((int)Tools::getValue('id_country') ? 'AND a.id_country = ' . (int)Tools::getValue('id_country') : '') . '
 					AND o.`invoice_date` BETWEEN ' . ModuleGraph::getDateBetween();
-        $result2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        $result2 = $conn->getRow($sql);
 
         return array_merge($result1, $result2);
     }
 
     /**
-     * @param string $options
+     * @param string $option
      * @param int $layers
      *
      * @return void
      * @throws PrestaShopException
      */
-    public function setOption($options, $layers = 1)
+    public function setOption($option, $layers = 1)
     {
-        list($this->option, $this->id_country) = array_map('intval', explode('-', $options));
+        list($this->option, $this->id_country) = array_map('intval', explode('-', $option));
         switch ($this->option) {
             case 1:
                 $this->_titles['main'][0] = $this->l('Orders placed');
@@ -263,7 +264,7 @@ class StatsSales extends StatsModule
      */
     protected function setAllTimeValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
+        $result = Db::readOnly()->getArray($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
             if ($this->option === 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 0, 4)] += 1;
@@ -282,7 +283,7 @@ class StatsSales extends StatsModule
      */
     protected function setYearValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
+        $result = Db::readOnly()->getArray($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
             $mounth = (int)substr($row['invoice_date'], 5, 2);
             if ($this->option === 1) {
@@ -311,7 +312,7 @@ class StatsSales extends StatsModule
      */
     protected function setMonthValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
+        $result = Db::readOnly()->getArray($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
             if ($this->option === 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 8, 2)] += 1;
@@ -330,7 +331,7 @@ class StatsSales extends StatsModule
      */
     protected function setDayValues($layers)
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query . $this->getDate() . $this->query_group_by);
+        $result = Db::readOnly()->getArray($this->query . $this->getDate() . $this->query_group_by);
         foreach ($result as $row) {
             if ($this->option === 1) {
                 $this->_values[0][(int)substr($row['invoice_date'], 11, 2)] += 1;
@@ -347,7 +348,7 @@ class StatsSales extends StatsModule
      */
     private function getStatesData()
     {
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+        $result = Db::readOnly()->getArray('
 		SELECT osl.`name`, COUNT(oh.`id_order`) AS total
 		FROM `' . _DB_PREFIX_ . 'order_state` os
 		LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = ' . (int)$this->getLang() . ')

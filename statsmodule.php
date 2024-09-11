@@ -39,7 +39,7 @@ class StatsModule extends ModuleStats
     const TYPE_CUSTOM = 'Custom';
 
     /**
-     * @var \Thirtybees\StatsModule\Utils
+     * @var Utils
      */
     protected $utils;
 
@@ -272,8 +272,8 @@ class StatsModule extends ModuleStats
      */
     public function hookTop($params)
     {
-        $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
         $controller = $this->context->controller;
 
         // track page not found

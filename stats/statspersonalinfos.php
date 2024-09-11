@@ -77,7 +77,8 @@ class StatsPersonalInfos extends StatsModule
 					</ul>
 				</div>
 			</div>';
-        $has_customers = (bool)Db::getInstance()->getValue('SELECT id_customer FROM ' . _DB_PREFIX_ . 'customer');
+        $conn = Db::readOnly();
+        $has_customers = (bool)$conn->getValue('SELECT id_customer FROM ' . _DB_PREFIX_ . 'customer');
         if ($has_customers) {
             if (Tools::getValue('export')) {
                 if (Tools::getValue('exportType') == 'social-titles') {
@@ -216,6 +217,8 @@ class StatsPersonalInfos extends StatsModule
      */
     protected function getData($layers)
     {
+        $conn = Db::readOnly();
+
         switch ($this->option) {
             case 'social-titles':
                 $titles = [
@@ -233,7 +236,7 @@ class StatsPersonalInfos extends StatsModule
 						WHERE 1
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'c') . '
 						GROUP BY g.id_gender';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+                $result = $conn->getArray($sql);
 
                 foreach ($result as $row) {
                     $genderId = (int)$row['id_gender'];
@@ -251,7 +254,7 @@ class StatsPersonalInfos extends StatsModule
 						WHERE (YEAR(CURDATE()) - YEAR(`birthday`)) - (RIGHT(CURDATE(), 5) < RIGHT(`birthday`, 5)) < 18
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 							AND `birthday` IS NOT NULL';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('0-18');
@@ -264,7 +267,7 @@ class StatsPersonalInfos extends StatsModule
 							AND (YEAR(CURDATE()) - YEAR(`birthday`)) - (RIGHT(CURDATE(), 5) < RIGHT(`birthday`, 5)) < 25
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 							AND `birthday` IS NOT NULL';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('18-24');
@@ -277,7 +280,7 @@ class StatsPersonalInfos extends StatsModule
 							AND (YEAR(CURDATE()) - YEAR(`birthday`)) - (RIGHT(CURDATE(), 5) < RIGHT(`birthday`, 5)) < 35
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 							AND `birthday` IS NOT NULL';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('25-34');
@@ -290,7 +293,7 @@ class StatsPersonalInfos extends StatsModule
 							AND (YEAR(CURDATE()) - YEAR(`birthday`)) - (RIGHT(CURDATE(), 5) < RIGHT(`birthday`, 5)) < 50
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 							AND `birthday` IS NOT NULL';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('35-49');
@@ -303,7 +306,7 @@ class StatsPersonalInfos extends StatsModule
 							AND (YEAR(CURDATE()) - YEAR(`birthday`)) - (RIGHT(CURDATE(), 5) < RIGHT(`birthday`, 5)) < 60
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 							AND `birthday` IS NOT NULL';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('50-59');
@@ -315,7 +318,7 @@ class StatsPersonalInfos extends StatsModule
 						WHERE (YEAR(CURDATE()) - YEAR(`birthday`)) - (RIGHT(CURDATE(), 5) < RIGHT(`birthday`, 5)) >= 60
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . '
 							AND `birthday` IS NOT NULL';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('60+');
@@ -326,7 +329,7 @@ class StatsPersonalInfos extends StatsModule
 						FROM `' . _DB_PREFIX_ . 'customer`
 						WHERE `birthday` IS NULL
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER);
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+                $result = $conn->getRow($sql);
                 if (isset($result['total']) && $result['total']) {
                     $this->_values[] = $result['total'];
                     $this->_legend[] = $this->l('Unknown');
@@ -343,7 +346,7 @@ class StatsPersonalInfos extends StatsModule
 						WHERE a.id_customer != 0
 							' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER, 'cu') . '
 						GROUP BY c.`id_country`';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+                $result = $conn->getArray($sql);
                 foreach ($result as $row) {
                     $this->_values[] = $row['total'];
                     $this->_legend[] = $row['name'];
@@ -357,7 +360,7 @@ class StatsPersonalInfos extends StatsModule
 						LEFT JOIN `' . _DB_PREFIX_ . 'currency` c ON o.`id_currency` = c.`id_currency`
 						WHERE 1 ' . Shop::addSqlRestriction(false, 'o') . '
 						GROUP BY c.`id_currency`';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+                $result = $conn->getArray($sql);
                 foreach ($result as $row) {
                     $this->_values[] = $row['total'];
                     $this->_legend[] = $row['name'];
@@ -371,7 +374,7 @@ class StatsPersonalInfos extends StatsModule
 						LEFT JOIN `' . _DB_PREFIX_ . 'lang` c ON o.`id_lang` = c.`id_lang`
 						WHERE 1 ' . Shop::addSqlRestriction(false, 'o') . '
 						GROUP BY c.`id_lang`';
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+                $result = $conn->getArray($sql);
                 foreach ($result as $row) {
                     $this->_values[] = $row['total'];
                     $this->_legend[] = $row['name'];

@@ -23,8 +23,6 @@
  * PrestaShop is an internationally registered trademark of PrestaShop SA.
  */
 
-use Thirtybees\StatsModule\ProductSalesView;
-
 if (!defined('_TB_VERSION_')) {
     exit;
 }
@@ -52,11 +50,6 @@ class StatsProduct extends StatsModule
     protected $id_product = 0;
 
     /**
-     * @var bool
-     */
-    protected $packTracking = false;
-
-    /**
      * @throws PrestaShopException
      */
     public function __construct()
@@ -65,8 +58,6 @@ class StatsProduct extends StatsModule
         $this->type = static::TYPE_GRAPH;
 
         $this->displayName = $this->l('Product details');
-
-        $this->packTracking = class_exists('OrderDetailPack');
     }
 
     /**
@@ -88,7 +79,7 @@ class StatsProduct extends StatsModule
             ->where("od.product_id = $productId")
             ->where('o.valid = 1 ' . Shop::addSqlRestriction(false, 'o'))
             ->where("o.date_add BETWEEN $dateBetween");
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -101,20 +92,17 @@ class StatsProduct extends StatsModule
      */
     public function getTotalBoughtAsPartOfPack($productId)
     {
-        if ($this->packTracking) {
-            $dateBetween = ModuleGraph::getDateBetween();
-            $productId = (int)$productId;
-            $sql = (new DbQuery())
-                ->select('SUM(od.product_quantity * p.quantity) AS total')
-                ->from('order_detail', 'od')
-                ->innerJoin('order_detail_pack', 'p', 'p.id_order_detail = od.id_order_detail')
-                ->innerJoin('orders', 'o', 'o.id_order = od.id_order')
-                ->where("p.id_product = $productId")
-                ->where('o.valid = 1 ' . Shop::addSqlRestriction(false, 'o'))
-                ->where("o.date_add BETWEEN $dateBetween");
-            return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
-        }
-        return 0;
+        $dateBetween = ModuleGraph::getDateBetween();
+        $productId = (int)$productId;
+        $sql = (new DbQuery())
+            ->select('SUM(od.product_quantity * p.quantity) AS total')
+            ->from('order_detail', 'od')
+            ->innerJoin('order_detail_pack', 'p', 'p.id_order_detail = od.id_order_detail')
+            ->innerJoin('orders', 'o', 'o.id_order = od.id_order')
+            ->where("p.id_product = $productId")
+            ->where('o.valid = 1 ' . Shop::addSqlRestriction(false, 'o'))
+            ->where("o.date_add BETWEEN $dateBetween");
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -134,7 +122,7 @@ class StatsProduct extends StatsModule
 					AND o.valid = 1
 					AND o.`date_add` BETWEEN ' . $date_between;
 
-        return (float)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (float)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -156,7 +144,7 @@ class StatsProduct extends StatsModule
 					AND p.`id_object` = ' . (int)$id_product . '
 					AND dr.`time_start` BETWEEN ' . $date_between . '
 					AND dr.`time_end` BETWEEN ' . $date_between;
-        return (int)Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+        return (int)Db::readOnly()->getValue($sql);
     }
 
     /**
@@ -177,7 +165,7 @@ class StatsProduct extends StatsModule
 					' . (Tools::getValue('id_category') ? 'AND cp.id_category = ' . (int)Tools::getValue('id_category') : '') . '
 				ORDER BY pl.`name`';
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+        return Db::readOnly()->getArray($sql);
     }
 
     /**
@@ -197,21 +185,16 @@ class StatsProduct extends StatsModule
             ->select('od.product_quantity')
             ->select('(od.product_price * od.product_quantity) as total')
             ->select('od.product_name')
+            ->select('IFNULL(p.quantity, 0) AS pack_quantity')
             ->from('orders', 'o')
             ->innerJoin('order_detail', 'od', 'o.id_order = od.id_order')
+            ->leftJoin('order_detail_pack', 'p', "(p.id_order_detail = od.id_order_detail AND p.id_product = $productId)")
             ->where('o.date_add BETWEEN ' . $this->getDate())
-            ->where('o.valid ' . Shop::addSqlRestriction(false, 'o'));
+            ->where('o.valid ' . Shop::addSqlRestriction(false, 'o'))
+            ->where("(od.product_id = $productId OR p.id_product = $productId)");
 
-        if ($this->packTracking) {
-            $sql->leftJoin('order_detail_pack', 'p', "(p.id_order_detail = od.id_order_detail AND p.id_product = $productId)");
-            $sql->select('IFNULL(p.quantity, 0) AS pack_quantity');
-            $sql->where("(od.product_id = $productId OR p.id_product = $productId)");
-        } else {
-            $sql->select('0 AS pack_quantity');
-            $sql->where('od.product_id = ' . $productId);
-        }
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
-        return $conn->executeS($sql);
+        $conn = Db::readOnly();
+        return $conn->getArray($sql);
     }
 
     /**
@@ -242,7 +225,7 @@ class StatsProduct extends StatsModule
 				GROUP BY od.product_id
 				ORDER BY pqty DESC';
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+        return Db::readOnly()->getArray($sql);
     }
 
     /**
@@ -299,7 +282,7 @@ class StatsProduct extends StatsModule
             }
             $product = new Product($id_product, false, $this->context->language->id);
             $totalBoughtIndividual = $this->getTotalBoughtIndividual($product->id);
-            $isPartOfPack = $this->packTracking && Pack::isPacked($product->id);
+            $isPartOfPack = Pack::isPacked($product->id);
             $totalBoughtPack = $isPartOfPack ? $this->getTotalBoughtAsPartOfPack($product->id) : 0;
             $totalBought = $totalBoughtIndividual + $totalBoughtPack;
             $total_sales = $this->getTotalSales($product->id);
@@ -498,7 +481,7 @@ class StatsProduct extends StatsModule
                 $this->_titles['main'][0] = $this->l('Sales');
                 $this->_titles['main'][1] = $this->l('Popularity');
                 $this->query = [];
-                if ($this->packTracking && Pack::isPacked($this->id_product)) {
+                if (Pack::isPacked($this->id_product)) {
                     $this->query[0] = '
                               SELECT 
                                 DATE_FORMAT(o.`date_add`, "%Y-%m-%d") as date_add, 
@@ -602,13 +585,11 @@ class StatsProduct extends StatsModule
                     $assoc_names[$id_product_attribute] = $list;
                 }
 
-                $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+                $result = Db::readOnly()->getArray($this->query);
                 foreach ($result as $row) {
                     $attributeId = (int)$row['product_attribute_id'];
                     $this->_values[] = $row['total'];
-                    $this->_legend[] = isset($assoc_names[$attributeId])
-                        ? $assoc_names[$attributeId]
-                        : $row['name'];
+                    $this->_legend[] = $assoc_names[$attributeId] ?? $row['name'];
                 }
             }
         }
@@ -622,8 +603,9 @@ class StatsProduct extends StatsModule
      */
     protected function setAllTimeValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
+            $result = $conn->getArray($this->query[$i]);
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 0, 4)] += $row['total'];
             }
@@ -638,8 +620,9 @@ class StatsProduct extends StatsModule
      */
     protected function setYearValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
+            $result = $conn->getArray($this->query[$i]);
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 5, 2)] += $row['total'];
             }
@@ -654,8 +637,9 @@ class StatsProduct extends StatsModule
      */
     protected function setMonthValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
+            $result = $conn->getArray($this->query[$i]);
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 8, 2)] += $row['total'];
             }
@@ -670,8 +654,9 @@ class StatsProduct extends StatsModule
      */
     protected function setDayValues($layers)
     {
+        $conn = Db::readOnly();
         for ($i = 0; $i < $layers; $i++) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query[$i]);
+            $result = $conn->getArray($this->query[$i]);
             foreach ($result as $row) {
                 $this->_values[$i][(int)substr($row['date_add'], 11, 2)] += $row['total'];
             }

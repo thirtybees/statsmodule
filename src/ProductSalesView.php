@@ -20,7 +20,6 @@ namespace Thirtybees\StatsModule;
 
 use DbQuery;
 use PrestaShopException;
-use Shop;
 
 class ProductSalesView
 {

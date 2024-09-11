@@ -194,6 +194,7 @@ class StatsBestCategories extends StatsModule
 
         // If a shop is selected, get all children categories for the shop
         $categories = [];
+        $conn = Db::readOnly();
         if (Shop::getContext() != Shop::CONTEXT_ALL) {
             $sql = 'SELECT c.nleft, c.nright
 					FROM ' . _DB_PREFIX_ . 'category c
@@ -202,7 +203,7 @@ class StatsBestCategories extends StatsModule
 						FROM ' . _DB_PREFIX_ . 'shop s
 						WHERE s.id_shop IN (' . implode(', ', Shop::getContextListShopID()) . ')
 					)';
-            if ($result = Db::getInstance()->executeS($sql)) {
+            if ($result = $conn->getArray($sql)) {
                 $ntree_restriction = [];
                 foreach ($result as $row) {
                     $ntree_restriction[] = '(nleft >= ' . $row['nleft'] . ' AND nright <= ' . $row['nright'] . ')';
@@ -212,7 +213,7 @@ class StatsBestCategories extends StatsModule
                     $sql = 'SELECT id_category
 							FROM ' . _DB_PREFIX_ . 'category
 							WHERE ' . implode(' OR ', $ntree_restriction);
-                    if ($result = Db::getInstance()->executeS($sql)) {
+                    if ($result = $conn->getArray($sql)) {
                         foreach ($result as $row) {
                             $categories[] = $row['id_category'];
                         }
@@ -292,8 +293,7 @@ class StatsBestCategories extends StatsModule
             $query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
-        $values = $conn->executeS($query);
+        $values = $conn->getArray($query);
         foreach ($values as &$value) {
             $totalPriceSold = round((float)$value['totalPriceSold'], 2);
             $totalWholeSalePriceSold = round((float)$value['totalWholeSalePriceSold'], 2);

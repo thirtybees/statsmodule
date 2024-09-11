@@ -168,8 +168,8 @@ class StatsBestVouchers extends StatsModule
             $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
-        $values = $conn->executeS($this->query);
+        $conn = Db::readOnly();
+        $values = $conn->getArray($this->query);
         foreach ($values as &$value) {
             $value['ca'] = Tools::displayPrice($value['ca'], $currency);
         }

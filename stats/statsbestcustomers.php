@@ -208,8 +208,8 @@ class StatsBestCustomers extends StatsModule
             $this->query .= ' LIMIT ' . (int)$this->_start . ', ' . (int)$this->_limit;
         }
 
-        $conn = Db::getInstance(_PS_USE_SQL_SLAVE_);
-        $this->_values = $conn->executeS($this->query);
+        $conn = Db::readOnly();
+        $this->_values = $conn->getArray($this->query);
 
         if (Validate::IsUnsignedInt($this->_limit)) {
             $totalQuery = (new DbQuery())

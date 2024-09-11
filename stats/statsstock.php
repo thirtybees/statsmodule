@@ -104,7 +104,7 @@ class StatsStock extends StatsModule
             $sql .= ' WHERE ' . implode(' AND ', $filters);
         }
 
-        $products = Db::getInstance()->executeS($sql);
+        $products = Db::readOnly()->getArray($sql);
 
         foreach ($products as $key => $p) {
             $products[$key]['stockvalue'] = $p['wholesale_price'] * $p['quantity'];

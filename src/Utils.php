@@ -83,7 +83,7 @@ class Utils
             $sql->where('ca.id_parent');
         }
 
-        $categories = Db::getInstance()->executeS($sql);
+        $categories = Db::readOnly()->getArray($sql);
         usort($categories, function($a, $b) {
             return strcmp(mb_strtolower($a['name']), mb_strtolower($b['name']));
         });
