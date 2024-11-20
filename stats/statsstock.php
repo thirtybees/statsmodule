@@ -86,20 +86,21 @@ class StatsStock extends StatsModule
             $filters[] = 'product_shop.active = 0';
         }
 
-        $sql = 'SELECT p.id_product, p.reference, pl.name,
-				IFNULL((
-					SELECT AVG(product_attribute_shop.wholesale_price)
-					FROM ' . _DB_PREFIX_ . 'product_attribute pa
-					' . Shop::addSqlAssociation('product_attribute', 'pa') . '
-					WHERE p.id_product = pa.id_product
-					AND product_attribute_shop.wholesale_price != 0
-				), product_shop.wholesale_price) as wholesale_price,
-				IFNULL(stock.quantity, 0) as quantity
-				FROM ' . _DB_PREFIX_ . 'product p
-				' . Shop::addSqlAssociation('product', 'p') . '
-				INNER JOIN ' . _DB_PREFIX_ . 'product_lang pl
-					ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int)$this->context->language->id . Shop::addSqlRestrictionOnLang('pl') . ')
-				' . Product::sqlStock('p', 0);
+        $sql = 'SELECT p.id_product, p.reference, pl.name, p.cache_is_pack,
+                IFNULL((
+                    SELECT AVG(product_attribute_shop.wholesale_price)
+                    FROM ' . _DB_PREFIX_ . 'product_attribute pa
+                    ' . Shop::addSqlAssociation('product_attribute', 'pa') . '
+                    WHERE p.id_product = pa.id_product
+                    AND product_attribute_shop.wholesale_price != 0
+                ), product_shop.wholesale_price) as wholesale_price,
+                IFNULL(stock.quantity, 0) as quantity
+                FROM ' . _DB_PREFIX_ . 'product p
+                ' . Shop::addSqlAssociation('product', 'p') . '
+                INNER JOIN ' . _DB_PREFIX_ . 'product_lang pl
+                    ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int)$this->context->language->id . Shop::addSqlRestrictionOnLang('pl') . ')
+                ' . Product::sqlStock('p', 0);
+
         if ($filters) {
             $sql .= ' WHERE ' . implode(' AND ', $filters);
         }
@@ -107,84 +108,91 @@ class StatsStock extends StatsModule
         $products = Db::readOnly()->getArray($sql);
 
         foreach ($products as $key => $p) {
-            $products[$key]['stockvalue'] = $p['wholesale_price'] * $p['quantity'];
+            $products[$key]['stockvalue'] = $p['cache_is_pack'] ? '-' : ($p['wholesale_price'] * $p['quantity']);
+            $products[$key]['quantity'] = $p['cache_is_pack'] ? '-' : $p['quantity'];
         }
 
         $this->html .= '
-		<script type="text/javascript">$(\'#calendar\').hide();</script>
+        <script type="text/javascript">$(\'#calendar\').hide();</script>
 
-		<div class="panel-heading">'
+        <div class="panel-heading">'
             . $this->l('Evaluation of available quantities for sale') .
             '</div>
-		<form action="' . Tools::safeOutput($ru) . '" method="post" class="form-horizontal">
-			<div class="row row-margin-bottom">
-				<label class="control-label col-lg-3">' . $this->l('Category') . '</label>
-				<div class="col-lg-6">
-					<select name="'.static::PARAM_CATEGORY.'" onchange="this.form.submit();">
-						' . $this->utils->getCategoryOptions($categoryId). '
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<label class="control-label col-lg-3">' . $this->l('Enabled status') . '</label>
-				<div class="col-lg-6">
-					<select name="'.static::PARAM_ENABLE_STATUS.'" onchange="this.form.submit();">
-					    <option value="'.static::STATUS_ALL.'" '.($enableStatus === static::STATUS_ALL ? ' selected="selected"' : '') .'>'.$this->l('All').'</option>
-					    <option value="'.static::STATUS_ENABLED.'" '.($enableStatus === static::STATUS_ENABLED ? ' selected="selected"' : '') .'>'.$this->l('Active products').'</option>
-					    <option value="'.static::STATUS_DISABLED.'" '.($enableStatus === static::STATUS_DISABLED ? ' selected="selected"' : '') .'>'.$this->l('Disabled products').'</option>
-					</select>
-				</div>
+        <form action="' . Tools::safeOutput($ru) . '" method="post" class="form-horizontal">
+            <div class="row row-margin-bottom">
+                <label class="control-label col-lg-3">' . $this->l('Category') . '</label>
+                <div class="col-lg-6">
+                    <select name="'.static::PARAM_CATEGORY.'" onchange="this.form.submit();">
+                        ' . $this->utils->getCategoryOptions($categoryId). '
+                    </select>
+                </div>
             </div>
-		</form>';
+            <div class="row">
+                <label class="control-label col-lg-3">' . $this->l('Enabled status') . '</label>
+                <div class="col-lg-6">
+                    <select name="'.static::PARAM_ENABLE_STATUS.'" onchange="this.form.submit();">
+                        <option value="'.static::STATUS_ALL.'" '.($enableStatus === static::STATUS_ALL ? ' selected="selected"' : '') .'>'.$this->l('All').'</option>
+                        <option value="'.static::STATUS_ENABLED.'" '.($enableStatus === static::STATUS_ENABLED ? ' selected="selected"' : '') .'>'.$this->l('Active products').'</option>
+                        <option value="'.static::STATUS_DISABLED.'" '.($enableStatus === static::STATUS_DISABLED ? ' selected="selected"' : '') .'>'.$this->l('Disabled products').'</option>
+                    </select>
+                </div>
+            </div>
+        </form>';
 
         if (!count($products)) {
             $this->html .= '<p>' . $this->l('No product matches criteria.') . '</p>';
         } else {
             $rollup = ['quantity' => 0, 'wholesale_price' => 0, 'stockvalue' => 0];
             $this->html .= '
-			<table class="table">
-				<thead>
-					<tr>
-						<th><span class="title_box active">' . $this->l('ID') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Ref.') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Item') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Price*') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Value') . '</span></th>
-					</tr>
-				</thead>
-				<tbody>';
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><span class="title_box active">' . $this->l('ID') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Ref.') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Item') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Available quantity for sale') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Price*') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Value') . '</span></th>
+                    </tr>
+                </thead>
+                <tbody>';
             foreach ($products as $product) {
-                $rollup['quantity'] += $product['quantity'];
-                $rollup['wholesale_price'] += $product['wholesale_price'];
-                $rollup['stockvalue'] += $product['stockvalue'];
+                if (!$product['cache_is_pack']) {
+                    $rollup['quantity'] += $product['quantity'];
+                    $rollup['wholesale_price'] += $product['wholesale_price'];
+                    $rollup['stockvalue'] += $product['stockvalue'];
+                }
                 $this->html .= '<tr>
-						<td>' . $product['id_product'] . '</td>
-						<td>' . $product['reference'] . '</td>
-						<td>' . $product['name'] . '</td>
-						<td>' . $product['quantity'] . '</td>
-						<td>' . Tools::displayPrice($product['wholesale_price'], $currency) . '</td>
-						<td>' . Tools::displayPrice($product['stockvalue'], $currency) . '</td>
-					</tr>';
+                        <td>' . $product['id_product'] . '</td>
+                        <td>' . $product['reference'] . '</td>
+                        <td>' . $product['name'] . '</td>
+                        <td>' . ($product['cache_is_pack'] ? '-' : $product['quantity']) . '</td>
+                        <td>' . Tools::displayPrice($product['wholesale_price'], $currency) . '</td>
+                        <td>' . ($product['cache_is_pack'] ? '-' : Tools::displayPrice($product['stockvalue'], $currency)) . '</td>
+                    </tr>';
             }
             $this->html .= '
-				</tbody>
-				<tfoot>
-					<tr>
-						<th colspan="3"></th>
-						<th><span class="title_box active">' . $this->l('Total quantities') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Average price') . '</span></th>
-						<th><span class="title_box active">' . $this->l('Total value') . '</span></th>
-					</tr>
-					<tr>
-						<td colspan="3"></td>
-						<td>' . $rollup['quantity'] . '</td>
-						<td>' . Tools::displayPrice($rollup['wholesale_price'] / count($products), $currency) . '</td>
-						<td>' . Tools::displayPrice($rollup['stockvalue'], $currency) . '</td>
-					</tr>
-				</tfoot>
-			</table>
-			<i class="icon-asterisk"></i> ' . $this->l('This section corresponds to the default wholesale price according to the default supplier for the product. An average price is used when the product has attributes.');
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3"></th>
+                        <th><span class="title_box active">' . $this->l('Total quantities') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Average price') . '</span></th>
+                        <th><span class="title_box active">' . $this->l('Total value') . '</span></th>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td>' . $rollup['quantity'] . '</td>
+                        <td>' . Tools::displayPrice($rollup['wholesale_price'] / max(1, count(array_filter($products, function ($p) {
+                            return !$p['cache_is_pack'];
+                        }))), $currency) . '</td>
+                        <td>' . Tools::displayPrice($rollup['stockvalue'], $currency) . '</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <i class="icon-asterisk"></i> ' . $this->l('This section corresponds to the default wholesale price according to the default supplier for the product. An average price is used when the product has attributes.') . '<br>
+            <i class="icon-exclamation-sign"></i> ' . $this->l('Pack products are marked with "-" and are NOT included in the total quantities or value calculation as they are already accounted for as separate items.') . '
+        ';
         }
         return $this->html;
     }
