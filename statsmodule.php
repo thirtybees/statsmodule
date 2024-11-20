@@ -76,6 +76,7 @@ class StatsModule extends ModuleStats
         'statssales',
         'statssearch',
         'statsstock',
+        'statsshopassociation',
         'statsvisits',
     ];
 
