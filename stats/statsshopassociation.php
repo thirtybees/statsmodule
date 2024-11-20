@@ -61,6 +61,8 @@ class StatsShopAssociation extends StatsModule
      * Get all shops based on current context
      *
      * @return array
+     *
+     * @throws PrestaShopException
      */
     private function getShops()
     {
@@ -72,17 +74,19 @@ class StatsShopAssociation extends StatsModule
         }
 
         $query .= ' ORDER BY id_shop ASC';
-        return Db::getInstance()->executeS($query);
+        return Db::getInstance()->getArray($query);
     }
 
     /**
      * Get all products with their "Enabled/Disabled" status
      *
      * @return array
+     *
+     * @throws PrestaShopException
      */
     private function getProducts()
     {
-        return Db::getInstance()->executeS('
+        return Db::getInstance()->getArray('
             SELECT p.id_product, pl.name, p.active
             FROM ' . _DB_PREFIX_ . 'product p
             LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl
@@ -97,12 +101,15 @@ class StatsShopAssociation extends StatsModule
      * Preload product-shop associations
      *
      * @param array $shops
+     *
      * @return array
+     *
+     * @throws PrestaShopException
      */
     private function getProductShopData($shops)
     {
         $shopIds = array_column($shops, 'id_shop');
-        $data = Db::getInstance()->executeS('
+        $data = Db::getInstance()->getArray('
             SELECT ps.id_product, ps.id_shop
             FROM ' . _DB_PREFIX_ . 'product_shop ps
             WHERE ps.id_shop IN (' . implode(',', array_map('intval', $shopIds)) . ')
@@ -122,6 +129,8 @@ class StatsShopAssociation extends StatsModule
      * @param array $shops
      * @param array $products
      * @param array $productShopData
+     *
+     * @throws PrestaShopException
      */
     private function generateTable($shops, $products, $productShopData)
 	{
@@ -138,7 +147,7 @@ class StatsShopAssociation extends StatsModule
 		$link = Context::getContext()->link;
 
 		$this->html .= '<div class="panel-heading">' . $this->l('Product Shop Association') . '</div>';
-		
+
 		$this->html .= '<style>
 			.separator-left-right {
 				border-right: 1px solid #EAEDEF;
