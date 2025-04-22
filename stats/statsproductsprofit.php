@@ -179,11 +179,12 @@ class StatsProductsProfit extends StatsModule
             ->innerJoin('product', 'p', '(p.id_product = od.product_id)')
             ->leftJoin('product_lang', 'pl', '(pl.`id_product` = p.`id_product` AND pl.`id_lang` = '. $idLang . Shop::addSqlRestrictionOnLang('pl') .')')
             ->where('o.valid = 1')
-            ->where('o.invoice_date BETWEEN ' . $this->getDate())
             ->addCurrentShopRestriction('o');
 
         if ($this->orderId) {
             $baseQuery->where('o.id_order = ' . (int)$this->orderId);
+        } else {
+            $baseQuery->where('o.invoice_date BETWEEN ' . $this->getDate());
         }
 
         if ($this->categoryId) {
