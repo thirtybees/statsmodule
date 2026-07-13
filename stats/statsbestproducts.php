@@ -151,11 +151,6 @@ class StatsBestProducts extends StatsModule
                 return false;
             }
 
-            // Hide packs related quantities if we don't have any packs
-            if (in_array($id, ['totalQuantityPack', 'totalQuantityProduct']) && !Pack::isFeatureActive()) {
-                return false;
-            }
-
             // show the rest
             return true;
         });
