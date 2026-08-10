@@ -145,7 +145,7 @@ class StatsBestManufacturers extends StatsModule
      */
     public function getData($layers = null)
     {
-        $query = 'SELECT m.name, SUM(od.product_quantity) AS quantity, ROUND(SUM(od.product_quantity * od.product_price) / c.conversion_rate, 2) AS sales
+        $query = 'SELECT m.name, SUM(od.product_quantity) AS quantity, ROUND(SUM(od.product_quantity * od.product_price / c.conversion_rate), 2) AS sales
 				FROM ' . _DB_PREFIX_ . 'order_detail od
 				LEFT JOIN ' . _DB_PREFIX_ . 'product p ON p.id_product = od.product_id
 				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_order = od.id_order
